@@ -35,8 +35,8 @@
  ** Define the example::position class.
  */
 
-#ifndef YY_EXAMPLE_POSITION_HH_INCLUDED
-# define YY_EXAMPLE_POSITION_HH_INCLUDED
+#ifndef YY_YY_POSITION_HH_INCLUDED
+# define YY_YY_POSITION_HH_INCLUDED
 
 # include <algorithm> // std::max
 # include <iostream>
@@ -50,7 +50,7 @@
 #  endif
 # endif
 
-
+#line 34 "parser.yy" // location.cc:337
 namespace example {
 #line 56 "position.hh" // location.cc:337
   /// Abstract a position.
@@ -174,7 +174,7 @@ namespace example {
     return ostr << pos.line << '.' << pos.column;
   }
 
-
+#line 34 "parser.yy" // location.cc:337
 } // example
 #line 180 "position.hh" // location.cc:337
-#endif // !YY_EXAMPLE_POSITION_HH_INCLUDED
+#endif // !YY_YY_POSITION_HH_INCLUDED

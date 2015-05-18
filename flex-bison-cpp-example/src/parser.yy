@@ -1,4 +1,5 @@
-/* $Id$ -*- mode: c++ -*- */
+/* -*- C++ -*- */
+
 /** \file parser.yy Contains the example Bison parser source */
 
 %{ /*** C/C++ Declarations ***/
@@ -14,7 +15,7 @@
 /*** yacc/bison Declarations ***/
 
 /* Require bison 2.3 or later */
-%require "2.3"
+%require "3.0.4"
 
 /* add debug output code to generated parser. disable this for release
  * versions. */
@@ -30,10 +31,13 @@
 %skeleton "lalr1.cc"
 
 /* namespace to enclose parser in */
-%name-prefix="example"
+%define api.namespace {example}
 
-/* set the parser's class identifier */
-%define "parser_class_name" "Parser"
+/* 
+   set the parser's class identifier, use new style of defining 
+   the C++ name of the parser 
+*/
+%define parser_class_name {Parser}
 
 /* keep track of the current position within the input */
 %locations

@@ -37,8 +37,8 @@
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_EXAMPLE_PARSER_HH_INCLUDED
-# define YY_EXAMPLE_PARSER_HH_INCLUDED
+#ifndef YY_YY_PARSER_HH_INCLUDED
+# define YY_YY_PARSER_HH_INCLUDED
 
 
 # include <cstdlib> // std::abort
@@ -108,7 +108,7 @@
 # define YYDEBUG 1
 #endif
 
-
+#line 34 "parser.yy" // lalr1.cc:392
 namespace example {
 #line 114 "parser.hh" // lalr1.cc:392
 
@@ -124,7 +124,7 @@ namespace example {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 56 "parser.yy" // lalr1.cc:392
+    #line 60 "parser.yy" // lalr1.cc:392
 
     int  			integerVal;
     double 			doubleVal;
@@ -477,11 +477,11 @@ namespace example {
   };
 
 
-
+#line 34 "parser.yy" // lalr1.cc:392
 } // example
 #line 483 "parser.hh" // lalr1.cc:392
 
 
 
 
-#endif // !YY_EXAMPLE_PARSER_HH_INCLUDED
+#endif // !YY_YY_PARSER_HH_INCLUDED

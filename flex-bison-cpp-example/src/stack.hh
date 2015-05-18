@@ -35,12 +35,12 @@
  ** Define the example::stack class.
  */
 
-#ifndef YY_EXAMPLE_STACK_HH_INCLUDED
-# define YY_EXAMPLE_STACK_HH_INCLUDED
+#ifndef YY_YY_STACK_HH_INCLUDED
+# define YY_YY_STACK_HH_INCLUDED
 
 # include <vector>
 
-
+#line 34 "parser.yy" // stack.hh:151
 namespace example {
 #line 46 "stack.hh" // stack.hh:151
   template <class T, class S = std::vector<T> >
@@ -150,8 +150,8 @@ namespace example {
     unsigned int range_;
   };
 
-
+#line 34 "parser.yy" // stack.hh:151
 } // example
 #line 156 "stack.hh" // stack.hh:151
 
-#endif // !YY_EXAMPLE_STACK_HH_INCLUDED
+#endif // !YY_YY_STACK_HH_INCLUDED

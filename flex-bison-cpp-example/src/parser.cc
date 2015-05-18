@@ -30,11 +30,9 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
-// Take the name prefix into account.
-#define yylex   examplelex
 
 // First part of user declarations.
-#line 4 "parser.yy" // lalr1.cc:404
+#line 5 "parser.yy" // lalr1.cc:404
  /*** C/C++ Declarations ***/
 
 #include <stdio.h>
@@ -44,7 +42,7 @@
 #include "expression.h"
 
 
-#line 48 "parser.cc" // lalr1.cc:404
+#line 46 "parser.cc" // lalr1.cc:404
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -57,7 +55,7 @@
 #include "parser.hh"
 
 // User implementation prologue.
-#line 78 "parser.yy" // lalr1.cc:412
+#line 82 "parser.yy" // lalr1.cc:412
 
 
 #include "driver.h"
@@ -70,7 +68,7 @@
 #define yylex driver.lexer->lex
 
 
-#line 74 "parser.cc" // lalr1.cc:412
+#line 72 "parser.cc" // lalr1.cc:412
 
 
 #ifndef YY_
@@ -154,9 +152,9 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-
+#line 34 "parser.yy" // lalr1.cc:479
 namespace example {
-#line 160 "parser.cc" // lalr1.cc:479
+#line 158 "parser.cc" // lalr1.cc:479
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -407,65 +405,65 @@ namespace example {
     {
             case 6: // "string"
 
-#line 72 "parser.yy" // lalr1.cc:617
+#line 76 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.stringVal); }
-#line 413 "parser.cc" // lalr1.cc:617
+#line 411 "parser.cc" // lalr1.cc:617
         break;
 
       case 18: // constant
 
-#line 73 "parser.yy" // lalr1.cc:617
+#line 77 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.calcnode); }
-#line 420 "parser.cc" // lalr1.cc:617
+#line 418 "parser.cc" // lalr1.cc:617
         break;
 
       case 19: // variable
 
-#line 73 "parser.yy" // lalr1.cc:617
+#line 77 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.calcnode); }
-#line 427 "parser.cc" // lalr1.cc:617
+#line 425 "parser.cc" // lalr1.cc:617
         break;
 
       case 20: // atomexpr
 
-#line 74 "parser.yy" // lalr1.cc:617
+#line 78 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.calcnode); }
-#line 434 "parser.cc" // lalr1.cc:617
+#line 432 "parser.cc" // lalr1.cc:617
         break;
 
       case 21: // powexpr
 
-#line 74 "parser.yy" // lalr1.cc:617
+#line 78 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.calcnode); }
-#line 441 "parser.cc" // lalr1.cc:617
+#line 439 "parser.cc" // lalr1.cc:617
         break;
 
       case 22: // unaryexpr
 
-#line 74 "parser.yy" // lalr1.cc:617
+#line 78 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.calcnode); }
-#line 448 "parser.cc" // lalr1.cc:617
+#line 446 "parser.cc" // lalr1.cc:617
         break;
 
       case 23: // mulexpr
 
-#line 74 "parser.yy" // lalr1.cc:617
+#line 78 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.calcnode); }
-#line 455 "parser.cc" // lalr1.cc:617
+#line 453 "parser.cc" // lalr1.cc:617
         break;
 
       case 24: // addexpr
 
-#line 74 "parser.yy" // lalr1.cc:617
+#line 78 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.calcnode); }
-#line 462 "parser.cc" // lalr1.cc:617
+#line 460 "parser.cc" // lalr1.cc:617
         break;
 
       case 25: // expr
 
-#line 74 "parser.yy" // lalr1.cc:617
+#line 78 "parser.yy" // lalr1.cc:617
         { delete (yysym.value.calcnode); }
-#line 469 "parser.cc" // lalr1.cc:617
+#line 467 "parser.cc" // lalr1.cc:617
         break;
 
 
@@ -597,13 +595,13 @@ namespace example {
 
 
     // User initialization code.
-    #line 41 "parser.yy" // lalr1.cc:745
+    #line 45 "parser.yy" // lalr1.cc:745
 {
     // initialize the initial location object
     yyla.location.begin.filename = yyla.location.end.filename = &driver.streamname;
 }
 
-#line 607 "parser.cc" // lalr1.cc:745
+#line 605 "parser.cc" // lalr1.cc:745
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -711,23 +709,23 @@ namespace example {
           switch (yyn)
             {
   case 2:
-#line 96 "parser.yy" // lalr1.cc:859
+#line 100 "parser.yy" // lalr1.cc:859
     {
 	       (yylhs.value.calcnode) = new CNConstant((yystack_[0].value.integerVal));
 	   }
-#line 719 "parser.cc" // lalr1.cc:859
+#line 717 "parser.cc" // lalr1.cc:859
     break;
 
   case 3:
-#line 100 "parser.yy" // lalr1.cc:859
+#line 104 "parser.yy" // lalr1.cc:859
     {
 	       (yylhs.value.calcnode) = new CNConstant((yystack_[0].value.doubleVal));
 	   }
-#line 727 "parser.cc" // lalr1.cc:859
+#line 725 "parser.cc" // lalr1.cc:859
     break;
 
   case 4:
-#line 105 "parser.yy" // lalr1.cc:859
+#line 109 "parser.yy" // lalr1.cc:859
     {
 	       if (!driver.calc.existsVariable(*(yystack_[0].value.stringVal))) {
 		   error(yystack_[0].location, std::string("Unknown variable \"") + *(yystack_[0].value.stringVal) + "\"");
@@ -739,139 +737,139 @@ namespace example {
 		   delete (yystack_[0].value.stringVal);
 	       }
 	   }
-#line 743 "parser.cc" // lalr1.cc:859
+#line 741 "parser.cc" // lalr1.cc:859
     break;
 
   case 5:
-#line 118 "parser.yy" // lalr1.cc:859
-    {
-	       (yylhs.value.calcnode) = (yystack_[0].value.calcnode);
-	   }
-#line 751 "parser.cc" // lalr1.cc:859
-    break;
-
-  case 6:
 #line 122 "parser.yy" // lalr1.cc:859
     {
 	       (yylhs.value.calcnode) = (yystack_[0].value.calcnode);
 	   }
-#line 759 "parser.cc" // lalr1.cc:859
+#line 749 "parser.cc" // lalr1.cc:859
+    break;
+
+  case 6:
+#line 126 "parser.yy" // lalr1.cc:859
+    {
+	       (yylhs.value.calcnode) = (yystack_[0].value.calcnode);
+	   }
+#line 757 "parser.cc" // lalr1.cc:859
     break;
 
   case 7:
-#line 126 "parser.yy" // lalr1.cc:859
+#line 130 "parser.yy" // lalr1.cc:859
     {
 	       (yylhs.value.calcnode) = (yystack_[1].value.calcnode);
 	   }
-#line 767 "parser.cc" // lalr1.cc:859
+#line 765 "parser.cc" // lalr1.cc:859
     break;
 
   case 8:
-#line 131 "parser.yy" // lalr1.cc:859
+#line 135 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = (yystack_[0].value.calcnode);
 	  }
-#line 775 "parser.cc" // lalr1.cc:859
+#line 773 "parser.cc" // lalr1.cc:859
     break;
 
   case 9:
-#line 135 "parser.yy" // lalr1.cc:859
+#line 139 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = new CNPower((yystack_[2].value.calcnode), (yystack_[0].value.calcnode));
 	  }
-#line 783 "parser.cc" // lalr1.cc:859
+#line 781 "parser.cc" // lalr1.cc:859
     break;
 
   case 10:
-#line 140 "parser.yy" // lalr1.cc:859
-    {
-		(yylhs.value.calcnode) = (yystack_[0].value.calcnode);
-	    }
-#line 791 "parser.cc" // lalr1.cc:859
-    break;
-
-  case 11:
 #line 144 "parser.yy" // lalr1.cc:859
     {
 		(yylhs.value.calcnode) = (yystack_[0].value.calcnode);
 	    }
-#line 799 "parser.cc" // lalr1.cc:859
+#line 789 "parser.cc" // lalr1.cc:859
+    break;
+
+  case 11:
+#line 148 "parser.yy" // lalr1.cc:859
+    {
+		(yylhs.value.calcnode) = (yystack_[0].value.calcnode);
+	    }
+#line 797 "parser.cc" // lalr1.cc:859
     break;
 
   case 12:
-#line 148 "parser.yy" // lalr1.cc:859
+#line 152 "parser.yy" // lalr1.cc:859
     {
 		(yylhs.value.calcnode) = new CNNegate((yystack_[0].value.calcnode));
 	    }
-#line 807 "parser.cc" // lalr1.cc:859
+#line 805 "parser.cc" // lalr1.cc:859
     break;
 
   case 13:
-#line 153 "parser.yy" // lalr1.cc:859
+#line 157 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = (yystack_[0].value.calcnode);
 	  }
-#line 815 "parser.cc" // lalr1.cc:859
+#line 813 "parser.cc" // lalr1.cc:859
     break;
 
   case 14:
-#line 157 "parser.yy" // lalr1.cc:859
+#line 161 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = new CNMultiply((yystack_[2].value.calcnode), (yystack_[0].value.calcnode));
 	  }
-#line 823 "parser.cc" // lalr1.cc:859
+#line 821 "parser.cc" // lalr1.cc:859
     break;
 
   case 15:
-#line 161 "parser.yy" // lalr1.cc:859
+#line 165 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = new CNDivide((yystack_[2].value.calcnode), (yystack_[0].value.calcnode));
 	  }
-#line 831 "parser.cc" // lalr1.cc:859
+#line 829 "parser.cc" // lalr1.cc:859
     break;
 
   case 16:
-#line 165 "parser.yy" // lalr1.cc:859
+#line 169 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = new CNModulo((yystack_[2].value.calcnode), (yystack_[0].value.calcnode));
 	  }
-#line 839 "parser.cc" // lalr1.cc:859
+#line 837 "parser.cc" // lalr1.cc:859
     break;
 
   case 17:
-#line 170 "parser.yy" // lalr1.cc:859
+#line 174 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = (yystack_[0].value.calcnode);
 	  }
-#line 847 "parser.cc" // lalr1.cc:859
+#line 845 "parser.cc" // lalr1.cc:859
     break;
 
   case 18:
-#line 174 "parser.yy" // lalr1.cc:859
+#line 178 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = new CNAdd((yystack_[2].value.calcnode), (yystack_[0].value.calcnode));
 	  }
-#line 855 "parser.cc" // lalr1.cc:859
+#line 853 "parser.cc" // lalr1.cc:859
     break;
 
   case 19:
-#line 178 "parser.yy" // lalr1.cc:859
+#line 182 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = new CNSubtract((yystack_[2].value.calcnode), (yystack_[0].value.calcnode));
 	  }
-#line 863 "parser.cc" // lalr1.cc:859
+#line 861 "parser.cc" // lalr1.cc:859
     break;
 
   case 20:
-#line 183 "parser.yy" // lalr1.cc:859
+#line 187 "parser.yy" // lalr1.cc:859
     {
 	      (yylhs.value.calcnode) = (yystack_[0].value.calcnode);
 	  }
-#line 871 "parser.cc" // lalr1.cc:859
+#line 869 "parser.cc" // lalr1.cc:859
     break;
 
   case 21:
-#line 188 "parser.yy" // lalr1.cc:859
+#line 192 "parser.yy" // lalr1.cc:859
     {
 		 driver.calc.variables[*(yystack_[2].value.stringVal)] = (yystack_[0].value.calcnode)->evaluate();
 		 std::cout << "Setting variable " << *(yystack_[2].value.stringVal)
@@ -879,35 +877,35 @@ namespace example {
 		 delete (yystack_[2].value.stringVal);
 		 delete (yystack_[0].value.calcnode);
 	     }
-#line 883 "parser.cc" // lalr1.cc:859
+#line 881 "parser.cc" // lalr1.cc:859
     break;
 
   case 28:
-#line 203 "parser.yy" // lalr1.cc:859
-    {
-	      driver.calc.expressions.push_back((yystack_[1].value.calcnode));
-	  }
-#line 891 "parser.cc" // lalr1.cc:859
-    break;
-
-  case 29:
 #line 207 "parser.yy" // lalr1.cc:859
     {
 	      driver.calc.expressions.push_back((yystack_[1].value.calcnode));
 	  }
-#line 899 "parser.cc" // lalr1.cc:859
+#line 889 "parser.cc" // lalr1.cc:859
     break;
 
-  case 30:
+  case 29:
 #line 211 "parser.yy" // lalr1.cc:859
     {
 	      driver.calc.expressions.push_back((yystack_[1].value.calcnode));
 	  }
-#line 907 "parser.cc" // lalr1.cc:859
+#line 897 "parser.cc" // lalr1.cc:859
+    break;
+
+  case 30:
+#line 215 "parser.yy" // lalr1.cc:859
+    {
+	      driver.calc.expressions.push_back((yystack_[1].value.calcnode));
+	  }
+#line 905 "parser.cc" // lalr1.cc:859
     break;
 
 
-#line 911 "parser.cc" // lalr1.cc:859
+#line 909 "parser.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -1266,10 +1264,10 @@ namespace example {
   const unsigned char
   Parser::yyrline_[] =
   {
-       0,    95,    95,    99,   104,   117,   121,   125,   130,   134,
-     139,   143,   147,   152,   156,   160,   164,   169,   173,   177,
-     182,   187,   196,   197,   198,   199,   200,   201,   202,   206,
-     210
+       0,    99,    99,   103,   108,   121,   125,   129,   134,   138,
+     143,   147,   151,   156,   160,   164,   168,   173,   177,   181,
+     186,   191,   200,   201,   202,   203,   204,   205,   206,   210,
+     214
   };
 
   // Print the state stack on the debug stream.
@@ -1349,10 +1347,10 @@ namespace example {
       return undef_token_;
   }
 
-
+#line 34 "parser.yy" // lalr1.cc:1167
 } // example
-#line 1355 "parser.cc" // lalr1.cc:1167
-#line 217 "parser.yy" // lalr1.cc:1168
+#line 1353 "parser.cc" // lalr1.cc:1167
+#line 221 "parser.yy" // lalr1.cc:1168
  /*** Additional Code ***/
 
 void example::Parser::error(const Parser::location_type& l,
