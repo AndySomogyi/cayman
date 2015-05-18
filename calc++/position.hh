@@ -32,11 +32,11 @@
 
 /**
  ** \file position.hh
- ** Define the example::position class.
+ ** Define the yy::position class.
  */
 
-#ifndef YY_EXAMPLE_POSITION_HH_INCLUDED
-# define YY_EXAMPLE_POSITION_HH_INCLUDED
+#ifndef YY_YY_POSITION_HH_INCLUDED
+# define YY_YY_POSITION_HH_INCLUDED
 
 # include <algorithm> // std::max
 # include <iostream>
@@ -51,7 +51,7 @@
 # endif
 
 
-namespace example {
+namespace yy {
 #line 56 "position.hh" // location.cc:337
   /// Abstract a position.
   class position
@@ -175,6 +175,6 @@ namespace example {
   }
 
 
-} // example
+} // yy
 #line 180 "position.hh" // location.cc:337
-#endif // !YY_EXAMPLE_POSITION_HH_INCLUDED
+#endif // !YY_YY_POSITION_HH_INCLUDED

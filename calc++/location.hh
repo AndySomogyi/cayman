@@ -32,16 +32,16 @@
 
 /**
  ** \file location.hh
- ** Define the example::location class.
+ ** Define the yy::location class.
  */
 
-#ifndef YY_EXAMPLE_LOCATION_HH_INCLUDED
-# define YY_EXAMPLE_LOCATION_HH_INCLUDED
+#ifndef YY_YY_LOCATION_HH_INCLUDED
+# define YY_YY_LOCATION_HH_INCLUDED
 
 # include "position.hh"
 
 
-namespace example {
+namespace yy {
 #line 46 "location.hh" // location.cc:337
   /// Abstract a location.
   class location
@@ -187,6 +187,6 @@ namespace example {
   }
 
 
-} // example
+} // yy
 #line 192 "location.hh" // location.cc:337
-#endif // !YY_EXAMPLE_LOCATION_HH_INCLUDED
+#endif // !YY_YY_LOCATION_HH_INCLUDED
