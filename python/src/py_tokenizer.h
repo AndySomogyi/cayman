@@ -1,14 +1,11 @@
 #ifndef Py_TOKENIZER_H
 #define Py_TOKENIZER_H
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-#include "object.h"
+
 
 /* Tokenizer interface */
 
-#include "token.h"      /* For token types */
+#include "py_token.h"      /* For token types */
 
 #define MAXINDENT 100   /* Max indentation level */
 
@@ -47,8 +44,8 @@ struct tok_state {
     int cont_line;          /* whether we are in a continuation line. */
     const char* line_start;     /* pointer to start of current line */
 #ifndef PGEN
-    PyObject *decoding_readline; /* codecs.open(...).readline */
-    PyObject *decoding_buffer;
+    void *decoding_readline; /* codecs.open(...).readline */
+    void *decoding_buffer;
 #endif
     const char* enc;
     const char* str;
@@ -64,7 +61,5 @@ extern char * PyTokenizer_RestoreEncoding(struct tok_state* tok,
                                           int len, int *offset);
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+
 #endif /* !Py_TOKENIZER_H */

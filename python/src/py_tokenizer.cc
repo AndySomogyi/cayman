@@ -1,22 +1,23 @@
 
 /* Tokenizer implementation */
 
-#include "Python.h"
-#include "pgenheaders.h"
+//#include "Python.h"
+//#include "pgenheaders.h"
 
 #include <ctype.h>
 #include <assert.h>
+#include <stdio.h>
 
-#include "tokenizer.h"
+#include "py_tokenizer.h"
 #include "errcode.h"
 
 #ifndef PGEN
-#include "unicodeobject.h"
-#include "stringobject.h"
-#include "fileobject.h"
-#include "codecs.h"
-#include "abstract.h"
-#include "pydebug.h"
+//#include "unicodeobject.h"
+//#include "stringobject.h"
+//#include "fileobject.h"
+//#include "codecs.h"
+//#include "abstract.h"
+//#include "pydebug.h"
 #endif /* PGEN */
 
 extern char *PyOS_Readline(FILE *, FILE *, char *);
@@ -31,6 +32,8 @@ extern char *PyOS_Readline(FILE *, FILE *, char *);
 static struct tok_state *tok_new(void);
 static int tok_nextc(struct tok_state *tok);
 static void tok_backup(struct tok_state *tok, int c);
+
+#include "py_private.h"
 
 /* Token names */
 
@@ -124,8 +127,8 @@ tok_new(void)
     tok->encoding = NULL;
     tok->cont_line = 0;
 #ifndef PGEN
-    tok->decoding_readline = NULL;
-    tok->decoding_buffer = NULL;
+    //tok->decoding_readline = NULL;
+    //tok->decoding_buffer = NULL;
 #endif
     return tok;
 }
