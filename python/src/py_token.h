@@ -74,10 +74,9 @@ extern "C" {
 #define ISEOF(x)		((x) == ENDMARKER)
 
 
-PyAPI_DATA(char *) _PyParser_TokenNames[]; /* Token names */
-PyAPI_FUNC(int) PyToken_OneChar(int);
-PyAPI_FUNC(int) PyToken_TwoChars(int, int);
-PyAPI_FUNC(int) PyToken_ThreeChars(int, int, int);
+int PyToken_OneChar(int);
+int PyToken_TwoChars(int, int);
+int PyToken_ThreeChars(int, int, int);
 
 #ifdef __cplusplus
 }

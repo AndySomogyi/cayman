@@ -8,6 +8,10 @@
 #ifndef PYTHON_SRC_PY_PRIVATE_H_
 #define PYTHON_SRC_PY_PRIVATE_H_
 
+#include <stddef.h>
+
+
+
 /* Py_ssize_t is a signed integral type such that sizeof(Py_ssize_t) ==
  * sizeof(size_t).  C99 doesn't define such a thing directly (size_t is an
  * unsigned integral type).  See PEP 353 for details.
@@ -52,6 +56,8 @@ typedef Py_intptr_t     Py_ssize_t;
 
 
 #define Py_ISALNUM(c) isalnum(c)
+
+#define Py_ISALPHA(c) isalnum(c)
 
 
 /* Argument must be a char or an int in [-128, 127] or [0, 255]. */

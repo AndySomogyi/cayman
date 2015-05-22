@@ -1,26 +1,18 @@
 
 /* Tokenizer implementation */
 
-//#include "Python.h"
-//#include "pgenheaders.h"
 
 #include <ctype.h>
 #include <assert.h>
 #include <stdio.h>
+#include <cstring>
 
 #include "py_tokenizer.h"
 #include "errcode.h"
 
-#ifndef PGEN
-//#include "unicodeobject.h"
-//#include "stringobject.h"
-//#include "fileobject.h"
-//#include "codecs.h"
-//#include "abstract.h"
-//#include "pydebug.h"
-#endif /* PGEN */
+#define NO_DECODE
 
-extern char *PyOS_Readline(FILE *, FILE *, char *);
+
 /* Return malloc'ed string including trailing \n;
    empty malloc'ed string for EOF;
    NULL if interrupted */
@@ -33,11 +25,9 @@ static struct tok_state *tok_new(void);
 static int tok_nextc(struct tok_state *tok);
 static void tok_backup(struct tok_state *tok, int c);
 
-#include "py_private.h"
-
 /* Token names */
 
-char *_PyParser_TokenNames[] = {
+const char *_PyParser_TokenNames[] = {
     "ENDMARKER",
     "NAME",
     "NUMBER",
@@ -95,6 +85,27 @@ char *_PyParser_TokenNames[] = {
     "<N_TOKENS>"
 };
 
+
+static char *
+PyOS_Readline(FILE *sys_stdin, FILE *sys_stdout, char *prompt)
+{
+    size_t n = 1000;
+    char *p = (char *)PyMem_MALLOC(n);
+    char *q;
+    if (p == NULL)
+        return NULL;
+    fprintf(stderr, "%s", prompt);
+    q = fgets(p, n, sys_stdin);
+    if (q == NULL) {
+        *p = '\0';
+        return p;
+    }
+    n = strlen(p);
+    if (n > 0 && p[n-1] != '\n')
+        p[n-1] = '\n';
+    return (char *)PyMem_REALLOC(p, n+1);
+}
+
 /* Create and initialize a new tok_state structure */
 
 static struct tok_state *
@@ -126,10 +137,10 @@ tok_new(void)
     tok->read_coding_spec = 0;
     tok->encoding = NULL;
     tok->cont_line = 0;
-#ifndef PGEN
-    //tok->decoding_readline = NULL;
-    //tok->decoding_buffer = NULL;
-#endif
+//#ifndef PGEN
+//    tok->decoding_readline = NULL;
+//    tok->decoding_buffer = NULL;
+//#endif
     return tok;
 }
 
@@ -144,7 +155,7 @@ new_string(const char *s, Py_ssize_t len)
     return result;
 }
 
-#ifdef PGEN
+#if defined(PGEN) || defined(NO_DECODE)
 
 static char *
 decoding_fgets(char *s, int size, struct tok_state *tok)
@@ -775,10 +786,10 @@ PyTokenizer_Free(struct tok_state *tok)
 {
     if (tok->encoding != NULL)
         PyMem_FREE(tok->encoding);
-#ifndef PGEN
-    Py_XDECREF(tok->decoding_readline);
-    Py_XDECREF(tok->decoding_buffer);
-#endif
+//#ifndef PGEN
+//    Py_XDECREF(tok->decoding_readline);
+//    Py_XDECREF(tok->decoding_buffer);
+//#endif
     if (tok->fp != NULL && tok->buf != NULL)
         PyMem_FREE(tok->buf);
     if (tok->input)
@@ -1012,7 +1023,7 @@ tok_nextc(register struct tok_state *tok)
         }
         if (tok->done != E_OK) {
             if (tok->prompt != NULL)
-                PySys_WriteStderr("\n");
+                fprintf(stderr, "\n");
             tok->cur = tok->inp;
             return EOF;
         }
@@ -1028,7 +1039,7 @@ tok_backup(register struct tok_state *tok, register int c)
 {
     if (c != EOF) {
         if (--tok->cur < tok->buf)
-            Py_FatalError("tok_backup: beginning of buffer");
+            fprintf(stderr, "tok_backup: beginning of buffer");
         if (*tok->cur != c)
             *tok->cur = c;
     }
@@ -1200,7 +1211,7 @@ indenterror(struct tok_state *tok)
         return 1;
     }
     if (tok->altwarning) {
-        PySys_WriteStderr("%s: inconsistent use of tabs and spaces "
+        fprintf(stderr, "%s: inconsistent use of tabs and spaces "
                           "in indentation\n", tok->filename);
         tok->altwarning = 0;
     }
@@ -1322,7 +1333,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
 
     /* Skip comment, while looking for tab-setting magic */
     if (c == '#') {
-        static char *tabforms[] = {
+        static const char *tabforms[] = {
             "tab-width:",                       /* Emacs */
             ":tabstop=",                        /* vim, full form */
             ":ts=",                             /* vim, abbreviated form */
@@ -1330,7 +1341,8 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         /* more templates can be added here to support other editors */
         };
         char cbuf[80];
-        char *tp, **cp;
+        char *tp;
+        const char **cp;
         tp = cbuf;
         do {
             *tp++ = c = tok_nextc(tok);
@@ -1345,8 +1357,8 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
 
                 if (newsize >= 1 && newsize <= 40) {
                     tok->tabsize = newsize;
-                    if (Py_VerboseFlag)
-                        PySys_WriteStderr(
+                    if (true)
+                        fprintf(stderr,
                         "Tab size set to %d\n",
                         newsize);
                 }
@@ -1628,13 +1640,12 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         int c2 = tok_nextc(tok);
         int token = PyToken_TwoChars(c, c2);
 #ifndef PGEN
-        if (Py_Py3kWarningFlag && token == NOTEQUAL && c == '<') {
-            if (PyErr_WarnExplicit(PyExc_DeprecationWarning,
-                                   "<> not supported in 3.x; use !=",
-                                   tok->filename, tok->lineno,
-                                   NULL, NULL)) {
-                return ERRORTOKEN;
-            }
+        if (token == NOTEQUAL && c == '<') {
+            fprintf(stderr, "Error, %s, line %d: <> not supported in 3.x; use !=",
+                                   tok->filename, tok->lineno);
+
+
+            return ERRORTOKEN;
         }
 #endif
         if (token != OP) {
@@ -1745,7 +1756,7 @@ PyTokenizer_RestoreEncoding(struct tok_state* tok, int len, int *offset)
 #endif
 
 
-#ifdef Py_DEBUG
+
 
 void
 tok_dump(int type, char *start, char *end)
@@ -1755,4 +1766,75 @@ tok_dump(int type, char *start, char *end)
         printf("(%.*s)", (int)(end - start), start);
 }
 
-#endif
+
+#define PyPARSE_DONT_IMPLY_DEDENT	0x0002
+
+int PyTokenizer_Test(const char* fname)
+{
+
+	struct tok_state *tok;
+
+	int *flags = 0;
+
+	FILE *file = fopen(fname, "r");
+
+	int started = 0;
+
+	int error = 0;
+
+	if (file) {
+		tok = PyTokenizer_FromFile(file, NULL, NULL) ;
+
+		for (;;) {
+			char *a, *b;
+			int type;
+			size_t len;
+			char *str;
+			int col_offset;
+
+			type = PyTokenizer_Get(tok, &a, &b);
+			if (type == ERRORTOKEN || type == EOF || type == ENDMARKER) {
+				error = tok->done;
+				break;
+			}
+			if (type == ENDMARKER && started) {
+				type = NEWLINE; /* Add an extra newline */
+				started = 0;
+				/* Add the right number of dedent tokens,
+    	               except if a certain flag is given --
+    	               codeop.py uses this. */
+				if (tok->indent &&
+						!(*flags & PyPARSE_DONT_IMPLY_DEDENT))
+				{
+					tok->pendin = -tok->indent;
+					tok->indent = 0;
+				}
+			}
+			else
+				started = 1;
+			len = b - a; /* XXX this may compute NULL - NULL */
+			str = (char *) PyMem_MALLOC(len + 1);
+			if (str == NULL) {
+				fprintf(stderr, "no mem for next token\n");
+				error = E_NOMEM;
+				break;
+			}
+			if (len > 0)
+				strncpy(str, a, len);
+			str[len] = '\0';
+
+			if (a >= tok->line_start)
+				col_offset = a - tok->line_start;
+			else
+				col_offset = -1;
+
+			// print token
+
+			tok_dump(type, a, b);
+			printf("\n");
+		}
+
+	}
+}
+
+

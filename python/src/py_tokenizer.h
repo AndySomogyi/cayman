@@ -2,6 +2,7 @@
 #define Py_TOKENIZER_H
 
 
+#include "py_private.h"
 
 /* Tokenizer interface */
 
@@ -43,10 +44,10 @@ struct tok_state {
     char *encoding;
     int cont_line;          /* whether we are in a continuation line. */
     const char* line_start;     /* pointer to start of current line */
-#ifndef PGEN
-    void *decoding_readline; /* codecs.open(...).readline */
-    void *decoding_buffer;
-#endif
+//#ifndef PGEN
+//    PyObject *decoding_readline; /* codecs.open(...).readline */
+//    PyObject *decoding_buffer;
+//#endif
     const char* enc;
     const char* str;
     const char* input; /* Tokenizer's newline translated copy of the string. */
@@ -56,10 +57,13 @@ extern struct tok_state *PyTokenizer_FromString(const char *, int);
 extern struct tok_state *PyTokenizer_FromFile(FILE *, char *, char *);
 extern void PyTokenizer_Free(struct tok_state *);
 extern int PyTokenizer_Get(struct tok_state *, char **, char **);
-#if defined(PGEN) || defined(Py_USING_UNICODE)
+
+
 extern char * PyTokenizer_RestoreEncoding(struct tok_state* tok,
                                           int len, int *offset);
-#endif
+
+extern int PyTokenizer_Test(const char* fname);
+
 
 
 #endif /* !Py_TOKENIZER_H */
