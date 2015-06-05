@@ -33,7 +33,7 @@
 
 // First part of user declarations.
 
-#line 37 "calc++-parser.cc" // lalr1.cc:404
+#line 37 "py_parser.cc" // lalr1.cc:404
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -43,17 +43,17 @@
 #  endif
 # endif
 
-#include "calc++-parser.hh"
+#include "py_parser.hh"
 
 // User implementation prologue.
 
-#line 51 "calc++-parser.cc" // lalr1.cc:412
+#line 51 "py_parser.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 24 "calc++-parser.yy" // lalr1.cc:413
+#line 29 "py_parser.yy" // lalr1.cc:413
 
-# include "calc++-driver.hh"
+    #include "ParserContext.h"
 
-#line 57 "calc++-parser.cc" // lalr1.cc:413
+#line 57 "py_parser.cc" // lalr1.cc:413
 
 
 #ifndef YY_
@@ -137,9 +137,9 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-
-namespace yy {
-#line 143 "calc++-parser.cc" // lalr1.cc:479
+#line 4 "py_parser.yy" // lalr1.cc:479
+namespace py {
+#line 143 "py_parser.cc" // lalr1.cc:479
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -147,7 +147,7 @@ namespace yy {
      apostrophe, a comma, or backslash (other than backslash-backslash).
      YYSTR is taken from yytname.  */
   std::string
-  calcxx_parser::yytnamerr_ (const char *yystr)
+  py_parser::yytnamerr_ (const char *yystr)
   {
     if (*yystr == '"')
       {
@@ -180,16 +180,16 @@ namespace yy {
 
 
   /// Build a parser object.
-  calcxx_parser::calcxx_parser (calcxx_driver& driver_yyarg)
+  py_parser::py_parser (ParserContext& context_yyarg)
     :
 #if YYDEBUG
       yydebug_ (false),
       yycdebug_ (&std::cerr),
 #endif
-      driver (driver_yyarg)
+      context (context_yyarg)
   {}
 
-  calcxx_parser::~calcxx_parser ()
+  py_parser::~py_parser ()
   {}
 
 
@@ -201,38 +201,38 @@ namespace yy {
 
   // by_state.
   inline
-  calcxx_parser::by_state::by_state ()
+  py_parser::by_state::by_state ()
     : state (empty_state)
   {}
 
   inline
-  calcxx_parser::by_state::by_state (const by_state& other)
+  py_parser::by_state::by_state (const by_state& other)
     : state (other.state)
   {}
 
   inline
   void
-  calcxx_parser::by_state::clear ()
+  py_parser::by_state::clear ()
   {
     state = empty_state;
   }
 
   inline
   void
-  calcxx_parser::by_state::move (by_state& that)
+  py_parser::by_state::move (by_state& that)
   {
     state = that.state;
     that.clear ();
   }
 
   inline
-  calcxx_parser::by_state::by_state (state_type s)
+  py_parser::by_state::by_state (state_type s)
     : state (s)
   {}
 
   inline
-  calcxx_parser::symbol_number_type
-  calcxx_parser::by_state::type_get () const
+  py_parser::symbol_number_type
+  py_parser::by_state::type_get () const
   {
     if (state == empty_state)
       return empty_symbol;
@@ -241,22 +241,26 @@ namespace yy {
   }
 
   inline
-  calcxx_parser::stack_symbol_type::stack_symbol_type ()
+  py_parser::stack_symbol_type::stack_symbol_type ()
   {}
 
 
   inline
-  calcxx_parser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
+  py_parser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
     : super_type (s, that.location)
   {
       switch (that.type_get ())
     {
-      case 11: // "number"
-      case 16: // exp
+      case 115: // atom
+        value.move< ASTNode* > (that.value);
+        break;
+
+      case 64: // "number"
         value.move< int > (that.value);
         break;
 
-      case 10: // "identifier"
+      case 63: // "name"
+      case 65: // "string"
         value.move< std::string > (that.value);
         break;
 
@@ -269,18 +273,22 @@ namespace yy {
   }
 
   inline
-  calcxx_parser::stack_symbol_type&
-  calcxx_parser::stack_symbol_type::operator= (const stack_symbol_type& that)
+  py_parser::stack_symbol_type&
+  py_parser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
     state = that.state;
       switch (that.type_get ())
     {
-      case 11: // "number"
-      case 16: // exp
+      case 115: // atom
+        value.copy< ASTNode* > (that.value);
+        break;
+
+      case 64: // "number"
         value.copy< int > (that.value);
         break;
 
-      case 10: // "identifier"
+      case 63: // "name"
+      case 65: // "string"
         value.copy< std::string > (that.value);
         break;
 
@@ -296,7 +304,7 @@ namespace yy {
   template <typename Base>
   inline
   void
-  calcxx_parser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
+  py_parser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
     if (yymsg)
       YY_SYMBOL_PRINT (yymsg, yysym);
@@ -305,7 +313,7 @@ namespace yy {
 #if YYDEBUG
   template <typename Base>
   void
-  calcxx_parser::yy_print_ (std::ostream& yyo,
+  py_parser::yy_print_ (std::ostream& yyo,
                                      const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
@@ -320,25 +328,32 @@ namespace yy {
         << yysym.location << ": ";
     switch (yytype)
     {
-            case 10: // "identifier"
+            case 63: // "name"
 
-#line 41 "calc++-parser.yy" // lalr1.cc:636
+#line 137 "py_parser.yy" // lalr1.cc:636
         { yyoutput << yysym.value.template as< std::string > (); }
-#line 328 "calc++-parser.cc" // lalr1.cc:636
+#line 336 "py_parser.cc" // lalr1.cc:636
         break;
 
-      case 11: // "number"
+      case 64: // "number"
 
-#line 41 "calc++-parser.yy" // lalr1.cc:636
+#line 137 "py_parser.yy" // lalr1.cc:636
         { yyoutput << yysym.value.template as< int > (); }
-#line 335 "calc++-parser.cc" // lalr1.cc:636
+#line 343 "py_parser.cc" // lalr1.cc:636
         break;
 
-      case 16: // exp
+      case 65: // "string"
 
-#line 41 "calc++-parser.yy" // lalr1.cc:636
-        { yyoutput << yysym.value.template as< int > (); }
-#line 342 "calc++-parser.cc" // lalr1.cc:636
+#line 137 "py_parser.yy" // lalr1.cc:636
+        { yyoutput << yysym.value.template as< std::string > (); }
+#line 350 "py_parser.cc" // lalr1.cc:636
+        break;
+
+      case 115: // atom
+
+#line 137 "py_parser.yy" // lalr1.cc:636
+        { yyoutput << yysym.value.template as< ASTNode* > (); }
+#line 357 "py_parser.cc" // lalr1.cc:636
         break;
 
 
@@ -351,7 +366,7 @@ namespace yy {
 
   inline
   void
-  calcxx_parser::yypush_ (const char* m, state_type s, symbol_type& sym)
+  py_parser::yypush_ (const char* m, state_type s, symbol_type& sym)
   {
     stack_symbol_type t (s, sym);
     yypush_ (m, t);
@@ -359,7 +374,7 @@ namespace yy {
 
   inline
   void
-  calcxx_parser::yypush_ (const char* m, stack_symbol_type& s)
+  py_parser::yypush_ (const char* m, stack_symbol_type& s)
   {
     if (m)
       YY_SYMBOL_PRINT (m, s);
@@ -368,40 +383,40 @@ namespace yy {
 
   inline
   void
-  calcxx_parser::yypop_ (unsigned int n)
+  py_parser::yypop_ (unsigned int n)
   {
     yystack_.pop (n);
   }
 
 #if YYDEBUG
   std::ostream&
-  calcxx_parser::debug_stream () const
+  py_parser::debug_stream () const
   {
     return *yycdebug_;
   }
 
   void
-  calcxx_parser::set_debug_stream (std::ostream& o)
+  py_parser::set_debug_stream (std::ostream& o)
   {
     yycdebug_ = &o;
   }
 
 
-  calcxx_parser::debug_level_type
-  calcxx_parser::debug_level () const
+  py_parser::debug_level_type
+  py_parser::debug_level () const
   {
     return yydebug_;
   }
 
   void
-  calcxx_parser::set_debug_level (debug_level_type l)
+  py_parser::set_debug_level (debug_level_type l)
   {
     yydebug_ = l;
   }
 #endif // YYDEBUG
 
-  inline calcxx_parser::state_type
-  calcxx_parser::yy_lr_goto_state_ (state_type yystate, int yysym)
+  inline py_parser::state_type
+  py_parser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - yyntokens_] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
@@ -411,19 +426,19 @@ namespace yy {
   }
 
   inline bool
-  calcxx_parser::yy_pact_value_is_default_ (int yyvalue)
+  py_parser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   inline bool
-  calcxx_parser::yy_table_value_is_error_ (int yyvalue)
+  py_parser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
-  calcxx_parser::parse ()
+  py_parser::parse ()
   {
     // State.
     int yyn;
@@ -451,13 +466,13 @@ namespace yy {
 
 
     // User initialization code.
-    #line 17 "calc++-parser.yy" // lalr1.cc:745
+    #line 22 "py_parser.yy" // lalr1.cc:745
 {
   // Initialize the initial location.
-  yyla.location.begin.filename = yyla.location.end.filename = &driver.file;
+    yyla.location.begin.filename = yyla.location.end.filename = &context.GetFilename();
 }
 
-#line 461 "calc++-parser.cc" // lalr1.cc:745
+#line 476 "py_parser.cc" // lalr1.cc:745
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -490,7 +505,7 @@ namespace yy {
         YYCDEBUG << "Reading a token: ";
         try
           {
-            symbol_type yylookahead (yylex (driver));
+            symbol_type yylookahead (yylex (context));
             yyla.move (yylookahead);
           }
         catch (const syntax_error& yyexc)
@@ -547,12 +562,16 @@ namespace yy {
          when using variants.  */
         switch (yyr1_[yyn])
     {
-      case 11: // "number"
-      case 16: // exp
+      case 115: // atom
+        yylhs.value.build< ASTNode* > ();
+        break;
+
+      case 64: // "number"
         yylhs.value.build< int > ();
         break;
 
-      case 10: // "identifier"
+      case 63: // "name"
+      case 65: // "string"
         yylhs.value.build< std::string > ();
         break;
 
@@ -573,74 +592,32 @@ namespace yy {
         {
           switch (yyn)
             {
-  case 2:
-#line 44 "calc++-parser.yy" // lalr1.cc:859
-    { driver.result = yystack_[0].value.as< int > (); }
-#line 580 "calc++-parser.cc" // lalr1.cc:859
+  case 110:
+#line 546 "py_parser.yy" // lalr1.cc:859
+    {yylhs.value.as< ASTNode* > () = 0;}
+#line 599 "py_parser.cc" // lalr1.cc:859
     break;
 
-  case 3:
-#line 47 "calc++-parser.yy" // lalr1.cc:859
-    {}
-#line 586 "calc++-parser.cc" // lalr1.cc:859
+  case 111:
+#line 547 "py_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< ASTNode* > () = 0; }
+#line 605 "py_parser.cc" // lalr1.cc:859
     break;
 
-  case 4:
-#line 48 "calc++-parser.yy" // lalr1.cc:859
-    {}
-#line 592 "calc++-parser.cc" // lalr1.cc:859
+  case 112:
+#line 548 "py_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< ASTNode* > () = 0; }
+#line 611 "py_parser.cc" // lalr1.cc:859
     break;
 
-  case 5:
-#line 51 "calc++-parser.yy" // lalr1.cc:859
-    { driver.variables[yystack_[2].value.as< std::string > ()] = yystack_[0].value.as< int > (); }
-#line 598 "calc++-parser.cc" // lalr1.cc:859
-    break;
-
-  case 6:
-#line 56 "calc++-parser.yy" // lalr1.cc:859
-    { yylhs.value.as< int > () = yystack_[2].value.as< int > () + yystack_[0].value.as< int > (); }
-#line 604 "calc++-parser.cc" // lalr1.cc:859
-    break;
-
-  case 7:
-#line 57 "calc++-parser.yy" // lalr1.cc:859
-    { yylhs.value.as< int > () = yystack_[2].value.as< int > () - yystack_[0].value.as< int > (); }
-#line 610 "calc++-parser.cc" // lalr1.cc:859
-    break;
-
-  case 8:
-#line 58 "calc++-parser.yy" // lalr1.cc:859
-    { yylhs.value.as< int > () = yystack_[2].value.as< int > () * yystack_[0].value.as< int > (); }
-#line 616 "calc++-parser.cc" // lalr1.cc:859
-    break;
-
-  case 9:
-#line 59 "calc++-parser.yy" // lalr1.cc:859
-    { yylhs.value.as< int > () = yystack_[2].value.as< int > () / yystack_[0].value.as< int > (); }
-#line 622 "calc++-parser.cc" // lalr1.cc:859
-    break;
-
-  case 10:
-#line 60 "calc++-parser.yy" // lalr1.cc:859
-    { std::swap (yylhs.value.as< int > (), yystack_[1].value.as< int > ()); }
-#line 628 "calc++-parser.cc" // lalr1.cc:859
-    break;
-
-  case 11:
-#line 61 "calc++-parser.yy" // lalr1.cc:859
-    { yylhs.value.as< int > () = driver.variables[yystack_[0].value.as< std::string > ()]; }
-#line 634 "calc++-parser.cc" // lalr1.cc:859
-    break;
-
-  case 12:
-#line 62 "calc++-parser.yy" // lalr1.cc:859
-    { std::swap (yylhs.value.as< int > (), yystack_[0].value.as< int > ()); }
-#line 640 "calc++-parser.cc" // lalr1.cc:859
+  case 113:
+#line 549 "py_parser.yy" // lalr1.cc:859
+    { yylhs.value.as< ASTNode* > () = 0; }
+#line 617 "py_parser.cc" // lalr1.cc:859
     break;
 
 
-#line 644 "calc++-parser.cc" // lalr1.cc:859
+#line 621 "py_parser.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -793,14 +770,14 @@ namespace yy {
   }
 
   void
-  calcxx_parser::error (const syntax_error& yyexc)
+  py_parser::error (const syntax_error& yyexc)
   {
     error (yyexc.location, yyexc.what());
   }
 
   // Generate an error message.
   std::string
-  calcxx_parser::yysyntax_error_ (state_type yystate, const symbol_type& yyla) const
+  py_parser::yysyntax_error_ (state_type yystate, const symbol_type& yyla) const
   {
     // Number of reported tokens (one for the "unexpected", one per
     // "expected").
@@ -895,74 +872,187 @@ namespace yy {
   }
 
 
-  const signed char calcxx_parser::yypact_ninf_ = -5;
+  const signed char py_parser::yypact_ninf_ = -95;
 
-  const signed char calcxx_parser::yytable_ninf_ = -1;
+  const signed char py_parser::yytable_ninf_ = -1;
+
+  const short int
+  py_parser::yypact_[] =
+  {
+      39,   -55,   -95,   164,   -95,   159,   -95,   -95,   169,   -95,
+     -14,   -95,   -95,   -95,    12,   -95,   -95,   -95,    -7,   -95,
+     -95,   -95,   188,   -95,     9,   -95,     5,    23,   -95,   100,
+     -32,    -8,     7,   -95,   -10,   -17,   -95,   169,   -95,    -9,
+     -95,    28,   -95,   -95,   -95,    29,   -32,   -95,   -95,   -95,
+      14,    92,    92,   -95,   -95,   -95,   -95,   -95,   -95,   -95,
+     -95,   -95,   -95,   -95,   -95,   -95,    13,   164,   159,   164,
+     164,   164,    36,   -95,    43,   -95,   -95,   -95,   -95,   -95,
+     -95,   -95,   169,   169,   169,   169,   -95,   -95,   -23,   169,
+     -95,   -95,   -95,   -95,   169,   -95,   169,   -13,   -95,   -95,
+     -13,   -95,   -95,   -95,   -95,   -95,   -95,    31,   -95,   159,
+     -95,    33,   -95,   -95,    17,    23,   -95,   -95,   -95,   -32,
+      -8,     7,   -95,   169,   169,   -17,   -95,   -95,   134,    -5,
+     -95,    81,   -95,   -95,   164,   164,   -10,   -10,   -95,   164,
+      27,    45,    38,   -95,   -95,   -95,   -95,   -95,   -95,   164,
+     -95,   154,   -95,   -95
+  };
+
+  const unsigned char
+  py_parser::yydefact_[] =
+  {
+       0,     0,    18,     0,     3,     0,    91,    92,     0,    93,
+       0,   111,   112,   113,     0,     9,     4,    16,     0,    14,
+      15,    28,    21,    29,    25,    27,    48,    50,    52,    55,
+      56,    69,    71,    73,    76,    79,    83,     0,    90,    94,
+      98,     0,   114,   115,    54,     0,    24,    98,     1,     2,
+       0,     0,     0,    31,    32,    33,    35,    36,    37,    38,
+      39,    40,    41,    43,    34,    42,    20,     0,    26,     0,
+       0,     0,     0,    65,    67,    58,    59,    60,    64,    62,
+      61,    63,     0,     0,     0,     0,    81,    82,    75,     0,
+      85,    86,    87,    88,     0,    89,     0,    96,     5,   110,
+      97,     6,     7,    10,     8,    11,    12,     0,    17,     0,
+      19,    44,    46,    30,     0,    51,    53,    66,    68,    57,
+      70,    72,    74,     0,     0,    80,    84,    95,     0,     0,
+      99,     0,    22,    23,    45,     0,    77,    78,   101,     0,
+     107,     0,   103,   105,   100,    13,    47,    49,   109,     0,
+     102,   104,   108,   106
+  };
 
   const signed char
-  calcxx_parser::yypact_[] =
+  py_parser::yypgoto_[] =
   {
-      -5,     5,     9,    -5,    13,    15,    -5,    -5,     8,    -5,
-      -3,    13,    13,    13,    13,    13,    -5,     8,    19,    19,
-      -5,    -5
+     -95,   -95,   -95,   -95,   -95,   -95,   -95,    16,   -51,    19,
+     -95,   -95,   -95,   -95,   -95,   -36,     1,   -95,   -95,   -95,
+     -95,   -67,    18,     4,     0,   -95,   -95,    -6,     6,     8,
+       3,   -95,   -94,   -95,     2,   -95,   -11,   -95,   -95,   -95,
+      46,   -95,   -95,   -95,   -57,    86,    48,   -95
+  };
+
+  const short int
+  py_parser::yydefgoto_[] =
+  {
+      -1,    14,    15,    49,   103,    50,   104,    16,    17,    18,
+      19,    20,    66,   132,    21,    22,    23,    24,    67,   110,
+     111,    25,    26,    27,    28,    29,    82,    30,    31,    32,
+      33,    88,    34,    89,    35,    94,    36,    37,    38,    39,
+      97,   130,   141,   142,   143,    40,    41,    42
   };
 
   const unsigned char
-  calcxx_parser::yydefact_[] =
+  py_parser::yytable_[] =
   {
-       3,     0,     0,     1,     0,    11,    12,     4,     2,    11,
-       0,     0,     0,     0,     0,     0,    10,     5,     7,     6,
-       8,     9
+     112,   108,    46,    44,     5,   128,    45,    51,    43,    90,
+      91,    69,    48,    70,    86,    87,    52,    92,     1,     2,
+     129,   123,   124,     3,   135,    70,    95,   101,   102,   136,
+     137,    68,     5,    71,    83,    84,    85,    96,     6,     7,
+       8,    93,    98,     1,     2,   109,    99,   117,     3,    11,
+      12,    13,   118,     4,   131,   134,     9,     5,   144,   149,
+     151,   140,   150,     6,     7,     8,   105,   146,   147,   113,
+     107,   116,   148,   133,   115,    10,   119,    11,    12,    13,
+     108,     9,   152,   126,   140,   127,     2,   114,   122,   120,
+       3,   125,   121,   100,   153,   145,    47,     2,   106,     5,
+      10,     3,    11,    12,    13,     6,     7,     8,     0,    72,
+       5,    73,    74,     0,     0,     0,     6,     7,     8,     0,
+       0,     0,     0,     9,     0,     0,     0,     0,     0,     0,
+      75,    76,     0,     0,     9,     0,     0,     0,    77,    78,
+      79,    80,    10,     3,    11,    12,    13,     0,     0,     0,
+       0,   138,     5,    10,     0,    11,    12,    13,     6,     7,
+       0,     0,     0,     3,     0,     0,     0,     0,     3,    81,
+       0,     0,     5,     3,     0,     0,     9,     5,     6,     7,
+     139,     0,     5,     6,     7,     8,     0,     5,     6,     7,
+       0,     0,     0,     6,     7,    10,     9,    11,    12,    13,
+     139,     9,     0,     0,     0,     0,     9,     0,     0,     0,
+       0,     9,     0,     0,     0,    10,     0,    11,    12,    13,
+      10,     0,    11,    12,    13,    10,     0,    11,    12,    13,
+      10,     0,    11,    12,    13,    53,    54,    55,    56,    57,
+      58,    59,    60,    61,    62,     0,     0,    63,     0,     0,
+       0,     0,     0,     0,     0,    64,    65
   };
 
-  const signed char
-  calcxx_parser::yypgoto_[] =
+  const short int
+  py_parser::yycheck_[] =
   {
-      -5,    -5,    -5,    -5,    -4
-  };
-
-  const signed char
-  calcxx_parser::yydefgoto_[] =
-  {
-      -1,     1,     2,     7,     8
+      67,    52,     8,     3,    18,    18,     5,    14,    63,    26,
+      27,     6,     0,     8,    24,    25,    23,    34,     4,     5,
+      33,    44,    45,     9,     7,     8,    37,    13,    14,   123,
+     124,    22,    18,    10,    66,    43,    29,    46,    24,    25,
+      26,    58,    14,     4,     5,    32,    17,    11,     9,    63,
+      64,    65,     9,    14,    23,    22,    42,    18,    63,    32,
+      22,   128,    17,    24,    25,    26,    50,   134,   135,    68,
+      51,    71,   139,   109,    70,    61,    82,    63,    64,    65,
+     131,    42,   149,    94,   151,    96,     5,    69,    85,    83,
+       9,    89,    84,    47,   151,    14,    10,     5,    50,    18,
+      61,     9,    63,    64,    65,    24,    25,    26,    -1,     9,
+      18,    11,    12,    -1,    -1,    -1,    24,    25,    26,    -1,
+      -1,    -1,    -1,    42,    -1,    -1,    -1,    -1,    -1,    -1,
+      30,    31,    -1,    -1,    42,    -1,    -1,    -1,    38,    39,
+      40,    41,    61,     9,    63,    64,    65,    -1,    -1,    -1,
+      -1,    17,    18,    61,    -1,    63,    64,    65,    24,    25,
+      -1,    -1,    -1,     9,    -1,    -1,    -1,    -1,     9,    69,
+      -1,    -1,    18,     9,    -1,    -1,    42,    18,    24,    25,
+      46,    -1,    18,    24,    25,    26,    -1,    18,    24,    25,
+      -1,    -1,    -1,    24,    25,    61,    42,    63,    64,    65,
+      46,    42,    -1,    -1,    -1,    -1,    42,    -1,    -1,    -1,
+      -1,    42,    -1,    -1,    -1,    61,    -1,    63,    64,    65,
+      61,    -1,    63,    64,    65,    61,    -1,    63,    64,    65,
+      61,    -1,    63,    64,    65,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    -1,    -1,    59,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    67,    68
   };
 
   const unsigned char
-  calcxx_parser::yytable_[] =
+  py_parser::yystos_[] =
   {
-      10,    12,    13,    14,    15,     3,    16,    17,    18,    19,
-      20,    21,    12,    13,    14,    15,     0,     4,    11,     5,
-       6,     4,     0,     9,     6,    14,    15
-  };
-
-  const signed char
-  calcxx_parser::yycheck_[] =
-  {
-       4,     4,     5,     6,     7,     0,     9,    11,    12,    13,
-      14,    15,     4,     5,     6,     7,    -1,     8,     3,    10,
-      11,     8,    -1,    10,    11,     6,     7
-  };
-
-  const unsigned char
-  calcxx_parser::yystos_[] =
-  {
-       0,    13,    14,     0,     8,    10,    11,    15,    16,    10,
-      16,     3,     4,     5,     6,     7,     9,    16,    16,    16,
-      16,    16
+       0,     4,     5,     9,    14,    18,    24,    25,    26,    42,
+      61,    63,    64,    65,    71,    72,    77,    78,    79,    80,
+      81,    84,    85,    86,    87,    91,    92,    93,    94,    95,
+      97,    98,    99,   100,   102,   104,   106,   107,   108,   109,
+     115,   116,   117,    63,    94,    86,    97,   115,     0,    73,
+      75,    14,    23,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    59,    67,    68,    82,    88,    22,     6,
+       8,    10,     9,    11,    12,    30,    31,    38,    39,    40,
+      41,    69,    96,    66,    43,    29,    24,    25,   101,   103,
+      26,    27,    34,    58,   105,   106,    46,   110,    14,    17,
+     110,    13,    14,    74,    76,    77,   116,    79,    78,    32,
+      89,    90,    91,    86,    92,    93,    94,    11,     9,    97,
+      98,    99,   100,    44,    45,   104,   106,   106,    18,    33,
+     111,    23,    83,    85,    22,     7,   102,   102,    17,    46,
+      91,   112,   113,   114,    63,    14,    91,    91,    91,    32,
+      17,    22,    91,   114
   };
 
   const unsigned char
-  calcxx_parser::yyr1_[] =
+  py_parser::yyr1_[] =
   {
-       0,    12,    13,    14,    14,    15,    16,    16,    16,    16,
-      16,    16,    16
+       0,    70,    71,    72,    72,    72,    73,    74,    74,    75,
+      75,    76,    76,    77,    78,    78,    79,    79,    80,    81,
+      81,    82,    82,    83,    84,    85,    85,    86,    86,    87,
+      87,    88,    88,    88,    88,    88,    88,    88,    88,    88,
+      88,    88,    88,    88,    89,    89,    90,    90,    91,    91,
+      92,    92,    93,    93,    94,    94,    95,    95,    96,    96,
+      96,    96,    96,    96,    96,    96,    96,    96,    96,    97,
+      97,    98,    98,    99,    99,   100,   101,   101,   101,   102,
+     102,   103,   103,   104,   104,   105,   105,   105,   105,   106,
+     106,   107,   107,   107,   108,   108,   109,   109,   110,   110,
+     111,   111,   111,   112,   112,   113,   113,   114,   114,   114,
+     115,   115,   115,   115,   116,   117
   };
 
   const unsigned char
-  calcxx_parser::yyr2_[] =
+  py_parser::yyr2_[] =
   {
-       0,     2,     2,     0,     2,     3,     3,     3,     3,     3,
-       3,     1,     1
+       0,     2,     2,     1,     1,     2,     2,     1,     1,     0,
+       2,     1,     1,     5,     1,     1,     1,     3,     1,     3,
+       2,     0,     3,     1,     2,     1,     2,     1,     1,     1,
+       3,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     2,     1,     3,     1,     5,
+       1,     3,     1,     3,     2,     1,     1,     3,     1,     1,
+       1,     1,     1,     1,     1,     1,     2,     1,     2,     1,
+       3,     1,     3,     1,     3,     2,     0,     3,     3,     1,
+       3,     1,     1,     1,     3,     1,     1,     1,     1,     2,
+       1,     1,     1,     1,     1,     3,     2,     3,     0,     2,
+       2,     2,     3,     1,     2,     1,     3,     1,     3,     2,
+       3,     1,     1,     1,     1,     2
   };
 
 
@@ -970,24 +1060,51 @@ namespace yy {
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a yyntokens_, nonterminals.
   const char*
-  const calcxx_parser::yytname_[] =
+  const py_parser::yytname_[] =
   {
-  "\"end of file\"", "error", "$undefined", "\":=\"", "\"-\"", "\"+\"",
-  "\"*\"", "\"/\"", "\"(\"", "\")\"", "\"identifier\"", "\"number\"",
-  "$accept", "unit", "assignments", "assignment", "exp", YY_NULLPTR
+  "\"end of file\"", "error", "$undefined", "\":=\"", "DEF", "PASS",
+  "\"if\"", "\"else\"", "\"or\"", "\"not\"", "\"and\"", "\"in\"", "\"is\"",
+  "ENDMARKER", "NEWLINE", "INDENT", "DEDENT", "\")\"", "\"(\"", "LSQB",
+  "RSQB", "\":\"", "\",\"", "\";\"", "\"+\"", "\"-\"", "\"*\"", "\"/\"",
+  "VBAR", "\"&\"", "\"<\"", "\">\"", "\"=\"", "\".\"", "\"%\"", "\"`\"",
+  "LBRACE", "RBRACE", "\"==\"", "\"!=\"", "\"<=\"", "\">=\"", "\"~\"",
+  "\"^\"", "\"<<\"", "\">>\"", "\"**\"", "\"+=\"", "\"-=\"", "\"*=\"",
+  "\"/=\"", "\"%=\"", "\"&=\"", "\"|=\"", "\"^=\"", "\"<<=\"", "\">>=\"",
+  "\"**+\"", "\"//\"", "\"//=\"", "\"@\"", "\"await\"", "\"async\"",
+  "\"name\"", "\"number\"", "\"string\"", "\"|\"", "\"@=\"", "\"**=\"",
+  "\"<>\"", "$accept", "unit", "single_input", "file_input",
+  "newline_or_stmt", "newline_stmt_seq", "stmt", "simple_stmt",
+  "small_stmt", "small_stmt_seq", "pass_stmt", "expr_stmt",
+  "assign_rhs_seq", "yeild_expr_or_testlist_star_expr", "star_expr",
+  "testlist_star_expr", "test_or_star", "test_or_star_seq", "augassign",
+  "testlist", "test_seq", "test", "or_test", "and_test", "not_test",
+  "comparison", "comp_op", "expr", "xor_expr", "and_expr", "shift_expr",
+  "shift_expr_seq", "arith_expr", "arith_op", "term", "term_op", "factor",
+  "factor_op", "power", "atom_expr", "trailer_seq", "trailer", "arglist",
+  "arglist_seq", "argument", "atom", "compound_stmt", "funcdef", YY_NULLPTR
   };
 
 #if YYDEBUG
-  const unsigned char
-  calcxx_parser::yyrline_[] =
+  const unsigned short int
+  py_parser::yyrline_[] =
   {
-       0,    44,    44,    47,    48,    51,    56,    57,    58,    59,
-      60,    61,    62
+       0,   156,   156,   164,   165,   166,   172,   177,   178,   184,
+     185,   203,   203,   209,   218,   219,   226,   227,   234,   246,
+     247,   253,   254,   260,   268,   276,   277,   282,   282,   287,
+     288,   295,   295,   295,   295,   295,   295,   295,   295,   295,
+     296,   296,   296,   296,   303,   304,   311,   312,   324,   325,
+     331,   332,   338,   339,   345,   346,   353,   354,   363,   364,
+     365,   366,   367,   368,   369,   370,   371,   372,   373,   380,
+     381,   387,   388,   394,   395,   401,   410,   411,   412,   423,
+     424,   428,   428,   434,   435,   439,   439,   439,   439,   445,
+     446,   450,   450,   450,   456,   457,   463,   464,   470,   471,
+     477,   478,   479,   486,   487,   494,   495,   513,   514,   515,
+     546,   547,   548,   549,   563,   569
   };
 
   // Print the state stack on the debug stream.
   void
-  calcxx_parser::yystack_print_ ()
+  py_parser::yystack_print_ ()
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
@@ -1000,7 +1117,7 @@ namespace yy {
 
   // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
-  calcxx_parser::yy_reduce_print_ (int yyrule)
+  py_parser::yy_reduce_print_ (int yyrule)
   {
     unsigned int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
@@ -1015,14 +1132,13 @@ namespace yy {
 #endif // YYDEBUG
 
 
+#line 4 "py_parser.yy" // lalr1.cc:1167
+} // py
+#line 1138 "py_parser.cc" // lalr1.cc:1167
+#line 577 "py_parser.yy" // lalr1.cc:1168
 
-} // yy
-#line 1021 "calc++-parser.cc" // lalr1.cc:1167
-#line 63 "calc++-parser.yy" // lalr1.cc:1168
-
-void
-yy::calcxx_parser::error (const location_type& l,
+void py::py_parser::error (const location_type& l,
                           const std::string& m)
 {
-  driver.error (l, m);
+    //driver.error (l, m);
 }

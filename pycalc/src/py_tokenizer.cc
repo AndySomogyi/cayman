@@ -8,7 +8,8 @@
 #include <cstring>
 
 #include "py_tokenizer.h"
-#include "errcode.h"
+
+#include "py_errcode.h"
 
 #include "py_private.h"
 

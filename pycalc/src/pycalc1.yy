@@ -118,6 +118,7 @@ ASYNC "async"
 %left "&" "^" "|"
 %left "and" "or"
 %left ","
+%left "**"
 
 %right "="  "+="  "-="  "*="   "/="  "<<="  ">>="  "%="   "&="  "^="  "|="
 
@@ -144,115 +145,10 @@ ASYNC "async"
 
 
 
-%start unit;
-
-unit:
-    single_input
-    file_input
-;
+%start arith_expr;
 
 
-// *python3
-// single_input: NEWLINE | simple_stmt | compound_stmt NEWLINE
-single_input:
-    NEWLINE
-    | simple_stmt
-    | compound_stmt NEWLINE
-;
 
-// *python3
-// file_input: (NEWLINE | stmt)* ENDMARKER
-file_input:
-     newline_stmt_seq ENDMARKER
-;
-
-// (NEWLINE | stmt)
-newline_or_stmt:
-    NEWLINE
-    | stmt
-    ;
-
-// a sequence of zero or more newline_stmt
-// (NEWLINE | stmt)*
-newline_stmt_seq:
-    %empty
-    | newline_stmt_seq newline_or_stmt
-;
-
-
-// NEWLINE*
-// If components in a rule is empty, it means that result can match the empty string.
-// For example, here is how to define a comma-separated sequence of zero or more exp groupings:
-// To define a sequence of zero or more NEWLINES, we need two rules:
-
-// newline_seq:
-//    %empty
-//    | newline_seq NEWLINE
-//;
-
-
-// *python3
-// stmt: simple_stmt | compound_stmt
-stmt:
-    simple_stmt | compound_stmt
-    ;
-
-// *python simple_stmt
-// simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
-simple_stmt:
-    small_stmt_seq  NEWLINE
-    small_stmt_seq  ";" NEWLINE
-;
-
-
-// *python3 small_stmt
-// small_stmt: (expr_stmt | del_stmt | pass_stmt | flow_stmt |
-//              import_stmt | global_stmt | nonlocal_stmt | assert_stmt)
-small_stmt:
-    pass_stmt
-    | expr_stmt
-;
-
-// sequence of small statments, a single small_stmt, followed by
-// an optional sequence of (';' small_stmt)
-// small_stmt (';' small_stmt)*
-small_stmt_seq:
-    small_stmt
-    | small_stmt_seq SEMI small_stmt
-;
-
-
-// *python pass_stmt
-// pass_stmt: 'pass'
-pass_stmt:
-    PASS
-;
-
-// *python3 expr_stmt
-// expr_stmt: testlist_star_expr (augassign (yield_expr|testlist) |
-//                      ('=' (yield_expr|testlist_star_expr))*)
-// valid examples:
-// a = 1
-// a,b = 1,2
-// a,b = c,d = 1,2
-// result of expr_stmt can be either an Expr or Assign or ???
-expr_stmt:
-    testlist_star_expr augassign testlist
-    | testlist_star_expr assign_rhs_seq
-;
-
-
-// ('=' (yield_expr|testlist_star_expr))*
-assign_rhs_seq:
-    %empty
-    | assign_rhs_seq "=" yeild_expr_or_testlist_star_expr
-    ;
-    
-// yield_expr|testlist_star_expr
-// placeholder for yeild expressions
-yeild_expr_or_testlist_star_expr:
-    testlist_star_expr
-;
 
 // *python3
 // star_expr: '*' expr
@@ -262,49 +158,11 @@ star_expr:
     "*" expr
     ;
 
-// *python3
-// testlist_star_expr: (test|star_expr) (',' (test|star_expr))* [',']
-// the first part, "(test|star_expr) (',' (test|star_expr))*" is
-// the test_or_star_seq, and followed by an optional ","
-testlist_star_expr:
-    test_or_star_seq
-    | test_or_star_seq ","
-    ;
-
 // (test|star_expr)
 test_or_star:
     test | star_expr
     ;
 
-// (test|star_expr) (',' (test|star_expr))* 
-test_or_star_seq:
-    test_or_star
-    | test_or_star_seq "," test_or_star
-    ;
-
-// *python3
-// augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' |
-//             '<<=' | '>>=' | '**=' | '//=')
-augassign:
-    "+=" | "-=" | "*=" | "@=" | "/=" | "%=" | "&=" | "|=" | "^=" |
-             "<<=" | ">>=" | "**=" | "//="
-    ;
-
-
-// *python3 testlist
-// testlist: test (',' test)* [',']
-testlist:
-    test_seq 
-    | test_seq ","
-;
-
-// test_seq comma_opt
-
-// sequence of one or more test statments
-test_seq:
-    test
-    | test_seq "," test
-;
 
 
 //comma_opt:
@@ -415,12 +273,13 @@ shift_expr_seq:
 // arith_expr: term (('+'|'-') term)*
 arith_expr:
     term
-    | arith_expr arith_op term
+    | arith_expr "+" term
+    | arith_expr "-" term
     ;
 
-arith_op:
-    "+" | "-"
-    ;
+//arith_op:
+//    "+" | "-"
+//    ;
 
 // *python3 term
 // term: factor (('*'|'/'|'%'|'//') factor)*
@@ -444,20 +303,20 @@ factor_op:
     "+" | "-" | "~"
     ;
 
+// power 		: atom trailer* ( options {greedy=true;}:DOUBLESTAR factor )? ;
 // *python3 power:
 // power: atom_expr ['**' factor]
 power:
-    atom_expr
-    | atom_expr "**" factor 
+    atom_expr 
+    | atom_expr "**" factor
     ;
+
 
 // *python3 atom_expr
 // atom_expr: [AWAIT] atom trailer*
 atom_expr:
     atom trailer_seq
-    | "await" atom trailer_seq
     ;
-
 
 // trailer*
 trailer_seq:
@@ -468,11 +327,14 @@ trailer_seq:
 // *python3 trailer:
 // trailer: '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
 trailer:
-    "." NAME
-    | "(" ")"
-    | "(" arglist ")"
+"." NAME
+| "(" ")"
+| "(" arglist ")"
     ;
 
+
+
+// arglist: argument (',' argument)*  [',']
 
 // *python3 arglist
 // arglist: argument (',' argument)*  [',']
@@ -482,8 +344,7 @@ arglist:
     ;
 
 
-// sequence of one or more 'argument', comma separated.
-// argument (',' argument)*  
+// arglist: argument (',' argument)*  [',']    
 arglist_seq:
    argument
    | arglist_seq "," argument
@@ -508,24 +369,9 @@ argument:
     | test "=" test
     | "**" test
     ;
-
-
-
-
-//comp_iter: comp_for | comp_if
-//comp_for: 'for' exprlist 'in' or_test [comp_iter]
-//comp_if: 'if' test_nocond [comp_iter]
-
-
-
-
-// comp_iter: comp_for | comp_if
-
-// comp_for: 'for' exprlist 'in' or_test [comp_iter]
-
-// comp_if: 'if' old_test [comp_iter]
-
-
+//    | test "=" test
+//    | "**" test
+//    ;
 
 
 // *python3 atom
@@ -533,36 +379,12 @@ argument:
 //        '[' [testlist_comp] ']' |
 //        '{' [dictorsetmaker] '}' |
 //        NAME | NUMBER | STRING+ | '...' | 'None' | 'True' | 'False')
-
-
-
 atom:
 "(" test_or_star ")" {$$ = 0}
     | NAME       { $$ = 0 }
     | NUMBER { $$ = 0 } 
     | STRING { $$ = 0 }
 ;
-
-
-// *python3
-// testlist_comp: (test|star_expr) ( comp_for | (',' (test|star_expr))* [','] )
-
-
-
-
-// * python compound_stmt
-// compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef
-//     | classdef | decorated
-compound_stmt:
-    funcdef
-;
-
-// * python funcdef
-// funcdef: 'def' NAME parameters ':' suite
-funcdef:
-    DEF NAME
-;
-    
 
 
 
