@@ -5,8 +5,13 @@
  *      Author: andy
  */
 
-#ifndef PYCALC_SRC_PARSER_H_
-#define PYCALC_SRC_PARSER_H_
+#ifndef _PARSER_H_
+#define _PARSER_H_
+
+#include <string>
+#include <ostream>
+#include "Ast.h"
+
 
 namespace py
 {
@@ -19,7 +24,24 @@ class Parser
 {
 public:
 	Parser();
+
+	/**
+	 * Creates a parser from an input path.
+	 */
+	Parser(const std::string& inputUri);
 	virtual ~Parser();
+
+	void SetDebugLevel(int dbgLevel);
+
+	int GetDebugLevel() const;
+
+	void SetDebugStream(std::ostream& dbgStream);
+
+
+	AstPtr Parse();
+
+
+	class ParserContext *ctx;
 };
 
 } /* namespace py */

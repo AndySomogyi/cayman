@@ -60,6 +60,10 @@ char * PyTokenizer_RestoreEncoding(tok_state* tok, int len, int *offset);
 
 int PyTokenizer_Test(const char* fname);
 
+void tok_dump(int type, char *start, char *end);
+
+#define PyPARSE_DONT_IMPLY_DEDENT	0x0002
+
 
 
 #endif /* !Py_TOKENIZER_H */

@@ -1,6 +1,7 @@
-#include <stdio.h>
+#include <cstdio>
+#include "Parser.h"
 
-#include "py_tokenizer.h"
+using namespace py;
 
 int main(int argc, const char** argv)
 {
@@ -9,5 +10,7 @@ int main(int argc, const char** argv)
 		return 0;
 	}
 
-	PyTokenizer_Test(argv[1]);
+	Parser parser(argv[1]);
+
+	AstPtr ast = parser.Parse();
 }

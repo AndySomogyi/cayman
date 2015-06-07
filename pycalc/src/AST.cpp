@@ -10,13 +10,13 @@
 namespace py
 {
 
-AST::AST()
+Ast::Ast()
 {
 	// TODO Auto-generated constructor stub
 
 }
 
-AST::~AST()
+Ast::~Ast()
 {
 	// TODO Auto-generated destructor stub
 }

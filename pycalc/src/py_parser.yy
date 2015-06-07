@@ -3,25 +3,27 @@
 %defines
 %define api.namespace {py}
 %define parser_class_name {py_parser}
-%define api.token.constructor
-%define api.value.type variant
+%define api.token.constructor {false}
+%define api.value.type {AstNode*}
 %define parse.assert
+%define api.token.prefix {}
+
 %code requires
 {
 # include <string>
 
     namespace py {
     class ParserContext;
-    class ASTNode;
+    class AstNode;
     }
 }
 // The parsing context.
-%param { ParserContext& context }
+%param { ParserContext& ctx }
 %locations
 %initial-action
 {
   // Initialize the initial location.
-    @$.begin.filename = @$.end.filename = &context.GetFilename();
+    @$.begin.filename = @$.end.filename = &ctx.fileName;
 };
 %define parse.trace
 %define parse.error verbose
@@ -30,7 +32,7 @@
     #include "ParserContext.h"
 }
 
-%define api.token.prefix {TOK_}
+
 %token
   END  0  "end of file"
   ASSIGN  ":="
@@ -104,12 +106,15 @@ RIGHTSHIFTEQUAL ">>="
   AT "@"
 AWAIT "await"
 ASYNC "async"
+NAME
+NUMBER
+STRING
 ;
 
-%token <std::string> NAME "name"
-%token <int> NUMBER "number"
-%token <std::string> STRING "string"
-%type <ASTNode*> atom
+//%token <std::string> NAME "name"
+//%token <int> NUMBER "number"
+//%token <std::string> STRING "string"
+//%type <AstNode*> atom
 
 
 // left associativity
@@ -134,7 +139,8 @@ ASYNC "async"
  //Assignment	 right to left	 =  +=  -=  *=   /=  <<=  >>=  %=   &=  ^=  |=
  //Comma	 left to right	 ,
 
-%printer { yyoutput << $$; } <*>;
+%printer { yyoutput << $$; } <>
+
 %%
 
 
@@ -578,5 +584,5 @@ funcdef:
 void py::py_parser::error (const location_type& l,
                           const std::string& m)
 {
-    //driver.error (l, m);
+    ctx.Error(l, m);
 }

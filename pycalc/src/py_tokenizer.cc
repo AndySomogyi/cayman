@@ -28,6 +28,8 @@ static struct tok_state *tok_new(void);
 static int tok_nextc(struct tok_state *tok);
 static void tok_backup(struct tok_state *tok, int c);
 
+using namespace pytoken;
+
 /* Token names */
 
 const char *_PyParser_TokenNames[] = {
@@ -1770,7 +1772,7 @@ tok_dump(int type, char *start, char *end)
 }
 
 
-#define PyPARSE_DONT_IMPLY_DEDENT	0x0002
+
 
 int PyTokenizer_Test(const char* fname)
 {

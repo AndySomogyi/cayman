@@ -1,27 +1,24 @@
 /*
- * Lexer.cpp
+ * AstNodeFactory.cpp
  *
- *  Created on: Jun 5, 2015
+ *  Created on: Jun 6, 2015
  *      Author: andy
  */
 
-#include <Lexer.h>
+#include <AstNodeFactory.h>
 
 namespace py
 {
 
-Lexer::Lexer()
+AstNodeFactory::AstNodeFactory()
 {
 	// TODO Auto-generated constructor stub
 
 }
 
-Lexer::~Lexer()
+AstNodeFactory::~AstNodeFactory()
 {
 	// TODO Auto-generated destructor stub
 }
-
-
-
 
 } /* namespace py */

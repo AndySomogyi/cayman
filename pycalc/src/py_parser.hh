@@ -40,13 +40,13 @@
 #ifndef YY_YY_PY_PARSER_HH_INCLUDED
 # define YY_YY_PY_PARSER_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 10 "py_parser.yy" // lalr1.cc:392
+#line 12 "py_parser.yy" // lalr1.cc:392
 
 # include <string>
 
     namespace py {
     class ParserContext;
-    class ASTNode;
+    class AstNode;
     }
 
 #line 53 "py_parser.hh" // lalr1.cc:392
@@ -59,11 +59,6 @@
 # include <vector>
 # include "stack.hh"
 # include "location.hh"
-#include <typeinfo>
-#ifndef YYASSERT
-# include <cassert>
-# define YYASSERT assert
-#endif
 
 
 #ifndef YY_ATTRIBUTE
@@ -126,163 +121,10 @@
 
 #line 4 "py_parser.yy" // lalr1.cc:392
 namespace py {
-#line 130 "py_parser.hh" // lalr1.cc:392
+#line 125 "py_parser.hh" // lalr1.cc:392
 
 
 
-  /// A char[S] buffer to store and retrieve objects.
-  ///
-  /// Sort of a variant, but does not keep track of the nature
-  /// of the stored data, since that knowledge is available
-  /// via the current state.
-  template <size_t S>
-  struct variant
-  {
-    /// Type of *this.
-    typedef variant<S> self_type;
-
-    /// Empty construction.
-    variant ()
-      : yytypeid_ (YY_NULLPTR)
-    {}
-
-    /// Construct and fill.
-    template <typename T>
-    variant (const T& t)
-      : yytypeid_ (&typeid (T))
-    {
-      YYASSERT (sizeof (T) <= S);
-      new (yyas_<T> ()) T (t);
-    }
-
-    /// Destruction, allowed only if empty.
-    ~variant ()
-    {
-      YYASSERT (!yytypeid_);
-    }
-
-    /// Instantiate an empty \a T in here.
-    template <typename T>
-    T&
-    build ()
-    {
-      YYASSERT (!yytypeid_);
-      YYASSERT (sizeof (T) <= S);
-      yytypeid_ = & typeid (T);
-      return *new (yyas_<T> ()) T;
-    }
-
-    /// Instantiate a \a T in here from \a t.
-    template <typename T>
-    T&
-    build (const T& t)
-    {
-      YYASSERT (!yytypeid_);
-      YYASSERT (sizeof (T) <= S);
-      yytypeid_ = & typeid (T);
-      return *new (yyas_<T> ()) T (t);
-    }
-
-    /// Accessor to a built \a T.
-    template <typename T>
-    T&
-    as ()
-    {
-      YYASSERT (*yytypeid_ == typeid (T));
-      YYASSERT (sizeof (T) <= S);
-      return *yyas_<T> ();
-    }
-
-    /// Const accessor to a built \a T (for %printer).
-    template <typename T>
-    const T&
-    as () const
-    {
-      YYASSERT (*yytypeid_ == typeid (T));
-      YYASSERT (sizeof (T) <= S);
-      return *yyas_<T> ();
-    }
-
-    /// Swap the content with \a other, of same type.
-    ///
-    /// Both variants must be built beforehand, because swapping the actual
-    /// data requires reading it (with as()), and this is not possible on
-    /// unconstructed variants: it would require some dynamic testing, which
-    /// should not be the variant's responsability.
-    /// Swapping between built and (possibly) non-built is done with
-    /// variant::move ().
-    template <typename T>
-    void
-    swap (self_type& other)
-    {
-      YYASSERT (yytypeid_);
-      YYASSERT (*yytypeid_ == *other.yytypeid_);
-      std::swap (as<T> (), other.as<T> ());
-    }
-
-    /// Move the content of \a other to this.
-    ///
-    /// Destroys \a other.
-    template <typename T>
-    void
-    move (self_type& other)
-    {
-      build<T> ();
-      swap<T> (other);
-      other.destroy<T> ();
-    }
-
-    /// Copy the content of \a other to this.
-    template <typename T>
-    void
-    copy (const self_type& other)
-    {
-      build<T> (other.as<T> ());
-    }
-
-    /// Destroy the stored \a T.
-    template <typename T>
-    void
-    destroy ()
-    {
-      as<T> ().~T ();
-      yytypeid_ = YY_NULLPTR;
-    }
-
-  private:
-    /// Prohibit blind copies.
-    self_type& operator=(const self_type&);
-    variant (const self_type&);
-
-    /// Accessor to raw memory as \a T.
-    template <typename T>
-    T*
-    yyas_ ()
-    {
-      void *yyp = yybuffer_.yyraw;
-      return static_cast<T*> (yyp);
-     }
-
-    /// Const accessor to raw memory as \a T.
-    template <typename T>
-    const T*
-    yyas_ () const
-    {
-      const void *yyp = yybuffer_.yyraw;
-      return static_cast<const T*> (yyp);
-     }
-
-    union
-    {
-      /// Strongest alignment constraints.
-      long double yyalign_me;
-      /// A buffer large enough to store any of the semantic values.
-      char yyraw[S];
-    } yybuffer_;
-
-    /// Whether the content is built: if defined, the name of the stored type.
-    const std::type_info *yytypeid_;
-  };
 
 
   /// A Bison parser.
@@ -290,22 +132,8 @@ namespace py {
   {
   public:
 #ifndef YYSTYPE
-    /// An auxiliary type to compute the largest semantic type.
-    union union_type
-    {
-      // atom
-      char dummy1[sizeof(ASTNode*)];
-
-      // "number"
-      char dummy2[sizeof(int)];
-
-      // "name"
-      // "string"
-      char dummy3[sizeof(std::string)];
-};
-
     /// Symbol semantic values.
-    typedef variant<sizeof(union_type)> semantic_type;
+    typedef AstNode* semantic_type;
 #else
     typedef YYSTYPE semantic_type;
 #endif
@@ -324,70 +152,70 @@ namespace py {
     {
       enum yytokentype
       {
-        TOK_END = 0,
-        TOK_ASSIGN = 258,
-        TOK_DEF = 259,
-        TOK_PASS = 260,
-        TOK_IF = 261,
-        TOK_ELSE = 262,
-        TOK_OR = 263,
-        TOK_NOT = 264,
-        TOK_AND = 265,
-        TOK_IN = 266,
-        TOK_IS = 267,
-        TOK_ENDMARKER = 268,
-        TOK_NEWLINE = 269,
-        TOK_INDENT = 270,
-        TOK_DEDENT = 271,
-        TOK_LPAR = 272,
-        TOK_RPAR = 273,
-        TOK_LSQB = 274,
-        TOK_RSQB = 275,
-        TOK_COLON = 276,
-        TOK_COMMA = 277,
-        TOK_SEMI = 278,
-        TOK_PLUS = 279,
-        TOK_MINUS = 280,
-        TOK_STAR = 281,
-        TOK_SLASH = 282,
-        TOK_VBAR = 283,
-        TOK_AMPER = 284,
-        TOK_LESS = 285,
-        TOK_GREATER = 286,
-        TOK_EQUAL = 287,
-        TOK_DOT = 288,
-        TOK_PERCENT = 289,
-        TOK_BACKQUOTE = 290,
-        TOK_LBRACE = 291,
-        TOK_RBRACE = 292,
-        TOK_EQEQUAL = 293,
-        TOK_NOTEQUAL = 294,
-        TOK_LESSEQUAL = 295,
-        TOK_GREATEREQUAL = 296,
-        TOK_TILDE = 297,
-        TOK_CIRCUMFLEX = 298,
-        TOK_LEFTSHIFT = 299,
-        TOK_RIGHTSHIFT = 300,
-        TOK_DOUBLESTAR = 301,
-        TOK_PLUSEQUAL = 302,
-        TOK_MINEQUAL = 303,
-        TOK_STAREQUAL = 304,
-        TOK_SLASHEQUAL = 305,
-        TOK_PERCENTEQUAL = 306,
-        TOK_AMPEREQUAL = 307,
-        TOK_VBAREQUAL = 308,
-        TOK_CIRCUMFLEXEQUAL = 309,
-        TOK_LEFTSHIFTEQUAL = 310,
-        TOK_RIGHTSHIFTEQUAL = 311,
-        TOK_DOUBLESTAREQUAL = 312,
-        TOK_DOUBLESLASH = 313,
-        TOK_DOUBLESLASHEQUAL = 314,
-        TOK_AT = 315,
-        TOK_AWAIT = 316,
-        TOK_ASYNC = 317,
-        TOK_NAME = 318,
-        TOK_NUMBER = 319,
-        TOK_STRING = 320
+        END = 0,
+        ASSIGN = 258,
+        DEF = 259,
+        PASS = 260,
+        IF = 261,
+        ELSE = 262,
+        OR = 263,
+        NOT = 264,
+        AND = 265,
+        IN = 266,
+        IS = 267,
+        ENDMARKER = 268,
+        NEWLINE = 269,
+        INDENT = 270,
+        DEDENT = 271,
+        LPAR = 272,
+        RPAR = 273,
+        LSQB = 274,
+        RSQB = 275,
+        COLON = 276,
+        COMMA = 277,
+        SEMI = 278,
+        PLUS = 279,
+        MINUS = 280,
+        STAR = 281,
+        SLASH = 282,
+        VBAR = 283,
+        AMPER = 284,
+        LESS = 285,
+        GREATER = 286,
+        EQUAL = 287,
+        DOT = 288,
+        PERCENT = 289,
+        BACKQUOTE = 290,
+        LBRACE = 291,
+        RBRACE = 292,
+        EQEQUAL = 293,
+        NOTEQUAL = 294,
+        LESSEQUAL = 295,
+        GREATEREQUAL = 296,
+        TILDE = 297,
+        CIRCUMFLEX = 298,
+        LEFTSHIFT = 299,
+        RIGHTSHIFT = 300,
+        DOUBLESTAR = 301,
+        PLUSEQUAL = 302,
+        MINEQUAL = 303,
+        STAREQUAL = 304,
+        SLASHEQUAL = 305,
+        PERCENTEQUAL = 306,
+        AMPEREQUAL = 307,
+        VBAREQUAL = 308,
+        CIRCUMFLEXEQUAL = 309,
+        LEFTSHIFTEQUAL = 310,
+        RIGHTSHIFTEQUAL = 311,
+        DOUBLESTAREQUAL = 312,
+        DOUBLESLASH = 313,
+        DOUBLESLASHEQUAL = 314,
+        AT = 315,
+        AWAIT = 316,
+        ASYNC = 317,
+        NAME = 318,
+        NUMBER = 319,
+        STRING = 320
       };
     };
 
@@ -421,16 +249,9 @@ namespace py {
       /// Copy constructor.
       basic_symbol (const basic_symbol& other);
 
-      /// Constructor for valueless symbols, and symbols from each type.
-
-  basic_symbol (typename Base::kind_type t, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const ASTNode* v, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
-
+      /// Constructor for valueless symbols.
+      basic_symbol (typename Base::kind_type t,
+                    const location_type& l);
 
       /// Constructor for symbols with semantic value.
       basic_symbol (typename Base::kind_type t,
@@ -497,266 +318,9 @@ namespace py {
     /// "External" symbols: returned by the scanner.
     typedef basic_symbol<by_type> symbol_type;
 
-    // Symbol constructors declarations.
-    static inline
-    symbol_type
-    make_END (const location_type& l);
-
-    static inline
-    symbol_type
-    make_ASSIGN (const location_type& l);
-
-    static inline
-    symbol_type
-    make_DEF (const location_type& l);
-
-    static inline
-    symbol_type
-    make_PASS (const location_type& l);
-
-    static inline
-    symbol_type
-    make_IF (const location_type& l);
-
-    static inline
-    symbol_type
-    make_ELSE (const location_type& l);
-
-    static inline
-    symbol_type
-    make_OR (const location_type& l);
-
-    static inline
-    symbol_type
-    make_NOT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_AND (const location_type& l);
-
-    static inline
-    symbol_type
-    make_IN (const location_type& l);
-
-    static inline
-    symbol_type
-    make_IS (const location_type& l);
-
-    static inline
-    symbol_type
-    make_ENDMARKER (const location_type& l);
-
-    static inline
-    symbol_type
-    make_NEWLINE (const location_type& l);
-
-    static inline
-    symbol_type
-    make_INDENT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_DEDENT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_LPAR (const location_type& l);
-
-    static inline
-    symbol_type
-    make_RPAR (const location_type& l);
-
-    static inline
-    symbol_type
-    make_LSQB (const location_type& l);
-
-    static inline
-    symbol_type
-    make_RSQB (const location_type& l);
-
-    static inline
-    symbol_type
-    make_COLON (const location_type& l);
-
-    static inline
-    symbol_type
-    make_COMMA (const location_type& l);
-
-    static inline
-    symbol_type
-    make_SEMI (const location_type& l);
-
-    static inline
-    symbol_type
-    make_PLUS (const location_type& l);
-
-    static inline
-    symbol_type
-    make_MINUS (const location_type& l);
-
-    static inline
-    symbol_type
-    make_STAR (const location_type& l);
-
-    static inline
-    symbol_type
-    make_SLASH (const location_type& l);
-
-    static inline
-    symbol_type
-    make_VBAR (const location_type& l);
-
-    static inline
-    symbol_type
-    make_AMPER (const location_type& l);
-
-    static inline
-    symbol_type
-    make_LESS (const location_type& l);
-
-    static inline
-    symbol_type
-    make_GREATER (const location_type& l);
-
-    static inline
-    symbol_type
-    make_EQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_DOT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_PERCENT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_BACKQUOTE (const location_type& l);
-
-    static inline
-    symbol_type
-    make_LBRACE (const location_type& l);
-
-    static inline
-    symbol_type
-    make_RBRACE (const location_type& l);
-
-    static inline
-    symbol_type
-    make_EQEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_NOTEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_LESSEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_GREATEREQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_TILDE (const location_type& l);
-
-    static inline
-    symbol_type
-    make_CIRCUMFLEX (const location_type& l);
-
-    static inline
-    symbol_type
-    make_LEFTSHIFT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_RIGHTSHIFT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_DOUBLESTAR (const location_type& l);
-
-    static inline
-    symbol_type
-    make_PLUSEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_MINEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_STAREQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_SLASHEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_PERCENTEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_AMPEREQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_VBAREQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_CIRCUMFLEXEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_LEFTSHIFTEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_RIGHTSHIFTEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_DOUBLESTAREQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_DOUBLESLASH (const location_type& l);
-
-    static inline
-    symbol_type
-    make_DOUBLESLASHEQUAL (const location_type& l);
-
-    static inline
-    symbol_type
-    make_AT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_AWAIT (const location_type& l);
-
-    static inline
-    symbol_type
-    make_ASYNC (const location_type& l);
-
-    static inline
-    symbol_type
-    make_NAME (const std::string& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_NUMBER (const int& v, const location_type& l);
-
-    static inline
-    symbol_type
-    make_STRING (const std::string& v, const location_type& l);
-
 
     /// Build a parser object.
-    py_parser (ParserContext& context_yyarg);
+    py_parser (ParserContext& ctx_yyarg);
     virtual ~py_parser ();
 
     /// Parse.
@@ -816,7 +380,7 @@ namespace py {
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token number \a t to a symbol number.
-    static token_number_type yytranslate_ (token_type t);
+    static token_number_type yytranslate_ (int t);
 
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -969,693 +533,13 @@ namespace py {
 
 
     // User arguments.
-    ParserContext& context;
+    ParserContext& ctx;
   };
-
-  // Symbol number corresponding to token number t.
-  inline
-  py_parser::token_number_type
-  py_parser::yytranslate_ (token_type t)
-  {
-    static
-    const token_number_type
-    translate_table[] =
-    {
-     0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,    66,    67,    68,    69
-    };
-    const unsigned int user_token_number_max_ = 324;
-    const token_number_type undef_token_ = 2;
-
-    if (static_cast<int>(t) <= yyeof_)
-      return yyeof_;
-    else if (static_cast<unsigned int> (t) <= user_token_number_max_)
-      return translate_table[t];
-    else
-      return undef_token_;
-  }
-
-  inline
-  py_parser::syntax_error::syntax_error (const location_type& l, const std::string& m)
-    : std::runtime_error (m)
-    , location (l)
-  {}
-
-  // basic_symbol.
-  template <typename Base>
-  inline
-  py_parser::basic_symbol<Base>::basic_symbol ()
-    : value ()
-  {}
-
-  template <typename Base>
-  inline
-  py_parser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
-    : Base (other)
-    , value ()
-    , location (other.location)
-  {
-      switch (other.type_get ())
-    {
-      case 115: // atom
-        value.copy< ASTNode* > (other.value);
-        break;
-
-      case 64: // "number"
-        value.copy< int > (other.value);
-        break;
-
-      case 63: // "name"
-      case 65: // "string"
-        value.copy< std::string > (other.value);
-        break;
-
-      default:
-        break;
-    }
-
-  }
-
-
-  template <typename Base>
-  inline
-  py_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
-    : Base (t)
-    , value ()
-    , location (l)
-  {
-    (void) v;
-      switch (this->type_get ())
-    {
-      case 115: // atom
-        value.copy< ASTNode* > (v);
-        break;
-
-      case 64: // "number"
-        value.copy< int > (v);
-        break;
-
-      case 63: // "name"
-      case 65: // "string"
-        value.copy< std::string > (v);
-        break;
-
-      default:
-        break;
-    }
-}
-
-
-  // Implementation of basic_symbol constructor for each type.
-
-  template <typename Base>
-  py_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
-    : Base (t)
-    , value ()
-    , location (l)
-  {}
-
-  template <typename Base>
-  py_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const ASTNode* v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
-  py_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const int v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
-  py_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-
-  template <typename Base>
-  inline
-  py_parser::basic_symbol<Base>::~basic_symbol ()
-  {
-    clear ();
-  }
-
-  template <typename Base>
-  inline
-  void
-  py_parser::basic_symbol<Base>::clear ()
-  {
-    // User destructor.
-    symbol_number_type yytype = this->type_get ();
-    basic_symbol<Base>& yysym = *this;
-    (void) yysym;
-    switch (yytype)
-    {
-   default:
-      break;
-    }
-
-    // Type destructor.
-    switch (yytype)
-    {
-      case 115: // atom
-        value.template destroy< ASTNode* > ();
-        break;
-
-      case 64: // "number"
-        value.template destroy< int > ();
-        break;
-
-      case 63: // "name"
-      case 65: // "string"
-        value.template destroy< std::string > ();
-        break;
-
-      default:
-        break;
-    }
-
-    Base::clear ();
-  }
-
-  template <typename Base>
-  inline
-  bool
-  py_parser::basic_symbol<Base>::empty () const
-  {
-    return Base::type_get () == empty_symbol;
-  }
-
-  template <typename Base>
-  inline
-  void
-  py_parser::basic_symbol<Base>::move (basic_symbol& s)
-  {
-    super_type::move(s);
-      switch (this->type_get ())
-    {
-      case 115: // atom
-        value.move< ASTNode* > (s.value);
-        break;
-
-      case 64: // "number"
-        value.move< int > (s.value);
-        break;
-
-      case 63: // "name"
-      case 65: // "string"
-        value.move< std::string > (s.value);
-        break;
-
-      default:
-        break;
-    }
-
-    location = s.location;
-  }
-
-  // by_type.
-  inline
-  py_parser::by_type::by_type ()
-    : type (empty_symbol)
-  {}
-
-  inline
-  py_parser::by_type::by_type (const by_type& other)
-    : type (other.type)
-  {}
-
-  inline
-  py_parser::by_type::by_type (token_type t)
-    : type (yytranslate_ (t))
-  {}
-
-  inline
-  void
-  py_parser::by_type::clear ()
-  {
-    type = empty_symbol;
-  }
-
-  inline
-  void
-  py_parser::by_type::move (by_type& that)
-  {
-    type = that.type;
-    that.clear ();
-  }
-
-  inline
-  int
-  py_parser::by_type::type_get () const
-  {
-    return type;
-  }
-
-  inline
-  py_parser::token_type
-  py_parser::by_type::token () const
-  {
-    // YYTOKNUM[NUM] -- (External) token number corresponding to the
-    // (internal) symbol number NUM (which must be that of a token).  */
-    static
-    const unsigned short int
-    yytoken_number_[] =
-    {
-       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
-     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
-     315,   316,   317,   318,   319,   320,   321,   322,   323,   324
-    };
-    return static_cast<token_type> (yytoken_number_[type]);
-  }
-  // Implementation of make_symbol for each symbol type.
-  py_parser::symbol_type
-  py_parser::make_END (const location_type& l)
-  {
-    return symbol_type (token::TOK_END, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_ASSIGN (const location_type& l)
-  {
-    return symbol_type (token::TOK_ASSIGN, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_DEF (const location_type& l)
-  {
-    return symbol_type (token::TOK_DEF, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_PASS (const location_type& l)
-  {
-    return symbol_type (token::TOK_PASS, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_IF (const location_type& l)
-  {
-    return symbol_type (token::TOK_IF, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_ELSE (const location_type& l)
-  {
-    return symbol_type (token::TOK_ELSE, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_OR (const location_type& l)
-  {
-    return symbol_type (token::TOK_OR, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_NOT (const location_type& l)
-  {
-    return symbol_type (token::TOK_NOT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_AND (const location_type& l)
-  {
-    return symbol_type (token::TOK_AND, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_IN (const location_type& l)
-  {
-    return symbol_type (token::TOK_IN, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_IS (const location_type& l)
-  {
-    return symbol_type (token::TOK_IS, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_ENDMARKER (const location_type& l)
-  {
-    return symbol_type (token::TOK_ENDMARKER, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_NEWLINE (const location_type& l)
-  {
-    return symbol_type (token::TOK_NEWLINE, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_INDENT (const location_type& l)
-  {
-    return symbol_type (token::TOK_INDENT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_DEDENT (const location_type& l)
-  {
-    return symbol_type (token::TOK_DEDENT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_LPAR (const location_type& l)
-  {
-    return symbol_type (token::TOK_LPAR, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_RPAR (const location_type& l)
-  {
-    return symbol_type (token::TOK_RPAR, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_LSQB (const location_type& l)
-  {
-    return symbol_type (token::TOK_LSQB, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_RSQB (const location_type& l)
-  {
-    return symbol_type (token::TOK_RSQB, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_COLON (const location_type& l)
-  {
-    return symbol_type (token::TOK_COLON, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_COMMA (const location_type& l)
-  {
-    return symbol_type (token::TOK_COMMA, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_SEMI (const location_type& l)
-  {
-    return symbol_type (token::TOK_SEMI, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_PLUS (const location_type& l)
-  {
-    return symbol_type (token::TOK_PLUS, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_MINUS (const location_type& l)
-  {
-    return symbol_type (token::TOK_MINUS, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_STAR (const location_type& l)
-  {
-    return symbol_type (token::TOK_STAR, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_SLASH (const location_type& l)
-  {
-    return symbol_type (token::TOK_SLASH, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_VBAR (const location_type& l)
-  {
-    return symbol_type (token::TOK_VBAR, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_AMPER (const location_type& l)
-  {
-    return symbol_type (token::TOK_AMPER, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_LESS (const location_type& l)
-  {
-    return symbol_type (token::TOK_LESS, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_GREATER (const location_type& l)
-  {
-    return symbol_type (token::TOK_GREATER, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_EQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_EQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_DOT (const location_type& l)
-  {
-    return symbol_type (token::TOK_DOT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_PERCENT (const location_type& l)
-  {
-    return symbol_type (token::TOK_PERCENT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_BACKQUOTE (const location_type& l)
-  {
-    return symbol_type (token::TOK_BACKQUOTE, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_LBRACE (const location_type& l)
-  {
-    return symbol_type (token::TOK_LBRACE, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_RBRACE (const location_type& l)
-  {
-    return symbol_type (token::TOK_RBRACE, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_EQEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_EQEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_NOTEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_NOTEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_LESSEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_LESSEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_GREATEREQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_GREATEREQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_TILDE (const location_type& l)
-  {
-    return symbol_type (token::TOK_TILDE, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_CIRCUMFLEX (const location_type& l)
-  {
-    return symbol_type (token::TOK_CIRCUMFLEX, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_LEFTSHIFT (const location_type& l)
-  {
-    return symbol_type (token::TOK_LEFTSHIFT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_RIGHTSHIFT (const location_type& l)
-  {
-    return symbol_type (token::TOK_RIGHTSHIFT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_DOUBLESTAR (const location_type& l)
-  {
-    return symbol_type (token::TOK_DOUBLESTAR, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_PLUSEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_PLUSEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_MINEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_MINEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_STAREQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_STAREQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_SLASHEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_SLASHEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_PERCENTEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_PERCENTEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_AMPEREQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_AMPEREQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_VBAREQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_VBAREQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_CIRCUMFLEXEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_CIRCUMFLEXEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_LEFTSHIFTEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_LEFTSHIFTEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_RIGHTSHIFTEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_RIGHTSHIFTEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_DOUBLESTAREQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_DOUBLESTAREQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_DOUBLESLASH (const location_type& l)
-  {
-    return symbol_type (token::TOK_DOUBLESLASH, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_DOUBLESLASHEQUAL (const location_type& l)
-  {
-    return symbol_type (token::TOK_DOUBLESLASHEQUAL, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_AT (const location_type& l)
-  {
-    return symbol_type (token::TOK_AT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_AWAIT (const location_type& l)
-  {
-    return symbol_type (token::TOK_AWAIT, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_ASYNC (const location_type& l)
-  {
-    return symbol_type (token::TOK_ASYNC, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_NAME (const std::string& v, const location_type& l)
-  {
-    return symbol_type (token::TOK_NAME, v, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_NUMBER (const int& v, const location_type& l)
-  {
-    return symbol_type (token::TOK_NUMBER, v, l);
-  }
-
-  py_parser::symbol_type
-  py_parser::make_STRING (const std::string& v, const location_type& l)
-  {
-    return symbol_type (token::TOK_STRING, v, l);
-  }
 
 
 #line 4 "py_parser.yy" // lalr1.cc:392
 } // py
-#line 1659 "py_parser.hh" // lalr1.cc:392
+#line 543 "py_parser.hh" // lalr1.cc:392
 
 
 

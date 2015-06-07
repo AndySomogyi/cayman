@@ -1,21 +1,22 @@
 set(SRC
   py_tokenizer.cc
   py_parser.cc
-  Lexer.cpp
+  Parser.cpp
   ParserContext.cpp
-  AST.h
-  ASTNode.h
+  Ast.cpp
+  AstNode.cpp
+  AstNodeFactory.cpp
   )
   
 set(HEADERS
-  AST.h
-  Lexer.h
+  Ast.h
+  AstNode.h
+  AstNodeFactory.h
   ParserContext.h
   position.hh
   py_parser.hh
   py_token.h
   stack.hh
-  ASTNode.h
   Parser.h
   location.hh
   py_errcode.h

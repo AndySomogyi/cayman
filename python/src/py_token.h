@@ -9,7 +9,7 @@ extern "C" {
 
 #undef TILDE   /* Prevent clash of our definition with system macro. Ex AIX, ioctl.h */
 
-#define ENDMARKER	0
+#define TOK_ENDMARKER	0
 #define NAME		1
 #define NUMBER		2
 #define STRING		3
@@ -71,7 +71,7 @@ extern "C" {
 
 #define ISTERMINAL(x)		((x) < NT_OFFSET)
 #define ISNONTERMINAL(x)	((x) >= NT_OFFSET)
-#define ISEOF(x)		((x) == ENDMARKER)
+#define ISEOF(x)		((x) == TOK_ENDMARKER)
 
 
 int PyToken_OneChar(int);
