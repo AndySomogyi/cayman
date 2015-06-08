@@ -14,12 +14,11 @@
 namespace py
 {
 
-class Ast : public AstNode
+class Ast: public AstNode
 {
 public:
 	Ast();
 	virtual ~Ast();
-
 
 private:
 	// memory managment details of AST
@@ -40,6 +39,23 @@ private:
 
 typedef cxx11_ns::shared_ptr<Ast> AstPtr;
 
-} /* namespace py */
 
+class Declaration: public AstNode
+{
+public:
+	Declaration();
+	virtual ~Declaration();
+};
+
+
+
+class FunctionDeclaration
+{
+public:
+	FunctionDeclaration();
+	virtual ~FunctionDeclaration();
+};
+
+} /* namespace py */
 #endif /* PYCALC_SRC_AST_H_ */
+

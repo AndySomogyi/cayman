@@ -57,7 +57,7 @@ typedef Py_intptr_t     Py_ssize_t;
 
 #define Py_ISALNUM(c) isalnum(c)
 
-#define Py_ISALPHA(c) isalnum(c)
+#define Py_ISALPHA(c) isalpha(c)
 
 
 /* Argument must be a char or an int in [-128, 127] or [0, 255]. */

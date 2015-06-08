@@ -34,20 +34,8 @@
 
 
 %token
-  END  0  "end of file"
-  ASSIGN  ":="
- //  MINUS   "-"
- // PLUS    "+"
- // STAR    "*"
- // SLASH   "/"
- // LPAREN  "("
- // RPAREN  ")"
- // NEWLINE
   DEF // need to add DEF token
   PASS
- // SEMI   ";"
- // COMMA  ","
- // EQUAL  "="
    IF "if"
 ELSE "else"
 OR "or"
@@ -55,7 +43,6 @@ NOT "not"
 AND "and"
 IN "in"
 IS "is"
-
   ENDMARKER
   NEWLINE
   INDENT
@@ -159,18 +146,17 @@ STRING
 %start unit;
 
 unit:
-    single_input
     file_input
 ;
 
 
 // *python3
 // single_input: NEWLINE | simple_stmt | compound_stmt NEWLINE
-single_input:
-    NEWLINE
-    | simple_stmt
-    | compound_stmt NEWLINE
-;
+//single_input:
+//    NEWLINE
+//    | simple_stmt
+//    | compound_stmt NEWLINE
+//;
 
 // *python3
 // file_input: (NEWLINE | stmt)* ENDMARKER
@@ -213,7 +199,7 @@ stmt:
 // simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
 simple_stmt:
     small_stmt_seq  NEWLINE
-    small_stmt_seq  ";" NEWLINE
+    | small_stmt_seq  ";" NEWLINE
 ;
 
 
@@ -230,7 +216,7 @@ small_stmt:
 // small_stmt (';' small_stmt)*
 small_stmt_seq:
     small_stmt
-    | small_stmt_seq SEMI small_stmt
+    | small_stmt_seq ";" small_stmt
 ;
 
 
@@ -572,7 +558,7 @@ compound_stmt:
 // * python funcdef
 // funcdef: 'def' NAME parameters ':' suite
 funcdef:
-    DEF NAME
+    DEF NAME 
 ;
     
 

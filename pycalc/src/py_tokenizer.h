@@ -53,7 +53,20 @@ struct tok_state {
 tok_state *PyTokenizer_FromString(const char *, int);
 tok_state *PyTokenizer_FromFile(FILE *, char *, char *);
 void PyTokenizer_Free(tok_state *);
-int PyTokenizer_Get(tok_state *, char **, char **);
+
+
+/**
+ * Get the next token from the token stream. 
+ *
+ * If the ENDMARKER token is returned, the tok->done field will be set
+ * to E_EOF.
+ *
+ * If there is a large block of newlines or comments after the last syntactically
+ * relevant line, the tokenizer will still return and ENDMARKER after a single 
+ * NEWLINE following the last code line. All remaining comments, whitespace, and
+ * newlines after the last code line will be ignored.
+ */
+int PyTokenizer_Get(tok_state *tok, char **, char **);
 
 
 char * PyTokenizer_RestoreEncoding(tok_state* tok, int len, int *offset);

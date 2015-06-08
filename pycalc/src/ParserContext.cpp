@@ -35,8 +35,8 @@ ParserContext::ParserContext(std::ostream& inpt):
 
 ParserContext::~ParserContext()
 {
+    fclose(file);
 	PyTokenizer_Free(ts);
-	fclose(file);
 }
 
 
@@ -49,19 +49,51 @@ void ParserContext::Error(const py_parser::location_type& l, const std::string& 
 
 #define tok py_parser::token
 
-
+std::string dump_done(int done)
+{
+    switch (done)
+    {
+    case E_OK: return "E_OK";
+    case E_EOF: return "E_EOF"; //		11	/* End Of File */
+    case E_INTR: return "E_INTR"; //		12	/* Interrupted */
+    case E_TOKEN: return "E_TOKEN"; //		13	/* Bad token */
+    case E_SYNTAX: return "E_SYNTAX"; //	14	/* Syntax error */
+    case E_NOMEM: return "E_NOMEM"; //		15	/* Ran out of memory */
+    case E_DONE: return "E_DONE"; //		16	/* Parsing complete */
+    case E_ERROR: return "E_ERROR"; //		17	/* Execution error */
+    case E_TABSPACE: return "E_TABSPACE"; //	18	/* Inconsistent mixing of tabs and spaces */
+    case E_OVERFLOW: return "E_OVERFLOW"; //      19	/* Node had too many children */
+    case E_TOODEEP: return "E_TOODEEP"; //	20	/* Too many indentation levels */
+    case E_DEDENT: return "E_DEDENT"; //	21	/* No matching outer block for dedent */
+    case E_DECODE: return "E_DECODE"; //	22	/* Error in decoding into Unicode */
+    case E_EOFS: return "E_EOFS"; //		23	/* EOF in triple-quoted string */
+    case E_EOLS: return "E_EOLS"; //		24	/* EOL in single-quoted string */
+    case E_LINECONT: return "E_LINECONT"; //	25	/* Unexpected characters after a line continuation */
+    default: return "UNKNOWN ERROR CODE";
+    }
+}
 
 int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		ParserContext& ctx)
 {
 	char *a, *b;
-	int type;
+    pytoken::_tok type;
 	size_t len;
 	char *str;
 	int col_offset;
-	int result = tok::END;
+	int result = tok::ENDMARKER;
+    
+    if (ctx.ts->done == E_EOF) {
+        *node = NULL;
+        
+        return 0;
+    }
 
-	type = PyTokenizer_Get(ctx.ts, &a, &b);
+	type = (pytoken::_tok)PyTokenizer_Get(ctx.ts, &a, &b);
+    std::cout << "status: " << dump_done(ctx.ts->done) << std::endl;
+    
+#if 0
+    
 	if (type == pytoken::ERRORTOKEN || type == EOF || type == pytoken::ENDMARKER)
 	{
 		ctx.error = ctx.ts->done;
@@ -81,7 +113,12 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		}
 	}
 	else
+	{
 		ctx.started = 1;
+	}
+    
+#endif
+    
 	len = b - a; /* XXX this may compute NULL - NULL */
 	str = (char *) malloc(len + 1);
 	if (str == NULL)
@@ -100,10 +137,7 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		col_offset = -1;
 
 	// print token
-
 	tok_dump(type, a, b);
-	printf("\n");
-
 
 
 	switch (type)
@@ -112,7 +146,15 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::ENDMARKER;
 		break;
 	case pytoken::NAME:
-		result = tok::NAME;
+
+		if (strncmp(a, "def", 3) == 0)
+		{
+			result = tok::DEF;
+		}
+		else
+		{
+			result = tok::NAME;
+		}
 		break;
 	case pytoken::NUMBER:
 		result = tok::NUMBER;
@@ -274,6 +316,227 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 
 	return result;
 }
+
+#undef tok
+
+struct perrdetail {
+	int error;
+#ifndef PGEN
+	/* The filename is useless for pgen, see comment in tok_state structure */
+	char *filename;
+#endif
+	int lineno;
+	int offset;
+	char *text;                 /* UTF-8-encoded string */
+	int token;
+	int expected;
+};
+
+// static node *
+//parsetok(struct tok_state *tok, grammar *g, int start, perrdetail *err_ret,
+//         int *flags)
+//{
+
+#if 0
+
+int parsetok(tok_state *tok, int start, perrdetail *err_ret, int *flags)
+{
+	//parser_state *ps;
+	//node *n;
+	int started = 0;
+
+	//if ((ps = PyParser_New(g, start)) == NULL) {
+	//    err_ret->error = E_NOMEM;
+	//    PyTokenizer_Free(tok);
+	//    return NULL;
+	//}
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
+	if (*flags & PyPARSE_BARRY_AS_BDFL)
+	ps->p_flags |= CO_FUTURE_BARRY_AS_BDFL;
+#endif
+
+	for (;;)
+	{
+		char *a, *b;
+		int type;
+		size_t len;
+		char *str;
+		int col_offset;
+
+		type = PyTokenizer_Get(tok, &a, &b);
+
+		// break out of loop for syntax error
+		if (type == pytoken::ERRORTOKEN)
+		{
+			err_ret->error = tok->done;
+			break;
+		}
+		if (type == pytoken::ENDMARKER && started)
+		{
+			type = pytoken::NEWLINE; /* Add an extra newline */
+			started = 0;
+			/* Add the right number of dedent tokens,
+			 except if a certain flag is given --
+			 codeop.py uses this. */
+			if (tok->indent && !(*flags & PyPARSE_DONT_IMPLY_DEDENT))
+			{
+				tok->pendin = -tok->indent;
+				tok->indent = 0;
+			}
+		}
+		else
+		{
+			started = 1;
+		}
+		len = b - a; /* XXX this may compute NULL - NULL */
+		str = (char *) malloc(len + 1);
+		if (str == NULL)
+		{
+			err_ret->error = E_NOMEM;
+			break;
+		}
+		if (len > 0)
+			strncpy(str, a, len);
+		str[len] = '\0';
+
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
+		if (type == NOTEQUAL)
+		{
+			if (!(ps->p_flags & CO_FUTURE_BARRY_AS_BDFL) &&
+					strcmp(str, "!="))
+			{
+				PyObject_FREE(str);
+				err_ret->error = E_SYNTAX;
+				break;
+			}
+			else if ((ps->p_flags & CO_FUTURE_BARRY_AS_BDFL) &&
+					strcmp(str, "<>"))
+			{
+				PyObject_FREE(str);
+				err_ret->text = "with Barry as BDFL, use '<>' "
+				"instead of '!='";
+				err_ret->error = E_SYNTAX;
+				break;
+			}
+		}
+#endif
+		if (a >= tok->line_start)
+		{
+			col_offset = (int) (a - tok->line_start);
+		}
+		else
+		{
+			col_offset = -1;
+		}
+
+		if ((err_ret->error = PyParser_AddToken(ps, (int) type, str,
+				tok->lineno, col_offset, &(err_ret->expected))) != E_OK)
+		{
+			if (err_ret->error != E_DONE)
+			{
+				free(str);
+				err_ret->token = type;
+			}
+			break;
+		}
+	}
+
+	if (err_ret->error == E_DONE)
+	{
+		n = ps->p_tree;
+		ps->p_tree = NULL;
+
+#ifndef PGEN
+		/* Check that the source for a single input statement really
+		 is a single statement by looking at what is left in the
+		 buffer after parsing.  Trailing whitespace and comments
+		 are OK.  */
+		if (start == single_input)
+		{
+			char *cur = tok->cur;
+			char c = *tok->cur;
+
+			for (;;)
+			{
+				while (c == ' ' || c == '\t' || c == '\n' || c == '\014')
+					c = *++cur;
+
+				if (!c)
+					break;
+
+				if (c != '#')
+				{
+					err_ret->error = E_BADSINGLE;
+					PyNode_Free (n);
+					n = NULL;
+					break;
+				}
+
+				/* Suck up comment. */
+				while (c && c != '\n')
+					c = *++cur;
+			}
+		}
+#endif
+	}
+	else
+		n = NULL;
+
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
+	*flags = ps->p_flags;
+#endif
+	PyParser_Delete (ps);
+
+	if (n == NULL)
+	{
+		if (tok->done == E_EOF)
+			err_ret->error = E_EOF;
+		err_ret->lineno = tok->lineno;
+		if (tok->buf != NULL)
+		{
+			size_t len;
+			assert(tok->cur - tok->buf < INT_MAX);
+			err_ret->offset = (int) (tok->cur - tok->buf);
+			len = tok->inp - tok->buf;
+			err_ret->text = (char *) PyObject_MALLOC(len + 1);
+			if (err_ret->text != NULL)
+			{
+				if (len > 0)
+					strncpy(err_ret->text, tok->buf, len);
+				err_ret->text[len] = '\0';
+			}
+		}
+	}
+	else if (tok->encoding != NULL)
+	{
+		/* 'nodes->n_str' uses PyObject_*, while 'tok->encoding' was
+		 * allocated using PyMem_
+		 */
+		node* r = PyNode_New(encoding_decl);
+		if (r)
+			r->n_str = PyObject_MALLOC(strlen(tok->encoding) + 1);
+		if (!r || !r->n_str)
+		{
+			err_ret->error = E_NOMEM;
+			if (r)
+				PyObject_FREE(r);
+			n = NULL;
+			goto done;
+		}
+		strcpy(r->n_str, tok->encoding);
+		PyMem_FREE(tok->encoding);
+		tok->encoding = NULL;
+		r->n_nchildren = 1;
+		r->n_child = n;
+		n = r;
+	}
+
+	done: PyTokenizer_Free(tok);
+
+	return n;
+}
+
+#endif
 
 } /* namespace py */
 

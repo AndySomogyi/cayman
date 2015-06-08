@@ -35,7 +35,13 @@ ostream& operator<<(ostream& os, const py::AstNode& node)
 
 ostream& operator<<(ostream& os, const py::AstNode* node)
 {
-	node->Print(os);
+    if (node)
+    {
+        node->Print(os);
+    }
+    else {
+        os << "AstNode";
+    }
 	return os;
 }
 

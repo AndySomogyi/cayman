@@ -7,6 +7,7 @@
 
 #include "Parser.h"
 #include "ParserContext.h"
+#include "py_parser.hh"
 
 namespace py
 {
@@ -47,6 +48,17 @@ AstPtr Parser::Parse()
 {
 	ctx->parser.parse();
 	return ctx->ast;
+}
+
+void Parser::Tokenize()
+{
+	AstNode* ast = 0;
+	py_parser::location_type loc;
+	int type = 0;
+	while((type = yylex(&ast, &loc, *ctx)) > 0)
+	{
+		std::cout << std::endl;
+	}
 }
 
 } /* namespace py */

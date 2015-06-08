@@ -10,6 +10,7 @@
 
 #include <string>
 #include <ostream>
+#include <assert.h>
 #include "Ast.h"
 
 
@@ -39,6 +40,18 @@ public:
 
 
 	AstPtr Parse();
+
+    /**
+     * reads the input stream, and dumps the token stream to the 
+     * given debug stream. 
+     */
+    void Tokenize();
+private:
+    
+    Parser(const Parser& other)
+    {
+        assert("Parser copy forbidden" && 0);
+    }
 
 
 	class ParserContext *ctx;

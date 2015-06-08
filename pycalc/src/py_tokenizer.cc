@@ -13,6 +13,8 @@
 
 #include "py_private.h"
 
+#include <iostream>
+
 #define NO_DECODE
 
 
@@ -1763,12 +1765,14 @@ PyTokenizer_RestoreEncoding(struct tok_state* tok, int len, int *offset)
 
 
 
-void
-tok_dump(int type, char *start, char *end)
+void tok_dump(int type, char *start, char *end)
 {
-    printf("%s", _PyParser_TokenNames[type]);
+	std::cout << "pytoken: " << _PyParser_TokenNames[type];
     if (type == NAME || type == NUMBER || type == STRING || type == OP)
-        printf("(%.*s)", (int)(end - start), start);
+    {
+    	std::cout << "(" << std::string(start, end) << ")";
+    }
+    std::cout << std::endl;
 }
 
 
