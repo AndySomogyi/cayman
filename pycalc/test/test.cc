@@ -11,13 +11,7 @@ int main(int argc, const char** argv)
 		return 0;
 	}
 
-	Parser tok(argv[1]);
-    
-    tok.SetDebugLevel(1);
-    
-    tok.SetDebugStream(std::cout);
-    
-    tok.Tokenize();
+
     
     Parser parser(argv[1]);
     
@@ -26,4 +20,6 @@ int main(int argc, const char** argv)
     parser.SetDebugStream(std::cout);
     
 	AstPtr ast = parser.Parse();
+    
+    std::cout << "all done" << std::endl;
 }

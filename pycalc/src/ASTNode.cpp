@@ -7,16 +7,30 @@
 
 #include <ASTNode.h>
 
+
 namespace py
 {
 
-AstNode::AstNode()
+Name::Name(class Ast* ast, const location& loc, const char* begin,
+           const char* end) :
+    AstNode(ast, loc)
+{
+}
+
+Num::Num(class Ast* ast, const location& loc, const char* begin,
+         const char* end) :
+    AstNode(ast, loc)
+{
+}
+
+
+Str::Str()
 {
 	// TODO Auto-generated constructor stub
 
 }
 
-AstNode::~AstNode()
+Str::~Str()
 {
 	// TODO Auto-generated destructor stub
 }
@@ -35,13 +49,14 @@ ostream& operator<<(ostream& os, const py::AstNode& node)
 
 ostream& operator<<(ostream& os, const py::AstNode* node)
 {
-    if (node)
-    {
-        node->Print(os);
-    }
-    else {
-        os << "AstNode";
-    }
+	if (node)
+	{
+		node->Print(os);
+	}
+	else
+	{
+		os << "AstNode";
+	}
 	return os;
 }
 

@@ -40,9 +40,9 @@
 
 # include "position.hh"
 
-#line 4 "py_parser.yy" // location.cc:337
+
 namespace py {
-#line 46 "location.hh" // location.cc:337
+
   /// Abstract a location.
   class location
   {
@@ -186,7 +186,7 @@ namespace py {
     return ostr;
   }
 
-#line 4 "py_parser.yy" // location.cc:337
+
 } // py
-#line 192 "location.hh" // location.cc:337
+
 #endif // !YY_YY_LOCATION_HH_INCLUDED

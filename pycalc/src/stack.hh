@@ -40,9 +40,9 @@
 
 # include <vector>
 
-#line 4 "py_parser.yy" // stack.hh:151
+
 namespace py {
-#line 46 "stack.hh" // stack.hh:151
+
   template <class T, class S = std::vector<T> >
   class stack
   {
@@ -150,8 +150,8 @@ namespace py {
     unsigned int range_;
   };
 
-#line 4 "py_parser.yy" // stack.hh:151
+
 } // py
-#line 156 "stack.hh" // stack.hh:151
+
 
 #endif // !YY_YY_STACK_HH_INCLUDED

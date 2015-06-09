@@ -33,7 +33,7 @@
 
 // First part of user declarations.
 
-#line 37 "py_parser.cc" // lalr1.cc:404
+
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -47,13 +47,13 @@
 
 // User implementation prologue.
 
-#line 51 "py_parser.cc" // lalr1.cc:412
+
 // Unqualified %code blocks.
-#line 31 "py_parser.yy" // lalr1.cc:413
+
 
     #include "ParserContext.h"
 
-#line 57 "py_parser.cc" // lalr1.cc:413
+
 
 
 #ifndef YY_
@@ -137,9 +137,9 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 4 "py_parser.yy" // lalr1.cc:479
+
 namespace py {
-#line 143 "py_parser.cc" // lalr1.cc:479
+
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -409,786 +409,807 @@ namespace py {
     {
             case 3: // DEF
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 415 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 4: // PASS
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 422 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 5: // "if"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 429 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 6: // "else"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 436 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 7: // "or"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 443 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 8: // "not"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 450 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 9: // "and"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 457 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 10: // "in"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 464 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 11: // "is"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 471 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 12: // ENDMARKER
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 478 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 13: // NEWLINE
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 485 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 14: // INDENT
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 492 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 15: // DEDENT
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 499 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 16: // ")"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 506 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 17: // "("
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 513 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 18: // LSQB
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 520 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 19: // RSQB
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 527 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 20: // ":"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 534 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 21: // ","
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 541 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 22: // ";"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 548 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 23: // "+"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 555 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 24: // "-"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 562 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 25: // "*"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 569 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 26: // "/"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 576 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 27: // VBAR
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 583 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 28: // "&"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 590 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 29: // "<"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 597 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 30: // ">"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 604 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 31: // "="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 611 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 32: // "."
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 618 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 33: // "%"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 625 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 34: // "`"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 632 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 35: // LBRACE
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 639 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 36: // RBRACE
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 646 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 37: // "=="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 653 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 38: // "!="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 660 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 39: // "<="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 667 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 40: // ">="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 674 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 41: // "~"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 681 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 42: // "^"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 688 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 43: // "<<"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 695 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 44: // ">>"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 702 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 45: // "**"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 709 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 46: // "+="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 716 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 47: // "-="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 723 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 48: // "*="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 730 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 49: // "/="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 737 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 50: // "%="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 744 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 51: // "&="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 751 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 52: // "|="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 758 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 53: // "^="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 765 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 54: // "<<="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 772 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 55: // ">>="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 779 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 56: // "**+"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 786 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 57: // "//"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 793 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 58: // "//="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 800 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 59: // "@"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 807 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 60: // "await"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 814 "py_parser.cc" // lalr1.cc:636
+
         break;
 
       case 61: // "async"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 821 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 62: // NAME
+      case 62: // "from"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 828 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 63: // NUMBER
+      case 63: // "yield"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 835 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 64: // STRING
+      case 64: // NAME
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 842 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 65: // "|"
+      case 65: // NUMBER
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 849 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 66: // "@="
+      case 66: // STRING
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 856 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 67: // "**="
+      case 67: // "|"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 863 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 68: // "<>"
+      case 68: // "@="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 870 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 70: // unit
+      case 69: // "**="
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 877 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 71: // file_input
+      case 70: // "<>"
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 884 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 72: // newline_or_stmt
+      case 72: // module
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 891 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 73: // newline_stmt_seq
+      case 73: // file_input
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 898 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 74: // stmt
+      case 74: // newline_or_stmt
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 905 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 75: // simple_stmt
+      case 75: // newline_stmt_seq
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 912 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 76: // small_stmt
+      case 76: // stmt
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 919 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 77: // small_stmt_seq
+      case 77: // simple_stmt
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 926 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 78: // pass_stmt
+      case 78: // small_stmt
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 933 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 79: // expr_stmt
+      case 79: // small_stmt_seq
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 940 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 80: // assign_rhs_seq
+      case 80: // pass_stmt
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 947 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 81: // yeild_expr_or_testlist_star_expr
+      case 81: // expr_stmt
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 954 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 82: // star_expr
+      case 82: // assign_expr_seq
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 961 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 83: // testlist_star_expr
+      case 83: // yield_expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 968 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 84: // test_or_star
+      case 84: // yield_arg
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 975 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 85: // test_or_star_seq
+      case 85: // star_expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 982 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 86: // augassign
+      case 86: // testlist_star_expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 989 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 87: // testlist
+      case 87: // test_or_star
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 996 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 88: // test_seq
+      case 88: // test_or_star_seq
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1003 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 89: // test
+      case 89: // augassign
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1010 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 90: // or_test
+      case 90: // testlist
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1017 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 91: // and_test
+      case 91: // test_seq
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1024 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 92: // not_test
+      case 92: // test
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1031 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 93: // comparison
+      case 93: // or_test
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1038 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 94: // comp_op
+      case 94: // and_test
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1045 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 95: // expr
+      case 95: // not_test
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1052 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 96: // xor_expr
+      case 96: // comparison
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1059 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 97: // and_expr
+      case 97: // comp_op
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1066 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 98: // shift_expr
+      case 98: // expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1073 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 99: // shift_expr_seq
+      case 99: // xor_expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1080 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 100: // arith_expr
+      case 100: // and_expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1087 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 101: // arith_op
+      case 101: // shift_expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1094 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 102: // term
+      case 102: // shift_expr_seq
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1101 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 103: // term_op
+      case 103: // arith_expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1108 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 104: // factor
+      case 104: // arith_op
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1115 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 105: // factor_op
+      case 105: // term
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1122 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 106: // power
+      case 106: // term_op
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1129 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 107: // atom_expr
+      case 107: // factor
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1136 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 108: // trailer_seq
+      case 108: // factor_op
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1143 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 109: // trailer
+      case 109: // power
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1150 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 110: // arglist
+      case 110: // atom_expr
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1157 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 111: // arglist_seq
+      case 111: // trailer_seq
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1164 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 112: // argument
+      case 112: // trailer
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1171 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 113: // atom
+      case 113: // arglist
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1178 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 114: // compound_stmt
+      case 114: // arglist_seq
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1185 "py_parser.cc" // lalr1.cc:636
+
         break;
 
-      case 115: // funcdef
+      case 115: // argument
 
-#line 129 "py_parser.yy" // lalr1.cc:636
+
         { yyoutput << (yysym.value); }
-#line 1192 "py_parser.cc" // lalr1.cc:636
+
+        break;
+
+      case 116: // atom
+
+
+        { yyoutput << (yysym.value); }
+
+        break;
+
+      case 117: // compound_stmt
+
+
+        { yyoutput << (yysym.value); }
+
+        break;
+
+      case 118: // funcdef
+
+
+        { yyoutput << (yysym.value); }
+
         break;
 
 
@@ -1301,13 +1322,13 @@ namespace py {
 
 
     // User initialization code.
-    #line 24 "py_parser.yy" // lalr1.cc:745
+    
 {
   // Initialize the initial location.
     yyla.location.begin.filename = yyla.location.end.filename = &ctx.fileName;
 }
 
-#line 1311 "py_parser.cc" // lalr1.cc:745
+
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -1414,32 +1435,91 @@ namespace py {
         {
           switch (yyn)
             {
-  case 108:
-#line 538 "py_parser.yy" // lalr1.cc:859
-    {(yylhs.value) = 0;}
-#line 1421 "py_parser.cc" // lalr1.cc:859
+  case 2:
+
+    {
+        ctx.ast->module = (yystack_[0].value);
+    }
+
     break;
 
-  case 109:
-#line 539 "py_parser.yy" // lalr1.cc:859
-    { (yylhs.value) = 0; }
-#line 1427 "py_parser.cc" // lalr1.cc:859
+  case 3:
+
+    {
+         (yylhs.value) = (yystack_[1].value);
+     }
+
     break;
 
-  case 110:
-#line 540 "py_parser.yy" // lalr1.cc:859
-    { (yylhs.value) = 0; }
-#line 1433 "py_parser.cc" // lalr1.cc:859
+  case 18:
+
+    { (yylhs.value) = (yystack_[0].value);  /*foo*/ }
+
     break;
 
-  case 111:
-#line 541 "py_parser.yy" // lalr1.cc:859
-    { (yylhs.value) = 0; }
-#line 1439 "py_parser.cc" // lalr1.cc:859
+  case 19:
+
+    {
+        std::cout << "testlist_star_expr = yield_expr" << std::endl;
+    }
+
+    break;
+
+  case 20:
+
+    {
+        std::cout << "testlist_star_expr = testlist_star_expr" << std::endl;
+        (yylhs.value) = ctx.ast->CreateAssign(yylhs.location, (yystack_[2].value), (yystack_[0].value));
+    }
+
+    break;
+
+  case 21:
+
+    {
+        std::cout << "assign_expr_seq = yield_expr" << std::endl;
+    }
+
+    break;
+
+  case 22:
+
+    {
+        Assign *a = dynamic_cast<Assign*>((yystack_[2].value));
+        assert(a);
+        a->AddValue((yystack_[1].value));
+        (yylhs.value) = a;
+        std::cout << "assign_expr_seq = testlist_star_expr" << std::endl;
+    }
+
+    break;
+
+  case 113:
+
+    {(yylhs.value) = (yystack_[2].value);}
+
+    break;
+
+  case 114:
+
+    { (yylhs.value) = (yystack_[0].value); /*name*/}
+
+    break;
+
+  case 115:
+
+    { (yylhs.value) = (yystack_[0].value); /*num*/}
+
+    break;
+
+  case 116:
+
+    { (yylhs.value) = (yystack_[0].value); /*str*/}
+
     break;
 
 
-#line 1443 "py_parser.cc" // lalr1.cc:859
+
             default:
               break;
             }
@@ -1694,172 +1774,191 @@ namespace py {
   }
 
 
-  const signed char py_parser::yypact_ninf_ = -81;
+  const signed char py_parser::yypact_ninf_ = -79;
 
   const signed char py_parser::yytable_ninf_ = -1;
 
   const short int
   py_parser::yypact_[] =
   {
-     -81,    35,   -81,     3,   -81,   -38,   -81,   112,   -81,   -81,
-      92,   -81,   -81,   107,   -81,   -14,   -81,   -81,   -81,   -81,
-     -81,   -81,   -81,    -3,   -81,   -81,   -81,   131,   -81,    22,
-     -81,    24,    38,   -81,    74,    -8,     9,    27,   -81,   -10,
-     -21,   -81,   107,   -81,    11,   -81,   -81,   -81,   -81,   -81,
-      45,    -8,   -81,   -81,    17,   -81,   -81,   -81,   -81,   -81,
-     -81,   -81,   -81,   -81,   -81,   -81,   -81,   -81,    31,   112,
-      92,   112,   112,   112,    61,   -81,    75,   -81,   -81,   -81,
-     -81,   -81,   -81,   -81,   107,   107,   107,   107,   -81,   -81,
-     -26,   107,   -81,   -81,   -81,   -81,   107,   -81,   107,    -9,
-     -81,    -9,   -81,   -81,    92,   -81,    65,   -81,   -81,    26,
-      38,   -81,   -81,   -81,    -8,     9,    27,   -81,   107,   107,
-     -21,   -81,   -81,    29,    25,   -81,   -81,   -81,   112,   112,
-     -10,   -10,   -81,   112,    57,    78,    69,   -81,   -81,   -81,
-     -81,   -81,   112,   -81,   102,   -81,   -81
+     -79,     4,   -79,     2,   -79,   -56,   -79,   169,   -79,   -79,
+      96,   -79,   -79,   181,   -79,   -14,   -79,   -79,   -79,   -79,
+     -79,   -79,   -79,     8,   -79,   -79,   -19,   -79,   205,   -79,
+      -3,   -79,     6,    14,   -79,    72,   -36,    -8,    11,   -79,
+       5,    -9,   -79,   181,   -79,     9,   -79,   -79,   -79,   -79,
+     -79,    28,   -36,   -79,   -79,    32,    83,    83,   -79,   -79,
+     -79,   -79,   -79,   -79,   -79,   -79,   -79,   -79,   -79,   -79,
+     -79,   169,    96,   169,   169,   169,    43,   -79,    51,   -79,
+     -79,   -79,   -79,   -79,   -79,   -79,   181,   181,   181,   181,
+     -79,   -79,   -11,   181,   -79,   -79,   -79,   -79,   181,   -79,
+     181,   -10,   -79,   -10,   -79,   -79,   147,   -79,   -79,   -79,
+     -79,   -79,    39,   -79,   -79,    31,    14,   -79,   -79,   -79,
+     -36,    -8,    11,   -79,   181,   181,    -9,   -79,   -79,   109,
+      12,   -79,   169,   -79,   -79,   169,   169,     5,     5,   -79,
+     169,    41,    47,    57,   -79,   -79,   -79,   -79,   -79,   -79,
+     169,   -79,   155,   -79,   -79
   };
 
   const unsigned char
   py_parser::yydefact_[] =
   {
        6,     0,     2,     0,     1,     0,    16,     0,     3,     4,
-       0,    89,    90,     0,    91,     0,   109,   110,   111,     7,
-       5,     8,    14,     0,    12,    13,    26,    19,    27,    23,
-      25,    46,    48,    50,    53,    54,    67,    69,    71,    74,
-      77,    81,     0,    88,    92,    96,     9,   112,   113,    52,
-       0,    22,    96,    10,     0,    29,    30,    31,    33,    34,
-      35,    36,    37,    38,    39,    41,    32,    40,    18,     0,
-      24,     0,     0,     0,     0,    63,    65,    56,    57,    58,
-      62,    60,    59,    61,     0,     0,     0,     0,    79,    80,
-      73,     0,    83,    84,    85,    86,     0,    87,     0,    94,
-     108,    95,    11,    15,     0,    17,    42,    44,    28,     0,
-      49,    51,    64,    66,    55,    68,    70,    72,     0,     0,
-      78,    82,    93,     0,     0,    97,    20,    21,    43,     0,
-      75,    76,    99,     0,   105,     0,   101,   103,    98,    45,
-      47,   107,     0,   100,   102,   106,   104
+       0,    94,    95,     0,    96,     0,   114,   115,   116,     7,
+       5,     8,    14,     0,    12,    13,    18,    31,     0,    32,
+      28,    30,    51,    53,    55,    58,    59,    72,    74,    76,
+      79,    82,    86,     0,    93,    97,   101,     9,   117,   118,
+      57,     0,    27,   101,    10,     0,     0,     0,    34,    35,
+      36,    38,    39,    40,    41,    42,    43,    44,    46,    37,
+      45,     0,    29,     0,     0,     0,     0,    68,    70,    61,
+      62,    63,    67,    65,    64,    66,     0,     0,     0,     0,
+      84,    85,    78,     0,    88,    89,    90,    91,     0,    92,
+       0,    99,   113,   100,    11,    15,    23,    21,    22,    19,
+      20,    17,    47,    49,    33,     0,    54,    56,    69,    71,
+      60,    73,    75,    77,     0,     0,    83,    87,    98,     0,
+       0,   102,     0,    24,    26,    48,     0,    80,    81,   104,
+       0,   110,     0,   106,   108,   103,    25,    50,    52,   112,
+       0,   105,   107,   111,   109
   };
 
   const signed char
   py_parser::yypgoto_[] =
   {
-     -81,   -81,   -81,   -81,   -81,   -81,   -81,    41,   -81,   -81,
-     -81,   -81,   -81,   -81,    -7,    -1,   -81,   -81,   -81,   -81,
-     -69,    28,    30,    -5,   -81,   -81,   -12,    13,    10,    14,
-     -81,   -80,   -81,    15,   -81,   -20,   -81,   -81,   -81,    53,
-     -81,   -81,   -81,   -37,    93,   -81,   -81
+     -79,   -79,   -79,   -79,   -79,   -79,   -79,    29,   -79,   -79,
+     -79,   -79,    30,   -79,   -79,   -15,    -1,   -79,   -79,   -21,
+     -79,   -71,    13,    15,    -5,   -79,   -79,   -12,     1,     7,
+      10,   -79,   -78,   -79,     0,   -79,   -23,   -79,   -79,   -79,
+      37,   -79,   -79,   -79,   -58,    88,   -79,   -79
   };
 
   const short int
   py_parser::yydefgoto_[] =
   {
       -1,     1,     2,    19,     3,    20,    21,    22,    23,    24,
-      25,    68,   126,    26,    27,    28,    29,    69,   105,   106,
-      30,    31,    32,    33,    34,    84,    35,    36,    37,    38,
-      90,    39,    91,    40,    96,    41,    42,    43,    44,    99,
-     125,   135,   136,   137,    45,    46,    47
+      25,    26,   107,   133,    27,    28,    29,    30,    71,   111,
+     112,    31,    32,    33,    34,    35,    86,    36,    37,    38,
+      39,    92,    40,    93,    41,    98,    42,    43,    44,    45,
+     101,   131,   142,   143,   144,    46,    47,    48
   };
 
   const unsigned char
   py_parser::yytable_[] =
   {
-     107,    51,    49,    10,    92,    93,     5,     6,   123,    50,
-      53,     7,    94,    88,    89,     8,     9,   118,   119,    54,
-      10,     6,    97,   124,    48,     7,    11,    12,    13,    71,
-     102,    72,   129,    72,    10,     4,    95,     7,   130,   131,
-      11,    12,    13,    70,    14,   132,    10,    73,    16,    17,
-      18,    86,    11,    12,   134,    87,    98,    85,    14,   139,
-     140,   100,   104,    15,   141,    16,    17,    18,   111,   108,
-      14,   112,   114,   145,   133,   134,   121,    15,   122,    16,
-      17,    18,    74,   113,    75,    76,   128,   138,   142,    15,
-     144,    16,    17,    18,   143,   103,   116,   127,   115,   109,
-       7,   117,   110,    77,    78,   101,   120,   146,    52,    10,
-       7,    79,    80,    81,    82,    11,    12,    13,     0,    10,
-       7,     0,     0,     0,    10,    11,    12,     0,     0,    10,
-      11,    12,     0,    14,     0,    11,    12,     0,     0,     0,
-       0,     0,    83,    14,     0,     0,     0,   133,    14,     0,
-       0,     0,    15,    14,    16,    17,    18,     0,     0,     0,
-       0,     0,    15,     0,    16,    17,    18,    15,     0,    16,
-      17,    18,    15,     0,    16,    17,    18,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,     0,     0,    65,
-       0,     0,     0,     0,     0,     0,     0,    66,    67
+     113,    52,    50,    10,     4,     5,     6,   129,    49,    51,
+       7,    73,    56,    74,     8,     9,    94,    95,    72,    10,
+      99,    54,   130,    75,    96,    11,    12,    13,    90,    91,
+      55,    87,   124,   125,    88,   113,     6,   136,    74,    89,
+       7,   108,   110,    14,   102,   104,   137,   138,    97,    10,
+      16,    17,    18,   118,   100,    11,    12,    13,   141,   119,
+     135,   146,    15,   151,   147,   148,    16,    17,    18,   149,
+     117,   114,   150,    14,   120,   127,   145,   128,   152,   153,
+      76,   141,    77,    78,   105,   134,   115,   109,   121,   116,
+     103,     7,    15,   126,   154,   122,    16,    17,    18,   123,
+      10,    79,    80,    53,     7,     0,    11,    12,    13,    81,
+      82,    83,    84,    10,     0,     0,     0,     7,     0,    11,
+      12,    13,     0,     0,    14,   139,    10,     0,     0,     0,
+       0,     0,    11,    12,     0,     0,     0,    14,     0,     0,
+       0,     0,    85,    15,     0,     0,   106,    16,    17,    18,
+      14,     0,     0,     0,   140,     7,    15,     0,     0,     0,
+      16,    17,    18,     7,    10,     0,     0,     0,     0,    15,
+      11,    12,    10,    16,    17,    18,     0,     7,    11,    12,
+       0,     0,     0,     0,     0,     0,    10,     0,    14,     0,
+       0,     0,    11,    12,     0,     0,    14,     0,    10,     0,
+     140,     0,     0,     0,    11,    12,     0,    15,     0,   132,
+      14,    16,    17,    18,     0,    15,     0,     0,     0,    16,
+      17,    18,    14,     0,     0,     0,     0,     0,     0,    15,
+       0,     0,     0,    16,    17,    18,    57,     0,     0,     0,
+       0,    15,     0,     0,     0,    16,    17,    18,     0,     0,
+       0,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,     0,     0,    68,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    69,    70
   };
 
   const short int
   py_parser::yycheck_[] =
   {
-      69,    13,     7,    17,    25,    26,     3,     4,    17,    10,
-      13,     8,    33,    23,    24,    12,    13,    43,    44,    22,
-      17,     4,    42,    32,    62,     8,    23,    24,    25,     5,
-      13,     7,     6,     7,    17,     0,    57,     8,   118,   119,
-      23,    24,    25,    21,    41,    16,    17,     9,    62,    63,
-      64,    42,    23,    24,   123,    28,    45,    65,    41,   128,
-     129,    16,    31,    60,   133,    62,    63,    64,    73,    70,
-      41,    10,    84,   142,    45,   144,    96,    60,    98,    62,
-      63,    64,     8,     8,    10,    11,    21,    62,    31,    60,
-      21,    62,    63,    64,    16,    54,    86,   104,    85,    71,
-       8,    87,    72,    29,    30,    52,    91,   144,    15,    17,
-       8,    37,    38,    39,    40,    23,    24,    25,    -1,    17,
-       8,    -1,    -1,    -1,    17,    23,    24,    -1,    -1,    17,
-      23,    24,    -1,    41,    -1,    23,    24,    -1,    -1,    -1,
-      -1,    -1,    68,    41,    -1,    -1,    -1,    45,    41,    -1,
-      -1,    -1,    60,    41,    62,    63,    64,    -1,    -1,    -1,
-      -1,    -1,    60,    -1,    62,    63,    64,    60,    -1,    62,
-      63,    64,    60,    -1,    62,    63,    64,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    55,    -1,    -1,    58,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    66,    67
+      71,    13,     7,    17,     0,     3,     4,    17,    64,    10,
+       8,     5,    31,     7,    12,    13,    25,    26,    21,    17,
+      43,    13,    32,     9,    33,    23,    24,    25,    23,    24,
+      22,    67,    43,    44,    42,   106,     4,     6,     7,    28,
+       8,    56,    57,    41,    16,    13,   124,   125,    57,    17,
+      64,    65,    66,    10,    45,    23,    24,    25,   129,     8,
+      21,   132,    60,    16,   135,   136,    64,    65,    66,   140,
+      75,    72,    31,    41,    86,    98,    64,   100,    21,   150,
+       8,   152,    10,    11,    55,   106,    73,    57,    87,    74,
+      53,     8,    60,    93,   152,    88,    64,    65,    66,    89,
+      17,    29,    30,    15,     8,    -1,    23,    24,    25,    37,
+      38,    39,    40,    17,    -1,    -1,    -1,     8,    -1,    23,
+      24,    25,    -1,    -1,    41,    16,    17,    -1,    -1,    -1,
+      -1,    -1,    23,    24,    -1,    -1,    -1,    41,    -1,    -1,
+      -1,    -1,    70,    60,    -1,    -1,    63,    64,    65,    66,
+      41,    -1,    -1,    -1,    45,     8,    60,    -1,    -1,    -1,
+      64,    65,    66,     8,    17,    -1,    -1,    -1,    -1,    60,
+      23,    24,    17,    64,    65,    66,    -1,     8,    23,    24,
+      -1,    -1,    -1,    -1,    -1,    -1,    17,    -1,    41,    -1,
+      -1,    -1,    23,    24,    -1,    -1,    41,    -1,    17,    -1,
+      45,    -1,    -1,    -1,    23,    24,    -1,    60,    -1,    62,
+      41,    64,    65,    66,    -1,    60,    -1,    -1,    -1,    64,
+      65,    66,    41,    -1,    -1,    -1,    -1,    -1,    -1,    60,
+      -1,    -1,    -1,    64,    65,    66,    31,    -1,    -1,    -1,
+      -1,    60,    -1,    -1,    -1,    64,    65,    66,    -1,    -1,
+      -1,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    -1,    -1,    58,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    68,    69
   };
 
   const unsigned char
   py_parser::yystos_[] =
   {
-       0,    70,    71,    73,     0,     3,     4,     8,    12,    13,
-      17,    23,    24,    25,    41,    60,    62,    63,    64,    72,
-      74,    75,    76,    77,    78,    79,    82,    83,    84,    85,
-      89,    90,    91,    92,    93,    95,    96,    97,    98,   100,
-     102,   104,   105,   106,   107,   113,   114,   115,    62,    92,
-      84,    95,   113,    13,    22,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    55,    58,    66,    67,    80,    86,
-      21,     5,     7,     9,     8,    10,    11,    29,    30,    37,
-      38,    39,    40,    68,    94,    65,    42,    28,    23,    24,
-      99,   101,    25,    26,    33,    57,   103,   104,    45,   108,
-      16,   108,    13,    76,    31,    87,    88,    89,    84,    90,
-      91,    92,    10,     8,    95,    96,    97,    98,    43,    44,
-     102,   104,   104,    17,    32,   109,    81,    83,    21,     6,
-     100,   100,    16,    45,    89,   110,   111,   112,    62,    89,
-      89,    89,    31,    16,    21,    89,   112
+       0,    72,    73,    75,     0,     3,     4,     8,    12,    13,
+      17,    23,    24,    25,    41,    60,    64,    65,    66,    74,
+      76,    77,    78,    79,    80,    81,    82,    85,    86,    87,
+      88,    92,    93,    94,    95,    96,    98,    99,   100,   101,
+     103,   105,   107,   108,   109,   110,   116,   117,   118,    64,
+      95,    87,    98,   116,    13,    22,    31,    31,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    58,    68,
+      69,    89,    21,     5,     7,     9,     8,    10,    11,    29,
+      30,    37,    38,    39,    40,    70,    97,    67,    42,    28,
+      23,    24,   102,   104,    25,    26,    33,    57,   106,   107,
+      45,   111,    16,   111,    13,    78,    63,    83,    86,    83,
+      86,    90,    91,    92,    87,    93,    94,    95,    10,     8,
+      98,    99,   100,   101,    43,    44,   105,   107,   107,    17,
+      32,   112,    62,    84,    90,    21,     6,   103,   103,    16,
+      45,    92,   113,   114,   115,    64,    92,    92,    92,    92,
+      31,    16,    21,    92,   115
   };
 
   const unsigned char
   py_parser::yyr1_[] =
   {
-       0,    69,    70,    71,    72,    72,    73,    73,    74,    74,
-      75,    75,    76,    76,    77,    77,    78,    79,    79,    80,
-      80,    81,    82,    83,    83,    84,    84,    85,    85,    86,
-      86,    86,    86,    86,    86,    86,    86,    86,    86,    86,
-      86,    86,    87,    87,    88,    88,    89,    89,    90,    90,
-      91,    91,    92,    92,    93,    93,    94,    94,    94,    94,
-      94,    94,    94,    94,    94,    94,    94,    95,    95,    96,
-      96,    97,    97,    98,    99,    99,    99,   100,   100,   101,
-     101,   102,   102,   103,   103,   103,   103,   104,   104,   105,
-     105,   105,   106,   106,   107,   107,   108,   108,   109,   109,
-     109,   110,   110,   111,   111,   112,   112,   112,   113,   113,
-     113,   113,   114,   115
+       0,    71,    72,    73,    74,    74,    75,    75,    76,    76,
+      77,    77,    78,    78,    79,    79,    80,    81,    81,    82,
+      82,    82,    82,    83,    83,    84,    84,    85,    86,    86,
+      87,    87,    88,    88,    89,    89,    89,    89,    89,    89,
+      89,    89,    89,    89,    89,    89,    89,    90,    90,    91,
+      91,    92,    92,    93,    93,    94,    94,    95,    95,    96,
+      96,    97,    97,    97,    97,    97,    97,    97,    97,    97,
+      97,    97,    98,    98,    99,    99,   100,   100,   101,   102,
+     102,   102,   103,   103,   104,   104,   105,   105,   106,   106,
+     106,   106,   107,   107,   108,   108,   108,   109,   109,   110,
+     110,   111,   111,   112,   112,   112,   113,   113,   114,   114,
+     115,   115,   115,   116,   116,   116,   116,   117,   118
   };
 
   const unsigned char
   py_parser::yyr2_[] =
   {
        0,     2,     1,     2,     1,     1,     0,     2,     1,     1,
-       2,     3,     1,     1,     1,     3,     1,     3,     2,     0,
-       3,     1,     2,     1,     2,     1,     1,     1,     3,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     2,     1,     3,     1,     5,     1,     3,
-       1,     3,     2,     1,     1,     3,     1,     1,     1,     1,
-       1,     1,     1,     1,     2,     1,     2,     1,     3,     1,
-       3,     1,     3,     2,     0,     3,     3,     1,     3,     1,
-       1,     1,     3,     1,     1,     1,     1,     2,     1,     1,
-       1,     1,     1,     3,     2,     3,     0,     2,     2,     2,
-       3,     1,     2,     1,     3,     1,     3,     2,     3,     1,
-       1,     1,     1,     2
+       2,     3,     1,     1,     1,     3,     1,     3,     1,     3,
+       3,     3,     3,     1,     2,     2,     1,     2,     1,     2,
+       1,     1,     1,     3,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     2,     1,
+       3,     1,     5,     1,     3,     1,     3,     2,     1,     1,
+       3,     1,     1,     1,     1,     1,     1,     1,     1,     2,
+       1,     2,     1,     3,     1,     3,     1,     3,     2,     0,
+       3,     3,     1,     3,     1,     1,     1,     3,     1,     1,
+       1,     1,     2,     1,     1,     1,     1,     1,     3,     2,
+       3,     0,     2,     2,     2,     3,     1,     2,     1,     3,
+       1,     3,     2,     3,     1,     1,     1,     1,     2
   };
 
 
@@ -1877,11 +1976,11 @@ namespace py {
   "\"==\"", "\"!=\"", "\"<=\"", "\">=\"", "\"~\"", "\"^\"", "\"<<\"",
   "\">>\"", "\"**\"", "\"+=\"", "\"-=\"", "\"*=\"", "\"/=\"", "\"%=\"",
   "\"&=\"", "\"|=\"", "\"^=\"", "\"<<=\"", "\">>=\"", "\"**+\"", "\"//\"",
-  "\"//=\"", "\"@\"", "\"await\"", "\"async\"", "NAME", "NUMBER", "STRING",
-  "\"|\"", "\"@=\"", "\"**=\"", "\"<>\"", "$accept", "unit", "file_input",
-  "newline_or_stmt", "newline_stmt_seq", "stmt", "simple_stmt",
-  "small_stmt", "small_stmt_seq", "pass_stmt", "expr_stmt",
-  "assign_rhs_seq", "yeild_expr_or_testlist_star_expr", "star_expr",
+  "\"//=\"", "\"@\"", "\"await\"", "\"async\"", "\"from\"", "\"yield\"",
+  "NAME", "NUMBER", "STRING", "\"|\"", "\"@=\"", "\"**=\"", "\"<>\"",
+  "$accept", "module", "file_input", "newline_or_stmt", "newline_stmt_seq",
+  "stmt", "simple_stmt", "small_stmt", "small_stmt_seq", "pass_stmt",
+  "expr_stmt", "assign_expr_seq", "yield_expr", "yield_arg", "star_expr",
   "testlist_star_expr", "test_or_star", "test_or_star_seq", "augassign",
   "testlist", "test_seq", "test", "or_test", "and_test", "not_test",
   "comparison", "comp_op", "expr", "xor_expr", "and_expr", "shift_expr",
@@ -1894,18 +1993,18 @@ namespace py {
   const unsigned short int
   py_parser::yyrline_[] =
   {
-       0,   149,   149,   164,   169,   170,   176,   177,   195,   195,
-     201,   202,   210,   211,   218,   219,   226,   238,   239,   245,
-     246,   252,   260,   268,   269,   274,   274,   279,   280,   287,
-     287,   287,   287,   287,   287,   287,   287,   287,   288,   288,
-     288,   288,   295,   296,   303,   304,   316,   317,   323,   324,
-     330,   331,   337,   338,   345,   346,   355,   356,   357,   358,
-     359,   360,   361,   362,   363,   364,   365,   372,   373,   379,
-     380,   386,   387,   393,   402,   403,   404,   415,   416,   420,
-     420,   426,   427,   431,   431,   431,   431,   437,   438,   442,
-     442,   442,   448,   449,   455,   456,   462,   463,   469,   470,
-     471,   478,   479,   486,   487,   505,   506,   507,   538,   539,
-     540,   541,   555,   561
+       0,   169,   169,   187,   195,   196,   202,   203,   221,   221,
+     227,   228,   236,   237,   244,   245,   252,   264,   265,   280,
+     284,   289,   293,   320,   321,   327,   328,   338,   346,   347,
+     352,   352,   357,   358,   365,   365,   365,   365,   365,   365,
+     365,   365,   365,   366,   366,   366,   366,   373,   374,   381,
+     382,   394,   395,   401,   402,   408,   409,   415,   416,   423,
+     424,   433,   434,   435,   436,   437,   438,   439,   440,   441,
+     442,   443,   450,   451,   457,   458,   464,   465,   471,   480,
+     481,   482,   493,   494,   498,   498,   504,   505,   509,   509,
+     509,   509,   515,   516,   520,   520,   520,   526,   527,   533,
+     534,   540,   541,   547,   548,   549,   556,   557,   564,   565,
+     583,   584,   585,   616,   617,   618,   619,   633,   639
   };
 
   // Print the state stack on the debug stream.
@@ -1978,9 +2077,9 @@ namespace py {
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,    66,    67,    68
+      65,    66,    67,    68,    69,    70
     };
-    const unsigned int user_token_number_max_ = 323;
+    const unsigned int user_token_number_max_ = 325;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1991,13 +2090,29 @@ namespace py {
       return undef_token_;
   }
 
-#line 4 "py_parser.yy" // lalr1.cc:1167
+
 } // py
-#line 1997 "py_parser.cc" // lalr1.cc:1167
-#line 569 "py_parser.yy" // lalr1.cc:1168
+
+
+
+
+
+namespace py
+{
 
 void py::py_parser::error (const location_type& l,
                           const std::string& m)
 {
     ctx.Error(l, m);
 }
+
+
+py_parser::syntax_error syntax_error(const py_parser::location_type& l,
+                                     const std::string& m)
+{
+    return py_parser::syntax_error(l, m);
+}
+
+
+}
+

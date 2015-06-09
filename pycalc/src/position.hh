@@ -50,9 +50,9 @@
 #  endif
 # endif
 
-#line 4 "py_parser.yy" // location.cc:337
+
 namespace py {
-#line 56 "position.hh" // location.cc:337
+
   /// Abstract a position.
   class position
   {
@@ -174,7 +174,7 @@ namespace py {
     return ostr << pos.line << '.' << pos.column;
   }
 
-#line 4 "py_parser.yy" // location.cc:337
+
 } // py
-#line 180 "position.hh" // location.cc:337
+
 #endif // !YY_YY_POSITION_HH_INCLUDED

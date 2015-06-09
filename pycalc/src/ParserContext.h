@@ -5,8 +5,8 @@
  *      Author: andy
  */
 
-#ifndef _PARSERCONTEXT_H_
-#define _PARSERCONTEXT_H_
+#ifndef _INCLUDED__PARSERCONTEXT_H_
+#define _INCLUDED__PARSERCONTEXT_H_
 
 
 #include <string>
@@ -33,6 +33,10 @@ public:
 	ParserContext(std::ostream& inpt);
 
 	~ParserContext();
+    
+    AstPtr ast;
+    
+    tok_state *ts;
 
 
 	std::string fileName;
@@ -40,11 +44,11 @@ public:
 
 	py_parser parser;
 
-	AstPtr ast;
+	
 
 	AstNodeFactory factory;
 
-	tok_state *ts;
+	
 
 	/**
 	 * file pointer if using file based io, TODO, replace this
@@ -98,4 +102,4 @@ int yylex(py_parser::semantic_type*, py_parser::location_type*, ParserContext&);
 
 } /* namespace py */
 
-#endif /* SOURCE_DIRECTORY__PYCALC_SRC_PARSERCONTEXT_H_ */
+#endif /* _INCLUDED_PARSERCONTEXT_H_ */

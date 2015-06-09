@@ -5,10 +5,13 @@
  *      Author: andy
  */
 
-#ifndef PYCALC_SRC_AST_H_
-#define PYCALC_SRC_AST_H_
+#ifndef _INCLUDED_AST_H_
+#define _INCLUDED_AST_H_
 
 #include "AstNode.h"
+#include "Expr.h"
+#include "Stmt.h"
+#include "Module.h"
 #include "cxx11/memory.h"
 
 namespace py
@@ -19,6 +22,21 @@ class Ast: public AstNode
 public:
 	Ast();
 	virtual ~Ast();
+
+    AstNode *module;
+
+    /**
+     * create a basic assignment statement with only a single value (what is being assigned), 
+     * and a single target (what is being assigned to)
+     */
+    Assign *CreateAssign(const location &_loc, AstNode *target, AstNode *value);
+    
+	Assign *CreateAssign(const location &_loc, const AstNodes &_targets, class Expr *_value);
+
+
+	Name *CreateName(location &loc, const char* begin, const char* end);
+
+	Num *CreateNum(const location &loc, const char* begin, const char* end);
 
 private:
 	// memory managment details of AST
@@ -35,27 +53,17 @@ private:
 
 	friend class ASTNodeFactory;
 
+	std::vector<AstNode*> nodes;
+
 };
 
 typedef cxx11_ns::shared_ptr<Ast> AstPtr;
 
 
-class Declaration: public AstNode
-{
-public:
-	Declaration();
-	virtual ~Declaration();
-};
 
 
 
-class FunctionDeclaration
-{
-public:
-	FunctionDeclaration();
-	virtual ~FunctionDeclaration();
-};
 
 } /* namespace py */
-#endif /* PYCALC_SRC_AST_H_ */
+#endif /* _INCLUDED_AST_H_ */
 

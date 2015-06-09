@@ -40,7 +40,7 @@
 #ifndef YY_YY_PY_PARSER_HH_INCLUDED
 # define YY_YY_PY_PARSER_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 12 "py_parser.yy" // lalr1.cc:392
+
 
 # include <string>
 
@@ -49,7 +49,7 @@
     class AstNode;
     }
 
-#line 53 "py_parser.hh" // lalr1.cc:392
+
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -119,9 +119,9 @@
 # define YYDEBUG 1
 #endif
 
-#line 4 "py_parser.yy" // lalr1.cc:392
+
 namespace py {
-#line 125 "py_parser.hh" // lalr1.cc:392
+
 
 
 
@@ -211,9 +211,11 @@ namespace py {
         AT = 314,
         AWAIT = 315,
         ASYNC = 316,
-        NAME = 317,
-        NUMBER = 318,
-        STRING = 319
+        FROM = 317,
+        YIELD = 318,
+        NAME = 319,
+        NUMBER = 320,
+        STRING = 321
       };
     };
 
@@ -521,12 +523,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 198,     ///< Last index in yytable_.
-      yynnts_ = 47,  ///< Number of nonterminal symbols.
+      yylast_ = 274,     ///< Last index in yytable_.
+      yynnts_ = 48,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 69  ///< Number of tokens.
+      yyntokens_ = 71  ///< Number of tokens.
     };
 
 
@@ -535,9 +537,24 @@ namespace py {
   };
 
 
-#line 4 "py_parser.yy" // lalr1.cc:392
+
 } // py
-#line 541 "py_parser.hh" // lalr1.cc:392
+
+
+
+// //                    "%code provides" blocks.
+
+
+// A way to make syntax exceptions
+// The body of the parser::syntax_error is defined as inline
+// in the .cc file, so define a function here to create one of these
+// exception types so that it may be used outside of the py_parser.cc
+// file. 
+namespace py
+{
+    py_parser::syntax_error syntax_error(const py_parser::location_type& l, const std::string& m);
+}
+   
 
 
 

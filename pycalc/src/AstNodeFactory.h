@@ -5,8 +5,8 @@
  *      Author: andy
  */
 
-#ifndef PYCALC_SRC_ASTNODEFACTORY_H_
-#define PYCALC_SRC_ASTNODEFACTORY_H_
+#ifndef _INCLUDED_ASTNODEFACTORY_H_
+#define _INCLUDED_ASTNODEFACTORY_H_
 
 namespace py
 {
@@ -20,4 +20,4 @@ public:
 
 } /* namespace py */
 
-#endif /* PYCALC_SRC_ASTNODEFACTORY_H_ */
+#endif /* _INCLUDED_ASTNODEFACTORY_H_ */

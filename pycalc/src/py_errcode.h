@@ -1,5 +1,5 @@
-#ifndef Py_ERRCODE_H
-#define Py_ERRCODE_H
+#ifndef _INCLUDED_PY_ERRCODE_H
+#define _INCLUDED_PY_ERRCODE_H
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,4 +33,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* !Py_ERRCODE_H */
+#endif /* !_INCLUDED__PY_ERRCODE_H */

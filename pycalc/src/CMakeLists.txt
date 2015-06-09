@@ -6,6 +6,9 @@ set(SRC
   Ast.cpp
   AstNode.cpp
   AstNodeFactory.cpp
+  Expr.cpp
+  Stmt.cpp
+  Module.cpp
   )
   
 set(HEADERS
@@ -22,6 +25,9 @@ set(HEADERS
   py_errcode.h
   py_private.h
   py_tokenizer.h
+  Expr.h
+  Stmt.h
+  Module.h
   )
 
 

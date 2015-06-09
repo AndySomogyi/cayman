@@ -16,20 +16,22 @@ namespace py
 
 
 ParserContext::ParserContext(const std::string& uri):
-		file(NULL),
-		ts(NULL),
-		flags(0), started(0), error(0),
-		parser(*this)
+    ast(new Ast()),
+    ts(NULL),
+    parser(*this),
+    file(NULL),
+    flags(0), started(0), error(0)
 {
 	file = fopen(uri.c_str(), "r");
 	ts = PyTokenizer_FromFile(file, NULL, NULL);
 }
 
 ParserContext::ParserContext(std::ostream& inpt):
-		file(NULL),
-		ts(NULL),
-		flags(0), started(0), error(0),
-		parser(*this)
+    ast(new Ast()),
+    ts(NULL),
+    parser(*this),
+    file(NULL),
+    flags(0), started(0), error(0)
 {
 }
 
@@ -72,6 +74,8 @@ std::string dump_done(int done)
     default: return "UNKNOWN ERROR CODE";
     }
 }
+
+
 
 int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		ParserContext& ctx)
@@ -136,8 +140,13 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 	else
 		col_offset = -1;
 
+	// TODO calc end pos of token
+	*loc = location(position(NULL, ctx.ts->lineno, col_offset));
+
 	// print token
 	tok_dump(type, a, b);
+
+	*node = NULL;
 
 
 	switch (type)
@@ -155,9 +164,11 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		{
 			result = tok::NAME;
 		}
+		*node = ctx.ast->CreateName(*loc, a, b);
 		break;
 	case pytoken::NUMBER:
 		result = tok::NUMBER;
+		*node = ctx.ast->CreateNum(*loc, a, b);
 		break;
 	case pytoken::STRING:
 		result = tok::STRING;

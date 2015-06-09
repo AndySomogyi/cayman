@@ -11,7 +11,7 @@
 namespace py
 {
 
-Ast::Ast()
+Ast::Ast() : AstNode(this, location())
 {
 	// TODO Auto-generated constructor stub
 
@@ -19,33 +19,38 @@ Ast::Ast()
 
 Ast::~Ast()
 {
-	// TODO Auto-generated destructor stub
-}
-
-
-
-Declaration::Declaration()
-{
-	// TODO Auto-generated constructor stub
 
 }
 
-Declaration::~Declaration()
+Assign* Ast::CreateAssign(const location& loc, const AstNodes& targets,
+		class Expr* value)
 {
-	// TODO Auto-generated destructor stub
+	Assign *n = new Assign(this, loc, targets, value);
+
+	nodes.push_back(n);
+
+	return n;
 }
 
-
-
-FunctionDeclaration::FunctionDeclaration()
+Name* Ast::CreateName(location& loc, const char* begin, const char* end)
 {
-	// TODO Auto-generated constructor stub
-
+	Name *n = new Name(this, loc, begin, end);
+	nodes.push_back(n);
+	return n;
 }
 
-FunctionDeclaration::~FunctionDeclaration()
+Assign* Ast::CreateAssign(const location& loc, AstNode* target, AstNode* value)
 {
-	// TODO Auto-generated destructor stub
+	Assign *n = new Assign(this, loc, target, value);
+	nodes.push_back(n);
+	return n;
+}
+
+Num* Ast::CreateNum(const location& loc, const char* begin, const char* end)
+{
+	Num *n = new Num(this, loc, begin, end);
+	nodes.push_back(n);
+	return n;
 }
 
 } /* namespace py */

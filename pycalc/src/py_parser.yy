@@ -27,6 +27,22 @@
 };
 %define parse.trace
 %define parse.error verbose
+
+
+%code provides
+{
+// A way to make syntax exceptions
+// The body of the parser::syntax_error is defined as inline
+// in the .cc file, so define a function here to create one of these
+// exception types so that it may be used outside of the py_parser.cc
+// file. 
+namespace py
+{
+    py_parser::syntax_error syntax_error(const py_parser::location_type& l, const std::string& m);
+}
+   
+}
+
 %code
 {
     #include "ParserContext.h"
@@ -93,6 +109,8 @@ RIGHTSHIFTEQUAL ">>="
   AT "@"
 AWAIT "await"
 ASYNC "async"
+FROM "from"
+YIELD "yield"
 NAME
 NUMBER
 STRING
@@ -116,6 +134,8 @@ STRING
 %left "&" "^" "|"
 %left "and" "or"
 %left ","
+
+
 
 %right "="  "+="  "-="  "*="   "/="  "<<="  ">>="  "%="   "&="  "^="  "|="
 
@@ -143,10 +163,13 @@ STRING
 
 
 
-%start unit;
+%start module;
 
-unit:
+module:
     file_input
+    {
+        ctx.ast->module = $1;
+    }
 ;
 
 
@@ -162,6 +185,9 @@ unit:
 // file_input: (NEWLINE | stmt)* ENDMARKER
 file_input:
      newline_stmt_seq ENDMARKER
+     {
+         $$ = $1;
+     }
 ;
 
 // (NEWLINE | stmt)
@@ -236,21 +262,73 @@ pass_stmt:
 // result of expr_stmt can be either an Expr or Assign or ???
 expr_stmt:
     testlist_star_expr augassign testlist
-    | testlist_star_expr assign_rhs_seq
+    | assign_expr_seq { $$ = $1;  /*foo*/ }
 ;
+
+
+// assign_expr_seq: testlist_star_expr '=' (yield_expr|testlist_star_expr))*
+//
+// In this recursive rule, bison scans a sequence from left to right, so
+// a = b = c = 1
+// first scans 'a = b', this yields the (testlist_star_expr "=" testlist_star_expr) rule,
+// next the ' = c' term is scanned yielding the
+// (assign_expr_seq "=" testlist_star_expr) rule.
+// So, in this case, the 'Assign' node is first created in the first match,
+// and for each additional term that is added, the value (what is assigned to the target)
+// is shifted, and the previous value is added to the target of the Assign statement. 
+assign_expr_seq:
+    testlist_star_expr "=" yield_expr
+    {
+        std::cout << "testlist_star_expr = yield_expr" << std::endl;
+    }
+    | testlist_star_expr "=" testlist_star_expr
+    {
+        std::cout << "testlist_star_expr = testlist_star_expr" << std::endl;
+        $$ = ctx.ast->CreateAssign(@$, $1, $3);
+    }
+    | assign_expr_seq "=" yield_expr
+    {
+        std::cout << "assign_expr_seq = yield_expr" << std::endl;
+    }
+    | assign_expr_seq "=" testlist_star_expr
+    {
+        Assign *a = dynamic_cast<Assign*>($1);
+        assert(a);
+        a->AddValue($2);
+        $$ = a;
+        std::cout << "assign_expr_seq = testlist_star_expr" << std::endl;
+    }
+    ;
 
 
 // ('=' (yield_expr|testlist_star_expr))*
-assign_rhs_seq:
-    %empty
-    | assign_rhs_seq "=" yeild_expr_or_testlist_star_expr
-    ;
+//assign_rhs_seq:
+//    %empty
+//    | assign_rhs_seq "=" yeild_expr_or_testlist_star_expr
+//    ;
     
 // yield_expr|testlist_star_expr
 // placeholder for yeild expressions
-yeild_expr_or_testlist_star_expr:
-    testlist_star_expr
-;
+//yeild_or_testlist_star_expr:
+//    yield_expr
+//    | testlist_star_expr
+//;
+
+// *python3
+// yield_expr: 'yield' [yield_arg]
+yield_expr:
+    "yield"
+    | "yield" yield_arg
+    ;
+
+// *python3
+// yield_arg: 'from' test | testlist
+yield_arg:
+    "from" test
+    | testlist
+    ;
+
+
 
 // *python3
 // star_expr: '*' expr
@@ -535,10 +613,10 @@ argument:
 
 
 atom:
-"(" test_or_star ")" {$$ = 0;}
-| NAME       { $$ = 0; }
-| NUMBER { $$ = 0; } 
-| STRING { $$ = 0; }
+"(" test_or_star ")" {$$ = $1;}
+| NAME       { $$ = $1; /*name*/}
+| NUMBER { $$ = $1; /*num*/} 
+| STRING { $$ = $1; /*str*/}
 ;
 
 
@@ -567,8 +645,24 @@ funcdef:
 
 
 %%
+
+
+namespace py
+{
+
 void py::py_parser::error (const location_type& l,
                           const std::string& m)
 {
     ctx.Error(l, m);
 }
+
+
+py_parser::syntax_error syntax_error(const py_parser::location_type& l,
+                                     const std::string& m)
+{
+    return py_parser::syntax_error(l, m);
+}
+
+
+}
+

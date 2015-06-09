@@ -5,8 +5,8 @@
  *      Author: andy
  */
 
-#ifndef _PARSER_H_
-#define _PARSER_H_
+#ifndef _INCLUDED_PARSER_H_
+#define _INCLUDED_PARSER_H_
 
 #include <string>
 #include <ostream>
@@ -48,9 +48,14 @@ public:
     void Tokenize();
 private:
     
-    Parser(const Parser& other)
+    Parser(const Parser&)
     {
         assert("Parser copy forbidden" && 0);
+    }
+    
+    Parser& operator=(const Parser&)
+    {
+        assert("Parser assign forbidden" && 0);
     }
 
 
@@ -59,4 +64,4 @@ private:
 
 } /* namespace py */
 
-#endif /* PYCALC_SRC_PARSER_H_ */
+#endif /* _INCLUDED_PARSER_H_ */
