@@ -63,6 +63,11 @@ public:
 	int error;
 
 	/**
+	 * As sequence of statments that are built either durring a function definition,
+	 */
+	AstNodes stmts;
+
+	/**
 	 * Error function called by the parser. the call to the Error func
 	 * is specified in the grammar.
 	 */

@@ -168,7 +168,10 @@ STRING
 module:
     file_input
     {
-        ctx.ast->module = $1;
+        AstNodeSeq *seq = dynamic_cast<AstNodeSeq*>($1);
+        assert(seq);
+        ctx.ast->module = ctx.ast->CreateModule(@$, seq->seq);
+        delete seq;
     }
 ;
 
@@ -193,14 +196,26 @@ file_input:
 // (NEWLINE | stmt)
 newline_or_stmt:
     NEWLINE
+    {
+        $$ = NULL;
+    }
     | stmt
+    {
+        $$ = $1;
+    }
     ;
 
 // a sequence of zero or more newline_stmt
 // (NEWLINE | stmt)*
 newline_stmt_seq:
     %empty
+    {
+        $$ = NULL;
+    }
     | newline_stmt_seq newline_or_stmt
+    {
+        $$ = AstNodeSeq::Add(@$, $1, $2);
+    }
 ;
 
 
@@ -218,14 +233,27 @@ newline_stmt_seq:
 // *python3
 // stmt: simple_stmt | compound_stmt
 stmt:
-    simple_stmt | compound_stmt
+    simple_stmt
+    {
+        $$ = $1;
+    }
+    | compound_stmt
+    {
+        $$ = $1;
+    }
     ;
 
 // *python simple_stmt
 // simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
 simple_stmt:
     small_stmt_seq  NEWLINE
+    {
+        $$ = $1;
+    }
     | small_stmt_seq  ";" NEWLINE
+    {
+        $$ = $1;
+    }
 ;
 
 
@@ -234,7 +262,13 @@ simple_stmt:
 //              import_stmt | global_stmt | nonlocal_stmt | assert_stmt)
 small_stmt:
     pass_stmt
+    {
+        $$ = $1; /* pass_stmt */
+    }
     | expr_stmt
+    {
+        $$ = $1; /* expr_stmt */
+    }
 ;
 
 // sequence of small statments, a single small_stmt, followed by
@@ -262,7 +296,13 @@ pass_stmt:
 // result of expr_stmt can be either an Expr or Assign or ???
 expr_stmt:
     testlist_star_expr augassign testlist
-    | assign_expr_seq { $$ = $1;  /*foo*/ }
+    {
+        throw syntax_error(@$, "not implemented");
+    }
+    | assign_expr_seq
+    {
+        $$ = $1;  /*foo*/
+    }
 ;
 
 
@@ -294,7 +334,7 @@ assign_expr_seq:
     {
         Assign *a = dynamic_cast<Assign*>($1);
         assert(a);
-        a->AddValue($2);
+        a->AddValue($3);
         $$ = a;
         std::cout << "assign_expr_seq = testlist_star_expr" << std::endl;
     }

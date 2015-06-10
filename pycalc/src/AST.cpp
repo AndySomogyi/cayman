@@ -5,8 +5,10 @@
  *      Author: andy
  */
 
-#include <AST.h>
-#include <Ast.h>
+
+#include "Ast.h"
+#include "AstVisitor.h"
+#include "AstPrinter.h"
 
 namespace py
 {
@@ -22,13 +24,22 @@ Ast::~Ast()
 
 }
 
-Assign* Ast::CreateAssign(const location& loc, const AstNodes& targets,
-		class Expr* value)
+int Ast::Accept(class AstVisitor* v)
 {
-	Assign *n = new Assign(this, loc, targets, value);
+	return v->Visit(this);
+}
 
+void Ast::Print(std::ostream& os)
+{
+	AstPrinter printer(os);
+
+	printer.Visit(this);
+}
+
+Module *Ast::CreateModule(const location &loc, const AstNodes &body)
+{
+	Module *n = new Module(this, loc, body);
 	nodes.push_back(n);
-
 	return n;
 }
 

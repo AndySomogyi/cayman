@@ -21,5 +21,7 @@ int main(int argc, const char** argv)
     
 	AstPtr ast = parser.Parse();
     
+    ast->Print(std::cout);
+    
     std::cout << "all done" << std::endl;
 }

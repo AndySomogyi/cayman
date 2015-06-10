@@ -8,7 +8,7 @@ set(SRC
   AstNodeFactory.cpp
   Expr.cpp
   Stmt.cpp
-  Module.cpp
+  AstPrinter.cpp
   )
   
 set(HEADERS
@@ -27,7 +27,8 @@ set(HEADERS
   py_tokenizer.h
   Expr.h
   Stmt.h
-  Module.h
+  AstVisitor.h
+  AstPrinter.h
   )
 
 

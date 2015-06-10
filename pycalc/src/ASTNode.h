@@ -28,6 +28,8 @@ public:
 
 	virtual void Print(std::ostream&) const {};
 
+	virtual int Accept(class AstVisitor*) = 0;
+
 	// region of source code where this syntax item was defined,
 	// currently use the bison provided location (it works), but
 	// in future, might move to differnt one if we replace bison based
@@ -44,11 +46,42 @@ public:
     
 typedef std::vector<AstNode*> AstNodes;
 
+
+/**
+ * A temp Ast node type that never occurs in a built tree, but is used
+ * by the parser to construct the tree.
+ *
+ * These are only created in internal grammar rules.
+ */
+class AstNodeSeq : public AstNode
+{
+public:
+	AstNodeSeq(const location& loc) : AstNode(NULL, loc) {};
+	virtual ~AstNodeSeq() {};
+
+	AstNodes seq;
+
+	/**
+	 * If seq is an existing sequence, node is added to it, and
+	 * the appended sequence is returned. If seq is NULL, a new sequence
+	 * is created with node, and returned.
+	 */
+	static AstNodeSeq *Add(const location& loc, AstNode *seq, AstNode *node);
+
+	virtual int Accept(class AstVisitor*)
+	{
+		assert("AstNodeSeq is not visitable" && 0);
+		return 0;
+	}
+};
+
 class Name : public AstNode
 {
 public:
 	Name(class Ast *ast, const location &loc, const char* begin, const char* end);
 	virtual ~Name() {};
+
+	virtual int Accept(class AstVisitor*);
 };
 
 
@@ -65,6 +98,8 @@ public:
 	Num(class Ast *ast, const location &loc, const char* begin, const char* end);
 
 	virtual ~Num() {};
+
+	virtual int Accept(class AstVisitor*);
 };
 
 
@@ -73,6 +108,23 @@ class Str : public AstNode
 public:
 	Str();
 	virtual ~Str();
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
+class Module : public AstNode
+{
+public:
+	Module(class Ast *ast, const location& loc, const AstNodes &body) :
+		AstNode(ast, loc), body(body) {};
+	virtual ~Module() {};
+
+	AstNodes body;
+
+	virtual int Accept(class AstVisitor*);
+
+
 };
 
 } /* namespace py */

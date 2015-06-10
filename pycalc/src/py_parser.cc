@@ -1438,7 +1438,10 @@ namespace py {
   case 2:
 
     {
-        ctx.ast->module = (yystack_[0].value);
+        AstNodeSeq *seq = dynamic_cast<AstNodeSeq*>((yystack_[0].value));
+        assert(seq);
+        ctx.ast->module = ctx.ast->CreateModule(yylhs.location, seq->seq);
+        delete seq;
     }
 
     break;
@@ -1451,9 +1454,99 @@ namespace py {
 
     break;
 
+  case 4:
+
+    {
+        (yylhs.value) = NULL;
+    }
+
+    break;
+
+  case 5:
+
+    {
+        (yylhs.value) = (yystack_[0].value);
+    }
+
+    break;
+
+  case 6:
+
+    {
+        (yylhs.value) = NULL;
+    }
+
+    break;
+
+  case 7:
+
+    {
+        (yylhs.value) = AstNodeSeq::Add(yylhs.location, (yystack_[1].value), (yystack_[0].value));
+    }
+
+    break;
+
+  case 8:
+
+    {
+        (yylhs.value) = (yystack_[0].value);
+    }
+
+    break;
+
+  case 9:
+
+    {
+        (yylhs.value) = (yystack_[0].value);
+    }
+
+    break;
+
+  case 10:
+
+    {
+        (yylhs.value) = (yystack_[1].value);
+    }
+
+    break;
+
+  case 11:
+
+    {
+        (yylhs.value) = (yystack_[2].value);
+    }
+
+    break;
+
+  case 12:
+
+    {
+        (yylhs.value) = (yystack_[0].value); /* pass_stmt */
+    }
+
+    break;
+
+  case 13:
+
+    {
+        (yylhs.value) = (yystack_[0].value); /* expr_stmt */
+    }
+
+    break;
+
+  case 17:
+
+    {
+        throw syntax_error(yylhs.location, "not implemented");
+    }
+
+    break;
+
   case 18:
 
-    { (yylhs.value) = (yystack_[0].value);  /*foo*/ }
+    {
+        (yylhs.value) = (yystack_[0].value);  /*foo*/
+    }
 
     break;
 
@@ -1487,7 +1580,7 @@ namespace py {
     {
         Assign *a = dynamic_cast<Assign*>((yystack_[2].value));
         assert(a);
-        a->AddValue((yystack_[1].value));
+        a->AddValue((yystack_[0].value));
         (yylhs.value) = a;
         std::cout << "assign_expr_seq = testlist_star_expr" << std::endl;
     }
@@ -1993,18 +2086,18 @@ namespace py {
   const unsigned short int
   py_parser::yyrline_[] =
   {
-       0,   169,   169,   187,   195,   196,   202,   203,   221,   221,
-     227,   228,   236,   237,   244,   245,   252,   264,   265,   280,
-     284,   289,   293,   320,   321,   327,   328,   338,   346,   347,
-     352,   352,   357,   358,   365,   365,   365,   365,   365,   365,
-     365,   365,   365,   366,   366,   366,   366,   373,   374,   381,
-     382,   394,   395,   401,   402,   408,   409,   415,   416,   423,
-     424,   433,   434,   435,   436,   437,   438,   439,   440,   441,
-     442,   443,   450,   451,   457,   458,   464,   465,   471,   480,
-     481,   482,   493,   494,   498,   498,   504,   505,   509,   509,
-     509,   509,   515,   516,   520,   520,   520,   526,   527,   533,
-     534,   540,   541,   547,   548,   549,   556,   557,   564,   565,
-     583,   584,   585,   616,   617,   618,   619,   633,   639
+       0,   169,   169,   190,   198,   202,   211,   215,   236,   240,
+     249,   253,   264,   268,   278,   279,   286,   298,   302,   320,
+     324,   329,   333,   360,   361,   367,   368,   378,   386,   387,
+     392,   392,   397,   398,   405,   405,   405,   405,   405,   405,
+     405,   405,   405,   406,   406,   406,   406,   413,   414,   421,
+     422,   434,   435,   441,   442,   448,   449,   455,   456,   463,
+     464,   473,   474,   475,   476,   477,   478,   479,   480,   481,
+     482,   483,   490,   491,   497,   498,   504,   505,   511,   520,
+     521,   522,   533,   534,   538,   538,   544,   545,   549,   549,
+     549,   549,   555,   556,   560,   560,   560,   566,   567,   573,
+     574,   580,   581,   587,   588,   589,   596,   597,   604,   605,
+     623,   624,   625,   656,   657,   658,   659,   673,   679
   };
 
   // Print the state stack on the debug stream.

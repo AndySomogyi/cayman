@@ -11,7 +11,6 @@
 #include "AstNode.h"
 #include "Expr.h"
 #include "Stmt.h"
-#include "Module.h"
 #include "cxx11/memory.h"
 
 namespace py
@@ -23,7 +22,11 @@ public:
 	Ast();
 	virtual ~Ast();
 
-    AstNode *module;
+    Module *module;
+
+    virtual int Accept(class AstVisitor *v);
+
+    virtual void Print(std::ostream &os);
 
     /**
      * create a basic assignment statement with only a single value (what is being assigned), 
@@ -31,12 +34,13 @@ public:
      */
     Assign *CreateAssign(const location &_loc, AstNode *target, AstNode *value);
     
-	Assign *CreateAssign(const location &_loc, const AstNodes &_targets, class Expr *_value);
-
-
 	Name *CreateName(location &loc, const char* begin, const char* end);
 
 	Num *CreateNum(const location &loc, const char* begin, const char* end);
+
+	Module *CreateModule(const location &loc, const AstNodes &body);
+
+
 
 private:
 	// memory managment details of AST
