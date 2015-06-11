@@ -41,6 +41,15 @@ public:
 	Module *CreateModule(const location &loc, const AstNodes &body);
 
 
+    Tuple *CreateTuple(const location &loc, const AstNodes &items, ExprContext ctx);
+
+	Tuple *CreateTuple(const location &_loc, ExprContext ctx);
+
+    Tuple *CreateTuple(const location& loc, ExprContext ctx, AstNode *seq, AstNode *item);
+
+
+
+
 
 private:
 	// memory managment details of AST

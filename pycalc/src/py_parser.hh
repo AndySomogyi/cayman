@@ -161,61 +161,62 @@ namespace py {
         AND = 264,
         IN = 265,
         IS = 266,
-        ENDMARKER = 267,
-        NEWLINE = 268,
-        INDENT = 269,
-        DEDENT = 270,
-        LPAR = 271,
-        RPAR = 272,
-        LSQB = 273,
-        RSQB = 274,
-        COLON = 275,
-        COMMA = 276,
-        SEMI = 277,
-        PLUS = 278,
-        MINUS = 279,
-        STAR = 280,
-        SLASH = 281,
-        VBAR = 282,
-        AMPER = 283,
-        LESS = 284,
-        GREATER = 285,
-        EQUAL = 286,
-        DOT = 287,
-        PERCENT = 288,
-        BACKQUOTE = 289,
-        LBRACE = 290,
-        RBRACE = 291,
-        EQEQUAL = 292,
-        NOTEQUAL = 293,
-        LESSEQUAL = 294,
-        GREATEREQUAL = 295,
-        TILDE = 296,
-        CIRCUMFLEX = 297,
-        LEFTSHIFT = 298,
-        RIGHTSHIFT = 299,
-        DOUBLESTAR = 300,
-        PLUSEQUAL = 301,
-        MINEQUAL = 302,
-        STAREQUAL = 303,
-        SLASHEQUAL = 304,
-        PERCENTEQUAL = 305,
-        AMPEREQUAL = 306,
-        VBAREQUAL = 307,
-        CIRCUMFLEXEQUAL = 308,
-        LEFTSHIFTEQUAL = 309,
-        RIGHTSHIFTEQUAL = 310,
-        DOUBLESTAREQUAL = 311,
-        DOUBLESLASH = 312,
-        DOUBLESLASHEQUAL = 313,
-        AT = 314,
-        AWAIT = 315,
-        ASYNC = 316,
-        FROM = 317,
-        YIELD = 318,
-        NAME = 319,
-        NUMBER = 320,
-        STRING = 321
+        FOR = 267,
+        ENDMARKER = 268,
+        NEWLINE = 269,
+        INDENT = 270,
+        DEDENT = 271,
+        LPAR = 272,
+        RPAR = 273,
+        LSQB = 274,
+        RSQB = 275,
+        COLON = 276,
+        COMMA = 277,
+        SEMI = 278,
+        PLUS = 279,
+        MINUS = 280,
+        STAR = 281,
+        SLASH = 282,
+        VBAR = 283,
+        AMPER = 284,
+        LESS = 285,
+        GREATER = 286,
+        EQUAL = 287,
+        DOT = 288,
+        PERCENT = 289,
+        BACKQUOTE = 290,
+        LBRACE = 291,
+        RBRACE = 292,
+        EQEQUAL = 293,
+        NOTEQUAL = 294,
+        LESSEQUAL = 295,
+        GREATEREQUAL = 296,
+        TILDE = 297,
+        CIRCUMFLEX = 298,
+        LEFTSHIFT = 299,
+        RIGHTSHIFT = 300,
+        DOUBLESTAR = 301,
+        PLUSEQUAL = 302,
+        MINEQUAL = 303,
+        STAREQUAL = 304,
+        SLASHEQUAL = 305,
+        PERCENTEQUAL = 306,
+        AMPEREQUAL = 307,
+        VBAREQUAL = 308,
+        CIRCUMFLEXEQUAL = 309,
+        LEFTSHIFTEQUAL = 310,
+        RIGHTSHIFTEQUAL = 311,
+        DOUBLESTAREQUAL = 312,
+        DOUBLESLASH = 313,
+        DOUBLESLASHEQUAL = 314,
+        AT = 315,
+        AWAIT = 316,
+        ASYNC = 317,
+        FROM = 318,
+        YIELD = 319,
+        NAME = 320,
+        NUMBER = 321,
+        STRING = 322
       };
     };
 
@@ -376,7 +377,7 @@ namespace py {
     /// \param yyvalue   the value to check
     static bool yy_table_value_is_error_ (int yyvalue);
 
-    static const signed char yypact_ninf_;
+    static const short int yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -393,7 +394,7 @@ namespace py {
   static const unsigned char yydefact_[];
 
   // YYPGOTO[NTERM-NUM].
-  static const signed char yypgoto_[];
+  static const short int yypgoto_[];
 
   // YYDEFGOTO[NTERM-NUM].
   static const short int yydefgoto_[];
@@ -523,12 +524,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 274,     ///< Last index in yytable_.
-      yynnts_ = 48,  ///< Number of nonterminal symbols.
+      yylast_ = 385,     ///< Last index in yytable_.
+      yynnts_ = 54,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 71  ///< Number of tokens.
+      yyntokens_ = 72  ///< Number of tokens.
     };
 
 

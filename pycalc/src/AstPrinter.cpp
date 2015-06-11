@@ -21,15 +21,15 @@ AstPrinter::~AstPrinter()
 	// TODO Auto-generated destructor stub
 }
 
-int AstPrinter::Visit(Name*)
+int AstPrinter::Visit(Name* nm)
 {
-	os << "Name" << std::endl;
+	os << "Name(" << nm->id << ")" << std::endl;
 	return 0;
 }
 
-int AstPrinter::Visit(Num*)
+int AstPrinter::Visit(Num* num)
 {
-	os << "Num" << std::endl;
+	os << "Num(" << num->doubleValue << ")" << std::endl;
 	return 0;
 }
 
@@ -77,8 +77,22 @@ int AstPrinter::Visit(BinOp*)
 	return 0;
 }
 
-int AstPrinter::Visit(Tuple*)
+int AstPrinter::Visit(Tuple* t)
 {
+    os << "Tuple(items=[";
+    
+    if (t->items.size() > 0)
+    {
+        os << std::endl;
+        for (AstNodes::const_iterator i = t->items.begin();
+             i != t->items.end(); ++i)
+        {
+            (*i)->Accept(this);
+        }
+    }
+    
+    os << "])";
+    
 	return 0;
 }
 

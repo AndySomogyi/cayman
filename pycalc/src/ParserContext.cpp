@@ -149,6 +149,8 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 	*node = NULL;
 
 
+    // TODO, make sure its OK to strncmp to length len+1!!!
+
 	switch (type)
 	{
 	case pytoken::ENDMARKER:
@@ -159,6 +161,14 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		if (strncmp(a, "def", 3) == 0)
 		{
 			result = tok::DEF;
+		}
+		else if (strncmp(a, "in", 2) == 0)
+		{
+			result = tok::IN;
+		}
+		else if (strncmp(a, "for", 3) == 0)
+		{
+			result = tok::FOR;
 		}
 		else
 		{

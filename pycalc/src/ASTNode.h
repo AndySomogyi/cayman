@@ -10,6 +10,7 @@
 
 #include <ostream>
 #include <vector>
+#include <stdint.h>
 #include "location.hh"
 #include "assert.h"
 
@@ -75,11 +76,38 @@ public:
 	}
 };
 
+enum ExprContext { Load=1, Store=2, Del=3, AugLoad=4, AugStore=5,
+                   Param=6, UnknownCtx=7};
+
+class Tuple : public AstNode
+{
+public:
+	Tuple(class Ast* ast, const location &loc, const AstNodes &items, ExprContext ctx) :
+		AstNode(ast, loc), items(items), ctx(ctx) {};
+
+	Tuple(class Ast* _ast, const location &_loc, ExprContext ctx) :
+		AstNode(ast, loc), items(items), ctx(ctx) {};
+
+	virtual ~Tuple() {};
+
+	AstNodes items;
+
+	ExprContext ctx;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
 class Name : public AstNode
 {
 public:
 	Name(class Ast *ast, const location &loc, const char* begin, const char* end);
 	virtual ~Name() {};
+
+	// TODO, ineffecient, need to share names
+	std::string id;
+
+	ExprContext ctx;
 
 	virtual int Accept(class AstVisitor*);
 };
@@ -97,6 +125,17 @@ public:
 	 */
 	Num(class Ast *ast, const location &loc, const char* begin, const char* end);
 
+	enum {Int32, UInt32, Float, Double} type;
+
+
+	union
+	{
+		int32_t int32Value;
+		uint32_t uint32Value;
+		float floatValue;
+		double doubleValue;
+	};
+
 	virtual ~Num() {};
 
 	virtual int Accept(class AstVisitor*);
@@ -110,6 +149,8 @@ public:
 	virtual ~Str();
 
 	virtual int Accept(class AstVisitor*);
+
+	std::string str;
 };
 
 

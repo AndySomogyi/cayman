@@ -18,18 +18,6 @@ Expr::~Expr()
 	// TODO Auto-generated destructor stub
 }
 
-
-
-Tuple::~Tuple()
-{
-	// TODO Auto-generated destructor stub
-}
-
-int Tuple::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
 int BinOp::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);

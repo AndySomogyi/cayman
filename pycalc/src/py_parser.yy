@@ -50,63 +50,64 @@ namespace py
 
 
 %token
-  DEF // need to add DEF token
-  PASS
-   IF "if"
+DEF // need to add DEF token
+PASS
+IF "if"
 ELSE "else"
 OR "or"
 NOT "not"
 AND "and"
 IN "in"
 IS "is"
-  ENDMARKER
-  NEWLINE
-  INDENT
-  DEDENT
-  LPAR ")"
-  RPAR "("
-  LSQB
-  RSQB
-  COLON ":"
-  COMMA ","
-  SEMI ";"
-  PLUS "+"
-  MINUS "-"
-  STAR "*"
-  SLASH "/"
-  VBAR
-  AMPER "&"
-  LESS "<"
-  GREATER ">"
-  EQUAL "="
-  DOT "."
-  PERCENT "%"
-  BACKQUOTE "`"
-  LBRACE 
-  RBRACE
-  EQEQUAL "=="
-  NOTEQUAL "!="
-  LESSEQUAL "<="
-  GREATEREQUAL ">="
-  TILDE "~"
-  CIRCUMFLEX "^"
+FOR "for"
+ENDMARKER
+NEWLINE
+INDENT
+DEDENT
+LPAR "("
+RPAR ")"
+LSQB
+RSQB
+COLON ":"
+COMMA ","
+SEMI ";"
+PLUS "+"
+MINUS "-"
+STAR "*"
+SLASH "/"
+VBAR
+AMPER "&"
+LESS "<"
+GREATER ">"
+EQUAL "="
+DOT "."
+PERCENT "%"
+BACKQUOTE "`"
+LBRACE 
+RBRACE
+EQEQUAL "=="
+NOTEQUAL "!="
+LESSEQUAL "<="
+GREATEREQUAL ">="
+TILDE "~"
+CIRCUMFLEX "^"
 LEFTSHIFT "<<"
 RIGHTSHIFT ">>"
-  DOUBLESTAR "**"
-  PLUSEQUAL "+="
-  MINEQUAL "-="
-  STAREQUAL "*="
-  SLASHEQUAL "/="
-  PERCENTEQUAL "%="
-  AMPEREQUAL "&="
-  VBAREQUAL "|="
-  CIRCUMFLEXEQUAL "^="
+DOUBLESTAR "**"
+PLUSEQUAL "+="
+MINEQUAL "-="
+STAREQUAL "*="
+SLASHEQUAL "/="
+PERCENTEQUAL "%="
+AMPEREQUAL "&="
+VBAREQUAL "|="
+CIRCUMFLEXEQUAL "^="
 LEFTSHIFTEQUAL "<<="
 RIGHTSHIFTEQUAL ">>="
-  DOUBLESTAREQUAL "**+"
-  DOUBLESLASH "//"
-  DOUBLESLASHEQUAL "//="
-  AT "@"
+DOUBLESTAREQUAL "**+"
+DOUBLESLASH "//"
+DOUBLESLASHEQUAL "//="
+AT "@"
 AWAIT "await"
 ASYNC "async"
 FROM "from"
@@ -197,11 +198,11 @@ file_input:
 newline_or_stmt:
     NEWLINE
     {
-        $$ = NULL;
+        $$ = NULL; // newline_or_stmt NEWLINE
     }
     | stmt
     {
-        $$ = $1;
+        $$ = $1; // newline_or_stmt stmt
     }
     ;
 
@@ -235,24 +236,25 @@ newline_stmt_seq:
 stmt:
     simple_stmt
     {
-        $$ = $1;
+        $$ = $1; // stmt: simple_stmt
     }
     | compound_stmt
     {
-        $$ = $1;
+        $$ = $1; // stmt: compound_stmt
     }
     ;
 
 // *python simple_stmt
 // simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
+
 simple_stmt:
     small_stmt_seq  NEWLINE
     {
-        $$ = $1;
+        $$ = $1;  // simple_stmt: small_stmt_seq  NEWLINE
     }
     | small_stmt_seq  ";" NEWLINE
     {
-        $$ = $1;
+        $$ = $1; // simple_stmt:  small_stmt_seq  ";" NEWLINE
     }
 ;
 
@@ -276,7 +278,14 @@ small_stmt:
 // small_stmt (';' small_stmt)*
 small_stmt_seq:
     small_stmt
+    {
+        $$ = $1; // small_stmt_seq: small_stmt
+    }
     | small_stmt_seq ";" small_stmt
+    {
+        // // small_stmt_seq: small_stmt_seq ";" small_stmt
+        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3); 
+    }
 ;
 
 
@@ -294,6 +303,8 @@ pass_stmt:
 // a,b = 1,2
 // a,b = c,d = 1,2
 // result of expr_stmt can be either an Expr or Assign or ???
+// note, there can be zero or more rhs to an assignment statement,
+// in the case of zero rhs, it reduces to a single testlist_star_expr
 expr_stmt:
     testlist_star_expr augassign testlist
     {
@@ -302,6 +313,10 @@ expr_stmt:
     | assign_expr_seq
     {
         $$ = $1;  /*foo*/
+    }
+    | testlist_star_expr
+    {
+        $$ = $1; // expr_stmt: testlist_star_expr
     }
 ;
 
@@ -382,20 +397,50 @@ star_expr:
 // testlist_star_expr: (test|star_expr) (',' (test|star_expr))* [',']
 // the first part, "(test|star_expr) (',' (test|star_expr))*" is
 // the test_or_star_seq, and followed by an optional ","
+//
+// if the trailing sequence, is empty, and it evaluates to
+// the first rule, than the result is just whatever the first
+// expression was. However, if there is a trailing commaa,
+// and there is only one elment in the sequence, a length 1 tuple
+// is returned. 
 testlist_star_expr:
-    test_or_star_seq
-    | test_or_star_seq ","
+//    test_star_expr test_star_expr_seq
+//    | test_star_expr test_star_expr_seq ","
+//    ;
+
+
+    test_star_expr_seq
+    {
+        AstNode *a1 = $1;
+        $$ = $1; // testlist_star_expr:  test_star_expr_seq
+    }
+    | test_star_expr_seq ","
+    {
+        AstNode *a1 = $1;
+        $$ = $1; // testlist_star_expr: test_star_expr_seq ","
+    }
     ;
 
+
+
 // (test|star_expr)
-test_or_star:
+test_star_expr:
     test | star_expr
     ;
 
-// (test|star_expr) (',' (test|star_expr))* 
-test_or_star_seq:
-    test_or_star
-    | test_or_star_seq "," test_or_star
+// testlist_star_expr_seq: (test|star_expr) (',' (test|star_expr))* 
+test_star_expr_seq:
+    test_star_expr
+    {
+        // test_star_expr_seq: test_star_expr
+        $$ = $1;
+    }
+    | test_star_expr_seq "," test_star_expr
+    {
+        // test_star_expr_seq: test_star_expr_seq "," test_star_expr
+        // don't know at this point what context, 
+        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3);
+    }
     ;
 
 // *python3
@@ -432,7 +477,7 @@ test_seq:
 // test: or_test ['if' or_test 'else' test] | lambdef
 test:
     or_test
-    | or_test IF or_test ELSE test
+    | or_test IF or_test "else" test
 ;
 
 // *python3 or_test:
@@ -653,15 +698,43 @@ argument:
 
 
 atom:
-"(" test_or_star ")" {$$ = $1;}
-| NAME       { $$ = $1; /*name*/}
-| NUMBER { $$ = $1; /*num*/} 
-| STRING { $$ = $1; /*str*/}
+    "(" ")"
+    {
+        // atom: "(" ")"
+        $$ = ctx.ast->CreateTuple(@$, Load);
+    }
+
+    |"(" testlist_comp ")"
+    {
+        // atom: |"(" testlist_comp ")"
+        $$ = $2;
+    }
+    | NAME       { $$ = $1; /*name*/}
+    | NUMBER { $$ = $1; /*num*/} 
+    | STRING { $$ = $1; /*str*/}
 ;
 
 
 // *python3
 // testlist_comp: (test|star_expr) ( comp_for | (',' (test|star_expr))* [','] )
+//
+// compare with testlist_star_expr;
+//
+// testlist_star_expr: (test|star_expr) (',' (test|star_expr))* [',']
+// if the comp_for is not found, and "(',' (test|star_expr))*" branch is taken,
+// it would likely result in a reduce-reduce conflict and the same sequence
+// of tokens could be interpreted as either rule.
+//
+// solution, re-write the rule by spliting out the comp_for branch as follows
+//
+// testlist_comp:  (test|star_expr) ( comp_for | (',' (test|star_expr))* [','] )
+// testlist_comp:  (test|star_expr) (',' (test|star_expr))* [',']
+//                |(test|star_expr) (comp_for)
+testlist_comp:
+    testlist_star_expr
+    ;
+
+
 
 
 
@@ -671,6 +744,7 @@ atom:
 //     | classdef | decorated
 compound_stmt:
     funcdef
+    | for_stmt
 ;
 
 // * python funcdef
@@ -678,11 +752,43 @@ compound_stmt:
 funcdef:
     DEF NAME 
 ;
-    
 
 
+// stmt+
+stmt_seq:
+    stmt
+    | stmt_seq stmt
+    ;
+
+// *python3
+// suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
+suite:
+    simple_stmt
+    | NEWLINE INDENT stmt_seq DEDENT
+    ;
+
+// *python3
+// for_stmt: 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
+for_stmt:
+    "for" exprlist "in" testlist ":" suite
+    | "for" exprlist "in" testlist ":" suite "else" ":" suite
+    ;
+
+// *python3
+// exprlist: (expr|star_expr) (',' (expr|star_expr))* [',']
+exprlist:
+    exprlist_seq
+    | exprlist_seq ","
+    ;
 
 
+// exprlist_seq: (expr|star_expr) (',' (expr|star_expr))*
+exprlist_seq:
+    expr
+    | star_expr
+    | exprlist_seq "," expr
+    | exprlist_seq "," star_expr
+    ;
 
 %%
 

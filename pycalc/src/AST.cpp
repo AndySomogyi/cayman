@@ -9,6 +9,7 @@
 #include "Ast.h"
 #include "AstVisitor.h"
 #include "AstPrinter.h"
+#include "py_parser.hh"
 
 namespace py
 {
@@ -62,6 +63,49 @@ Num* Ast::CreateNum(const location& loc, const char* begin, const char* end)
 	Num *n = new Num(this, loc, begin, end);
 	nodes.push_back(n);
 	return n;
+}
+
+
+Tuple *Ast::CreateTuple(const location &loc, const AstNodes &items, ExprContext ctx)
+{
+    Tuple *n = new Tuple(this, loc, items, ctx);
+	nodes.push_back(n);
+	return n;
+
+}
+
+Tuple *Ast::CreateTuple(const location &_loc, ExprContext ctx)
+{
+    Tuple *n = new Tuple(this, loc, ctx);
+	nodes.push_back(n);
+	return n;
+
+}
+
+Tuple *Ast::CreateTuple(const location& loc, ExprContext ctx, AstNode *seq, AstNode *item)
+{
+    Tuple *tuple = NULL;
+	if (seq)
+	{
+		tuple = dynamic_cast<Tuple*>(seq);
+        
+        if(!tuple)
+        {
+            tuple = CreateTuple(loc, ctx);
+            tuple->items.push_back(seq);
+        }
+	}
+	else
+	{
+		tuple = CreateTuple(loc, ctx);
+	}
+
+    if(item)
+    {
+        tuple->items.push_back(item);
+    }
+
+    return tuple;
 }
 
 } /* namespace py */

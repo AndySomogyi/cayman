@@ -35,7 +35,7 @@ AstNodeSeq* AstNodeSeq::Add(const location& loc, AstNode* seq, AstNode* node)
 
 Name::Name(class Ast* ast, const location& loc, const char* begin,
            const char* end) :
-    AstNode(ast, loc)
+    AstNode(ast, loc), id(begin, end)
 {
 }
 
@@ -43,19 +43,12 @@ Num::Num(class Ast* ast, const location& loc, const char* begin,
          const char* end) :
     AstNode(ast, loc)
 {
+	type = Double;
+
+	// TODO, horribly inefficient
+	doubleValue = ::atof(std::string(begin, end).c_str());
 }
 
-
-Str::Str()
-{
-	// TODO Auto-generated constructor stub
-
-}
-
-Str::~Str()
-{
-	// TODO Auto-generated destructor stub
-}
 
 int Name::Accept(class AstVisitor* v)
 {
@@ -76,6 +69,12 @@ int Module::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
 }
+
+int Tuple::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
 
 } /* namespace py */
 

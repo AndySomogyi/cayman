@@ -59,14 +59,7 @@ public:
 };
 
 
-class Tuple : Expr
-{
-public:
-	Tuple();
-	virtual ~Tuple();
 
-	virtual int Accept(class AstVisitor*);
-};
 
 } /* namespace py */
 #endif /* _INCLUDED_EXPRESSION_H_ */
