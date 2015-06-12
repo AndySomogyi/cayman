@@ -58,6 +58,7 @@ public:
 
 	int *flags;
 
+	// was at least a single token read
 	int started;
 
 	int error;
@@ -66,6 +67,18 @@ public:
 	 * As sequence of statments that are built either durring a function definition,
 	 */
 	AstNodes stmts;
+    
+    /**
+     * Has the ENDMARKER token been seen?
+     * The python tokenizer will correctly yield a stream of DEDENT 
+     * tokens if the file ends in the middle of a  indent block. 
+     * however, it does not seem to return an EOF token after the ENDMARKER token, 
+     * but will continue to return ENDMARKER tokens. 
+     *
+     * here we keep track of the endmarker, if one is seen, the next token returned to 
+     * bison will be an eof. 
+     */
+    int pending;
 
 	/**
 	 * Error function called by the parser. the call to the Error func

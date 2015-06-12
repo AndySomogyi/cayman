@@ -20,7 +20,7 @@ ParserContext::ParserContext(const std::string& uri):
     ts(NULL),
     parser(*this),
     file(NULL),
-    flags(0), started(0), error(0)
+    flags(0), started(0), error(0), pending(0)
 {
 	file = fopen(uri.c_str(), "r");
 	ts = PyTokenizer_FromFile(file, NULL, NULL);
@@ -31,7 +31,7 @@ ParserContext::ParserContext(std::ostream& inpt):
     ts(NULL),
     parser(*this),
     file(NULL),
-    flags(0), started(0), error(0)
+    flags(0), started(0), error(0), pending(0)
 {
 }
 
@@ -87,41 +87,79 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 	int col_offset;
 	int result = tok::ENDMARKER;
     
-    if (ctx.ts->done == E_EOF) {
-        *node = NULL;
-        
+    *node = NULL;
+    *loc = location();
+    
+    //if (ctx.ts->done == E_EOF) {
+    //    *node = NULL;
+    //
+    //    return 0;
+    //}
+    
+
+
+	type = (pytoken::_tok)PyTokenizer_Get(ctx.ts, &a, &b);
+    
+    std::cout << std::endl << "* tokstatus: " << dump_done(ctx.ts->done) <<
+    ", pendin: " << ctx.ts->pendin << ", indent: " << ctx.ts->indent << ", tok: ";
+    tok_dump(type, a, b);
+    std::cout << std::endl;
+    
+    // break out of loop for syntax error
+    if (type == pytoken::ERRORTOKEN)
+    {
+        //err_ret->error = tok->done;
+        // TODO raise error
+        //break;
         return 0;
     }
 
-	type = (pytoken::_tok)PyTokenizer_Get(ctx.ts, &a, &b);
-    std::cout << "status: " << dump_done(ctx.ts->done) << std::endl;
+    // check if end, and return the two extra tokens the parser expects,
+    // a endmarker, and eof, endmarker from tokenizer was eaten below.
+    if (type == pytoken::ENDMARKER && ctx.pending > 0)
+    {
+    	if (ctx.pending == 2)
+    	{
+    		ctx.pending = 1;
+    		return tok::ENDMARKER;
+    	}
+
+    	// return EOF to parser, done with stream.
+    	return 0;
+    }
+
+
+    if (type == pytoken::ENDMARKER && ctx.started)
+    {
+        ctx.started = 0;
+        
+        // pending ENDMARKER and EOF
+        ctx.pending = 2;
+        /* Add the right number of dedent tokens,
+         except if a certain flag is given --
+         codeop.py uses this.
+
+         setting tokenzier->pending causes the tokenizer to return a
+         stream of dedent/ indent tokens untill the pending tokens are
+         cleared.
+         */
+        if (ctx.ts->indent ) // && !(*flags & PyPARSE_DONT_IMPLY_DEDENT))
+        {
+            ctx.ts->pendin = -ctx.ts->indent;
+            ctx.ts->indent = 0;
+        }
+
+        /* Add an extra newline, not sure why this is needed, but cpython does it.  */
+        return tok::NEWLINE;
+    }
+    else
+    {
+        ctx.started = 1;
+        ctx.pending = 0;
+    }
     
-#if 0
     
-	if (type == pytoken::ERRORTOKEN || type == EOF || type == pytoken::ENDMARKER)
-	{
-		ctx.error = ctx.ts->done;
-		//break;
-	}
-	if (type == pytoken::ENDMARKER && ctx.started)
-	{
-		type = pytoken::NEWLINE; /* Add an extra newline */
-		ctx.started = 0;
-		/* Add the right number of dedent tokens,
-		 except if a certain flag is given --
-		 codeop.py uses this. */
-		if (ctx.ts->indent && !(*(ctx.flags) & PyPARSE_DONT_IMPLY_DEDENT))
-		{
-			ctx.ts->pendin = -ctx.ts->indent;
-			ctx.ts->indent = 0;
-		}
-	}
-	else
-	{
-		ctx.started = 1;
-	}
-    
-#endif
+
     
 	len = b - a; /* XXX this may compute NULL - NULL */
 	str = (char *) malloc(len + 1);
@@ -144,7 +182,7 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 	*loc = location(position(NULL, ctx.ts->lineno, col_offset));
 
 	// print token
-	tok_dump(type, a, b);
+	
 
 	*node = NULL;
 
