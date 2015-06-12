@@ -744,6 +744,7 @@ testlist_comp:
 //     | classdef | decorated
 compound_stmt:
     funcdef
+    | decorated
     | for_stmt
 ;
 
@@ -789,6 +790,208 @@ exprlist_seq:
     | exprlist_seq "," expr
     | exprlist_seq "," star_expr
     ;
+    
+
+// *python3    
+funcdef: 
+    "def" NAME parameters ":" suite
+    | "def" NAME parameters "->" test ":" suite
+    ;
+
+
+// *python3
+parameters: 
+    "("  ")"
+    | "(" typedargslist ")"
+    ;
+
+//  *python3
+//  typedargslist: (tfpdef ['=' test] (',' tfpdef ['=' test])* [','
+//     ['*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef]]
+//     |  '*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef)
+//
+//  re-indent and newline to line things up better
+//  typedargslist:
+//  (tfpdef ['=' test] (',' tfpdef ['=' test])* 
+//  [',' ['*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef]]
+//     |  '*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef)
+//
+//  the last two lines are essentially the same, these are the python list and dictionary 
+//  args, define a varargs rule for them: 
+//
+//  varargs: '*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef
+//
+//  note the first tfpdef is optional in the grammar, I don't think it should be, 
+//  leave it for now, and catch it when the AST is built. 
+// 
+//  with the var_args rule, can re-write the grammar as 
+//  tfpdef ['=' test] (',' tfpdef ['=' test])* 
+//  [',' varargs]
+//     |  varargs
+// 
+//  and re-align the rows:
+// 
+//  tfpdef ['=' test] (',' tfpdef ['=' test])*  [',' var_args]
+//  |  var_args
+//
+//  define the first part as named_args:
+//  named_args: tfpdef ['=' test] (',' tfpdef ['=' test])*  
+
+
+typedargslist:
+    named_args
+    {
+        // name_args is a tuple (list of args)
+        TmpArguments *args = ctx.ast->CreateTmpArguments(@$);
+        args->SetArgs($1);
+        $$ = args;
+    }
+    | named_args "," var_args
+    {
+        TmpArguments *args = dynamic_cast<TmpArguments*>($3);
+        assert(args);
+        args->SetArgs($1);
+        $$ = args;
+    }
+    | var_args
+    {
+        // var_args is already an TmpArguments type
+        $$ = $1;
+    }
+    
+// can define varargs rule for list and kw args
+// '*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef
+var_args:
+    "*" tfpdef var_arglist_trailer
+    {
+        TmpArguments *args = ctx.ast->CreateTmpArguments(@$);
+        args->SetVararg($2);
+        args->SetKwOnlyArgs($3);
+        $$ = args;
+    }
+    | "*" tfpdef var_arglist_trailer "," "**" tfpdef   
+    {
+        TmpArguments *args = ctx.ast->CreateTmpArguments(@$);
+        args->SetVararg($2);
+        args->SetKwOnlyArgs($3);
+        args->SetVararg($6);
+        $$ = args;
+    }
+    | "**" tfpdef
+    {
+        TmpArguments *args = ctx.ast->CreateTmpArguments(@$);
+        args->SetVararg($2);
+        $$ = args;
+    };
+    | "*" var_arglist_trailer      
+    {
+        // var_args: "*" var_arglist_trailer      
+        // func(*, a) is actually valid syntax, here a is a kw only arg.
+        TmpArguments *args = ctx.ast->CreateTmpArguments(@$);
+        args->SetKwOnlyArgs($2);
+        $$ = args;
+    }
+    | "*" var_arglist_trailer "," "**" tfpdef
+    {
+        TmpArguments *args = ctx.ast->CreateTmpArguments(@$);
+        args->SetKwOnlyArgs($2);
+        args->SetKwArg($5);
+        $$ = args;
+    }
+    ;
+
+
+// trailer of a list of named args
+// (',' tfpdef ['=' test])* 
+var_arglist_trailer:
+    %empty
+    | var_arglist_trailer "," tfpdef_test
+    {
+        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3);
+    }
+
+    ;
+
+//  define the first part as named_args:
+//  named_args: tfpdef ['=' test] (',' tfpdef ['=' test])*  
+//  named_args: tfpdef ['=' test] (',' tfpdef ['=' test])*  
+named_args:
+    tfpdef_test
+    {
+        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1);
+    }
+    | named_args "," tfpdef_test
+    {
+        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3);
+    }
+    ;
+
+// tfpdef ['=' test]
+tfpdef_test:
+    tfpdef
+    {
+        $$ = $1;
+    }
+    | tfpdef "=" test
+    {
+        Arg *arg = dynamic_cast<Arg*>($1);
+        assert(arg);
+        arg->def = dynamic_cast<Expr*>($3);
+        assert(arg->def);
+        $$ = arg;
+    }
+    ;
+
+// *python3
+// tfpdef: NAME [':' test]
+tfpdef: 
+    NAME 
+    {
+        AstNode *name = $1;
+        Arg* result = ctx.ast->CreateArg(@$, name);
+        ctx.ast->Free(name);
+        $$ = result;
+    }
+    | NAME ":" test
+    {
+        AstNode *name = $1;
+        AstNode *type = $3;
+        Arg* result = ctx.ast->CreateArg(@$, name, NULL, type);
+        ctx.ast->Free(name);
+        ctx.ast->Free(type);
+        $$ = result;
+    }
+    ;
+
+// *python3
+//decorator: '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
+decorator:
+    "@" dotted_name NEWLINE
+    | "@" dotted_name "(" ")" NEWLINE
+    | "@" dotted_name "(" arglist ")" NEWLINE
+    ;
+
+// *python3
+//decorators: decorator+
+decorators:
+    decorator
+    | decorators decorator
+    ;
+
+// *python3
+//decorated: decorators (classdef | funcdef | async_funcdef)
+decorated:
+    decorators funcdef
+    ;
+
+// *python3
+// dotted_name: NAME ('.' NAME)*
+dotted_name:
+    NAME
+    | dotted_name "." NAME
+    ;
+
+
 
 %%
 

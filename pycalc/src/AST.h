@@ -45,7 +45,17 @@ public:
 
 	Tuple *CreateTuple(const location &_loc, ExprContext ctx);
 
-    Tuple *CreateTuple(const location& loc, ExprContext ctx, AstNode *seq, AstNode *item);
+    Tuple *CreateTuple(const location& loc, ExprContext ctx, AstNode *seq, AstNode *item=NULL);
+
+	Arg *CreateArg(const location& loc, AstNode *name, AstNode *def=NULL,
+			AstNode *type=NULL);
+
+
+	void Free(AstNode* node);
+
+
+
+
 
 
 
@@ -65,6 +75,10 @@ private:
 	// to the root AST.
 
 	friend class ASTNodeFactory;
+
+	friend class py_parser;
+
+	TmpArguments *CreateTmpArguments(const location& loc);
 
 	std::vector<AstNode*> nodes;
 

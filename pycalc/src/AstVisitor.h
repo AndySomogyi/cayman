@@ -27,6 +27,8 @@ public:
 	virtual int Visit(BinOp*) = 0;
 	virtual int Visit(Tuple*) = 0;
 	virtual int Visit(class Ast*) = 0;
+	virtual int Visit(Arg*) = 0;
+	virtual int Visit(FunctionDef*) = 0;
 
 	virtual ~AstVisitor() {};
 };

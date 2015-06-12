@@ -96,9 +96,20 @@ int AstPrinter::Visit(Tuple* t)
 	return 0;
 }
 
+
 int AstPrinter::Visit(Ast* ast)
 {
 	return ast->module->Accept(this);
 }
 
+int AstPrinter::Visit(Arg*)
+{
+}
+
+int AstPrinter::Visit(FunctionDef*)
+{
+}
+
 } /* namespace py */
+
+

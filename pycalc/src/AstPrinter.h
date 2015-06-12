@@ -28,6 +28,8 @@ public:
 	virtual int Visit(BinOp*);
 	virtual int Visit(Tuple*);
 	virtual int Visit(Ast*);
+	virtual int Visit(Arg*);
+	virtual int Visit(FunctionDef*);
 
 private:
 	std::ostream &os;

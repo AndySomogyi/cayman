@@ -85,6 +85,9 @@ public:
 	 * is specified in the grammar.
 	 */
 	void Error(const py_parser::location_type& l, const std::string& m);
+
+
+
 };
 
 

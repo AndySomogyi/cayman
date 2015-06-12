@@ -9,13 +9,14 @@
 #include "Expr.h"
 #include "py_parser.hh"
 #include "AstVisitor.h"
+#include <Stmt.h>
 
 namespace py
 {
 
 Assign::Assign(class Ast* _ast, const location& _loc, AstNode* target,
 		AstNode* _value) :
-    Stmt(_ast, _loc), value(_value)
+		Stmt(_ast, _loc), value(_value)
 {
 	targets.push_back(target);
 
@@ -31,6 +32,27 @@ int Assign::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
 }
+
+void TmpArguments::SetKwOnlyArgs(AstNode* node)
+{
+}
+
+void TmpArguments::SetArgs(AstNode* node)
+{
+}
+
+void TmpArguments::SetVararg(AstNode* node)
+{
+}
+
+void TmpArguments::SetKwArg(AstNode* node)
+{
+}
+
+int Arg::Accept(AstVisitor* v)
+{
+}
+
 
 } /* namespace py */
 
