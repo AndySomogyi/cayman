@@ -50,7 +50,7 @@ namespace py
 
 
 %token
-DEF // need to add DEF token
+DEF "def"
 PASS
 IF "if"
 ELSE "else"
@@ -748,24 +748,31 @@ compound_stmt:
     | for_stmt
 ;
 
-// * python funcdef
-// funcdef: 'def' NAME parameters ':' suite
-funcdef:
-    DEF NAME 
-;
 
 
 // stmt+
 stmt_seq:
     stmt
+    {
+        $$ = ctx.ast->CreateTuple(@$, $1);
+    }
     | stmt_seq stmt
+    {
+        $$ = ctx.ast->CreateTuple(@$, $1, $2);
+    }
     ;
 
 // *python3
 // suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
 suite:
     simple_stmt
+    {
+        $$ = ctx.ast->CreateTuple(@$, $1);
+    }
     | NEWLINE INDENT stmt_seq DEDENT
+    {
+        $$ = $3;
+    }
     ;
 
 // *python3
@@ -795,14 +802,26 @@ exprlist_seq:
 // *python3    
 funcdef: 
     "def" NAME parameters ":" suite
+    {
+        $$ = ctx.ast->CreateFunctionDef(@$, $2, $3, $5);
+    }
     | "def" NAME parameters "->" test ":" suite
+    {
+        $$ = ctx.ast->CreateFunctionDef(@$, $2, $3, $7);
+    }
     ;
 
 
 // *python3
 parameters: 
     "("  ")"
+    {
+        $$ = ctx.ast->CreateTmpArguments(@$);
+    }
     | "(" typedargslist ")"
+    {
+        $$ = $2;
+    }
     ;
 
 //  *python3

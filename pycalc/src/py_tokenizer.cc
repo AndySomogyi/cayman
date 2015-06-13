@@ -1844,6 +1844,8 @@ int PyTokenizer_Test(const char* fname)
 		}
 
 	}
+    
+    return 0;
 }
 
 

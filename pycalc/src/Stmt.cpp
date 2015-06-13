@@ -51,8 +51,21 @@ void TmpArguments::SetKwArg(AstNode* node)
 
 int Arg::Accept(AstVisitor* v)
 {
+    return v->Visit(this);
 }
 
 
+FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* name,
+		AstNode* args, AstNode* suite) :
+    Stmt(ast, loc)
+{
+}
+
+int FunctionDef::Accept(AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
 } /* namespace py */
+
 

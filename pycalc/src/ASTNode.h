@@ -86,7 +86,7 @@ public:
 		AstNode(ast, loc), items(items), ctx(ctx) {};
 
 	Tuple(class Ast* _ast, const location &_loc, ExprContext ctx) :
-		AstNode(ast, loc), items(items), ctx(ctx) {};
+		AstNode(ast, loc), ctx(ctx) {};
 
 	virtual ~Tuple() {};
 

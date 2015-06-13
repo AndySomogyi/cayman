@@ -29,7 +29,10 @@ AstNodeSeq* AstNodeSeq::Add(const location& loc, AstNode* seq, AstNode* node)
 		nodes = new AstNodeSeq(loc);
 	}
 
-	nodes->seq.push_back(node);
+    if (node)
+    {
+        nodes->seq.push_back(node);
+    }
 	return nodes;
 }
 

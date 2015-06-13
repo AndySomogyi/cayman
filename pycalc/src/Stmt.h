@@ -166,9 +166,13 @@ public:
 	FunctionDef(Ast *ast, const location& loc) :
 		Stmt(ast, loc), Arguments(), returns(NULL) {};
 
+
+	FunctionDef(Ast *ast, const location& loc, AstNode *name, AstNode *args, AstNode *suite);
+
+
 	virtual ~FunctionDef() {};
 
-	std::string name;
+	virtual int Accept(AstVisitor *);
 
 	AstNodes body;
 

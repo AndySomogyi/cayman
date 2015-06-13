@@ -104,10 +104,12 @@ int AstPrinter::Visit(Ast* ast)
 
 int AstPrinter::Visit(Arg*)
 {
+    return 0;
 }
 
 int AstPrinter::Visit(FunctionDef*)
 {
+    return 0;
 }
 
 } /* namespace py */

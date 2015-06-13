@@ -46,9 +46,14 @@ public:
 	Tuple *CreateTuple(const location &_loc, ExprContext ctx);
 
     Tuple *CreateTuple(const location& loc, ExprContext ctx, AstNode *seq, AstNode *item=NULL);
+    
+    Tuple *CreateTuple(const location& loc, AstNode *seq, AstNode *item=NULL);
 
 	Arg *CreateArg(const location& loc, AstNode *name, AstNode *def=NULL,
 			AstNode *type=NULL);
+
+
+	FunctionDef *CreateFunctionDef(const location& loc, AstNode *nm, AstNode *args, AstNode *suite);
 
 
 	void Free(AstNode* node);

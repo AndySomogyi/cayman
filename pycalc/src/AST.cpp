@@ -125,6 +125,17 @@ void Ast::Free(AstNode* node)
 {
 }
 
+Tuple* Ast::CreateTuple(const location& loc, AstNode* seq, AstNode* item)
+{
+	return CreateTuple(loc, UnknownCtx, seq, item);
+}
+
+FunctionDef* Ast::CreateFunctionDef(const location& loc, AstNode* nm,
+		AstNode* args, AstNode* suite)
+{
+	return new FunctionDef(this, loc, nm, args, suite);
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);
