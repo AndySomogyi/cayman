@@ -68,8 +68,8 @@ public:
 class Arg : public AstNode
 {
 public:
-	Arg(class Ast* ast, const location& loc, const std::string& id, class Expr *def=NULL, class Expr *type=NULL) :
-		AstNode(ast, loc), id(id), def(def), type(type) {};
+	Arg(class Ast* ast, const location& loc, const std::string& id, AstNode *_def=NULL, AstNode *_type=NULL) :
+		AstNode(ast, loc), id(id), def(_def), type(_type) {};
 
 	virtual ~Arg() {};
 
@@ -77,53 +77,43 @@ public:
 	virtual int Accept(AstVisitor *v);
 
 	std::string id;
-	class Expr *def;
-	class Expr* type;
+	AstNode *def;
+	AstNode *type;
 };
+
+/**
+ * list of arguments
+ */
+typedef std::vector<Arg*> Args;
 
 class Arguments
 {
 public:
 	Arguments() :
-		vararg(NULL), kwArg(NULL) {};
+		vararg(NULL), kwarg(NULL) {};
 
 	/**
 	 * list of named arguments
 	 */
-	AstNodes args;
-
-	/**
-	 * default values for args, may be less than size of args,
-	 * defaults apply the tail of the args, i.e.
-	 *
-	 * foo(a, b, c=1, d=2, e=3)
-	 * args: a, b, c, d, e
-	 * defaults: 1, 2, 3
-	 */
-	AstNodes defaults;
+	Args args;
 
 	/**
 	 * keyword only args, named args that appear after a stared arg, i.e.
 	 *
 	 * foo(a, b, *args, kw1, kw2, kw3, **dargs)
 	 */
-	AstNodes kwOnlyArgs;
+	Args kwOnlyArgs;
 
-	/**
-	 * list of same length as kwOnlyArgs, if a kwOnlyArg does not have
-	 * default, then the coresponding item in this list is NULL.
-	 */
-	AstNodes kwDefaults;
 
 	/**
 	 * named of the starred argument.
 	 */
-	AstNode *vararg;
+	Arg *vararg;
 
 	/**
 	 * name of the double starred argument
 	 */
-	AstNode *kwArg;
+	Arg *kwarg;
 };
 
 
@@ -137,7 +127,7 @@ class TmpArguments : public Arguments, public AstNode
 public:
 
 	TmpArguments(class Ast *ast, const location& loc) :
-		AstNode(ast, loc), Arguments() {};
+		Arguments(), AstNode(ast, loc) {};
 
 	~TmpArguments() {};
 
@@ -148,6 +138,8 @@ public:
 	void SetVararg(AstNode *node);
 
 	void SetKwArg(AstNode *node);
+    
+    static void ArgsFromTuple(AstNode *node, Args& args);
 
 	virtual int Accept(AstVisitor *)
 	{
@@ -164,7 +156,7 @@ class FunctionDef : public Arguments, public Stmt
 {
 public:
 	FunctionDef(Ast *ast, const location& loc) :
-		Stmt(ast, loc), Arguments(), returns(NULL) {};
+		Arguments(), Stmt(ast, loc), returns(NULL) {};
 
 
 	FunctionDef(Ast *ast, const location& loc, AstNode *name, AstNode *args, AstNode *suite);
@@ -173,6 +165,8 @@ public:
 	virtual ~FunctionDef() {};
 
 	virtual int Accept(AstVisitor *);
+    
+    std::string id;
 
 	AstNodes body;
 

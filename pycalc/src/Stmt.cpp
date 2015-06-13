@@ -35,18 +35,24 @@ int Assign::Accept(class AstVisitor* v)
 
 void TmpArguments::SetKwOnlyArgs(AstNode* node)
 {
+	ArgsFromTuple(node, kwOnlyArgs);
 }
 
 void TmpArguments::SetArgs(AstNode* node)
 {
+	ArgsFromTuple(node, args);
 }
 
 void TmpArguments::SetVararg(AstNode* node)
 {
+	vararg = dynamic_cast<Arg*>(node);
+	assert(vararg);
 }
 
 void TmpArguments::SetKwArg(AstNode* node)
 {
+	kwarg = dynamic_cast<Arg*>(node);
+    assert(kwarg);
 }
 
 int Arg::Accept(AstVisitor* v)
@@ -55,15 +61,64 @@ int Arg::Accept(AstVisitor* v)
 }
 
 
-FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* name,
-		AstNode* args, AstNode* suite) :
-    Stmt(ast, loc)
+FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n,
+		AstNode* a, AstNode* s) :
+    Stmt(ast, loc), returns(NULL)
 {
+    Tuple *suite = dynamic_cast<Tuple*>(s);
+    
+    if (!suite)
+    {
+        throw syntax_error(loc, "function def suite must be a list of statements in a tuple");
+    }
+    
+    TmpArguments *targs = dynamic_cast<TmpArguments*>(a);
+    
+    assert(targs);
+    
+    Name *name = dynamic_cast<Name*>(n);
+    
+    assert(name);
+    
+    id = name->id;
+    body = suite->items;
+    
+    args = targs->args;
+    kwOnlyArgs = targs->kwOnlyArgs;
+    vararg = targs->vararg;
+    kwarg = targs->kwarg;
 }
 
 int FunctionDef::Accept(AstVisitor* v)
 {
 	return v->Visit(this);
+}
+
+void TmpArguments::ArgsFromTuple(AstNode* node, Args& args)
+{
+    if (node == NULL) {
+        args.clear();
+        return;
+    }
+    
+	Tuple *tuple = dynamic_cast<Tuple*>(node);
+
+	if(tuple == NULL) {
+		throw syntax_error(node->loc, "AstNode must be a tuple");
+	}
+
+	args.clear();
+	args.reserve(tuple->items.size());
+
+	for (AstNodes::const_iterator i = tuple->items.begin(); i != tuple->items.end(); ++i)
+	{
+		Arg *arg = dynamic_cast<Arg*>(*i);
+		if (arg == NULL) {
+			throw syntax_error((*i)->loc, "argument must be an arg type");
+		}
+
+		args.push_back(arg);
+	}
 }
 
 } /* namespace py */

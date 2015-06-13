@@ -29,7 +29,7 @@ int AstPrinter::Visit(Name* nm)
 
 int AstPrinter::Visit(Num* num)
 {
-	os << "Num(" << num->doubleValue << ")" << std::endl;
+	os << "Num(" << num->doubleValue << ")";
 	return 0;
 }
 
@@ -102,13 +102,80 @@ int AstPrinter::Visit(Ast* ast)
 	return ast->module->Accept(this);
 }
 
-int AstPrinter::Visit(Arg*)
+int AstPrinter::Visit(Arg* arg)
 {
+    os << "Arg(id=" << arg->id << ", defaults=";
+    
+    if (arg->def) {
+        arg->def->Accept(this);
+    } else {
+        os << "Null";
+    }
+    
+    os << ", type=";
+    if (arg->type) {
+        arg->type->Accept(this);
+    } else {
+        os << "Null";
+    }
+    
+    os << ")";
+    
     return 0;
 }
 
-int AstPrinter::Visit(FunctionDef*)
+int AstPrinter::Visit(FunctionDef* func)
 {
+    os << "FunctionDef(id=" << func->id << ", args=[" << std::endl;
+    
+    for (Args::const_iterator i = func->args.begin(); i != func->args.end(); ++i) {
+        (*i)->Accept(this);
+        
+        if (i + 1 < func->args.end()) {
+            os << ",";
+        }
+        
+        os << std::endl;
+    }
+    
+    os << "]," << std::endl;
+    
+    os << "kwOnlyArgs=[" << std::endl;
+    for (Args::const_iterator i = func->kwOnlyArgs.begin(); i != func->kwOnlyArgs.end(); ++i) {
+        (*i)->Accept(this);
+        
+        if (i + 1 < func->args.end()) {
+            os << ",";
+        }
+        
+        os << std::endl;
+    }
+    
+    os << "]," << std::endl;
+    
+    os << "vararg=";
+    
+    if (func->vararg) {
+        func->vararg->Accept(this);
+    }
+    else {
+        os << "Null";
+    }
+    
+    os << ", " << std::endl;
+    
+    os << "kwarg=";
+    
+    if (func->kwarg) {
+        func->kwarg->Accept(this);
+    }
+    else {
+        os << "Null";
+    }
+    
+    os << std::endl << ")";
+    
+    
     return 0;
 }
 

@@ -1930,7 +1930,7 @@ namespace py {
         TmpArguments *args = ctx.ast->CreateTmpArguments(yylhs.location);
         args->SetVararg((yystack_[4].value));
         args->SetKwOnlyArgs((yystack_[3].value));
-        args->SetVararg((yystack_[0].value));
+        args->SetKwArg((yystack_[0].value));
         (yylhs.value) = args;
     }
 
@@ -1940,7 +1940,7 @@ namespace py {
 
     {
         TmpArguments *args = ctx.ast->CreateTmpArguments(yylhs.location);
-        args->SetVararg((yystack_[0].value));
+        args->SetKwArg((yystack_[0].value));
         (yylhs.value) = args;
     }
 
@@ -1969,6 +1969,14 @@ namespace py {
 
     break;
 
+  case 147:
+
+    {
+        (yylhs.value) = NULL;
+    }
+
+    break;
+
   case 148:
 
     {
@@ -1980,7 +1988,7 @@ namespace py {
   case 149:
 
     {
-        (yylhs.value) = ctx.ast->CreateTuple(yylhs.location, UnknownCtx, (yystack_[0].value));
+        (yylhs.value) = ctx.ast->CreateTuple(yylhs.location, (yystack_[0].value));
     }
 
     break;
@@ -1988,7 +1996,7 @@ namespace py {
   case 150:
 
     {
-        (yylhs.value) = ctx.ast->CreateTuple(yylhs.location, UnknownCtx, (yystack_[2].value), (yystack_[0].value));
+        (yylhs.value) = ctx.ast->CreateTuple(yylhs.location, (yystack_[2].value), (yystack_[0].value));
     }
 
     break;
@@ -2006,7 +2014,7 @@ namespace py {
     {
         Arg *arg = dynamic_cast<Arg*>((yystack_[2].value));
         assert(arg);
-        arg->def = dynamic_cast<Expr*>((yystack_[0].value));
+        arg->def = (yystack_[0].value);
         assert(arg->def);
         (yylhs.value) = arg;
     }
@@ -2595,9 +2603,9 @@ namespace py {
      650,   668,   669,   670,   701,   707,   712,   713,   714,   734,
      746,   747,   748,   755,   759,   768,   772,   781,   782,   788,
      789,   795,   796,   797,   798,   804,   808,   817,   821,   861,
-     868,   875,   884,   891,   899,   905,   913,   926,   927,   938,
-     942,   950,   954,   967,   974,   988,   989,   990,   996,   997,
-    1003,  1009,  1010
+     868,   875,   884,   891,   899,   905,   913,   926,   930,   941,
+     945,   953,   957,   970,   977,   991,   992,   993,   999,  1000,
+    1006,  1012,  1013
   };
 
   // Print the state stack on the debug stream.

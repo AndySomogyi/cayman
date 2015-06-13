@@ -21,7 +21,7 @@ namespace py
 class AstNode
 {
 public:
-	AstNode(class Ast* _ast, const location &_loc) : ast(_ast), loc(_loc) {};
+	AstNode(class Ast* _ast, const location &_loc) : loc(_loc), ast(_ast) {};
 
 	AstNode() : ast(0) {assert(0);};
 

@@ -893,13 +893,13 @@ var_args:
         TmpArguments *args = ctx.ast->CreateTmpArguments(@$);
         args->SetVararg($2);
         args->SetKwOnlyArgs($3);
-        args->SetVararg($6);
+        args->SetKwArg($6);
         $$ = args;
     }
     | "**" tfpdef
     {
         TmpArguments *args = ctx.ast->CreateTmpArguments(@$);
-        args->SetVararg($2);
+        args->SetKwArg($2);
         $$ = args;
     };
     | "*" var_arglist_trailer      
@@ -924,6 +924,9 @@ var_args:
 // (',' tfpdef ['=' test])* 
 var_arglist_trailer:
     %empty
+    {
+        $$ = NULL;
+    }
     | var_arglist_trailer "," tfpdef_test
     {
         $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3);
@@ -937,11 +940,11 @@ var_arglist_trailer:
 named_args:
     tfpdef_test
     {
-        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1);
+        $$ = ctx.ast->CreateTuple(@$, $1);
     }
     | named_args "," tfpdef_test
     {
-        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3);
+        $$ = ctx.ast->CreateTuple(@$, $1, $3);
     }
     ;
 
@@ -955,7 +958,7 @@ tfpdef_test:
     {
         Arg *arg = dynamic_cast<Arg*>($1);
         assert(arg);
-        arg->def = dynamic_cast<Expr*>($3);
+        arg->def = $3;
         assert(arg->def);
         $$ = arg;
     }
