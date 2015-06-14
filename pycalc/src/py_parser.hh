@@ -524,12 +524,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 406,     ///< Last index in yytable_.
+      yylast_ = 424,     ///< Last index in yytable_.
       yynnts_ = 65,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 73  ///< Number of tokens.
+      yyntokens_ = 72  ///< Number of tokens.
     };
 
 

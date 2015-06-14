@@ -72,8 +72,56 @@ int AstPrinter::Visit(Assign* a)
 	return 0;
 }
 
-int AstPrinter::Visit(BinOp*)
+int AstPrinter::Visit(BinOp* b)
 {
+	os << "BinOp(op=";
+	switch(b->op) {
+    case Add:
+        os << "+";
+        break;
+    case Sub:
+        os << "-";
+        break;
+    case Mult:
+        os << "*";
+        break;
+    case Div:
+        os << "/";
+        break;
+    case Mod:
+        os << "%";
+        break;
+    case Pow:
+        os << "**";
+        break;
+    case LShift:
+        os << "<<";
+        break;
+    case RShift:
+        os << ">>";
+        break;
+    case BitOr:
+        os << "|";
+        break;
+    case BitXor:
+        os << "^";
+        break;
+    case BitAnd:
+        os << "&";
+        break;
+    case FloorDiv:
+        os << "//";
+        break;
+    default:
+    	break;
+	}
+
+	os << ", left=";
+	b->left->Accept(this);
+	os << ", right=";
+	b->right->Accept(this);
+	os << ")";
+
 	return 0;
 }
 
@@ -173,8 +221,20 @@ int AstPrinter::Visit(FunctionDef* func)
         os << "Null";
     }
     
-    os << std::endl << ")";
+    os << std::endl << "body=[" << std::endl;
     
+    for (AstNodes::const_iterator i = func->body.begin(); i < func->body.end(); ++i)
+    {
+        (*i)->Accept(this);
+        
+        if (i + 1 < func->body.end()) {
+            os << ",";
+        }
+        
+        os << std::endl;
+    }
+    
+    os << "]" << std::endl << ")";
     
     return 0;
 }

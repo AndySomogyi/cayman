@@ -55,6 +55,8 @@ public:
 
 	FunctionDef *CreateFunctionDef(const location& loc, AstNode *nm, AstNode *args, AstNode *suite);
 
+	BinOp *CreateBinOp(const location& _loc, AstNode *op, AstNode* _left, AstNode* _right);
+
 
 	void Free(AstNode* node);
 

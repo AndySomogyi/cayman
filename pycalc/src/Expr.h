@@ -36,12 +36,35 @@ enum OperatorType
 	FloorDiv = 12
 };
 
+/**
+ * internal class, map token values to AstNodes, lets us keep a single
+ * data type in the parser instead of the more complex variant or union.
+ */
+class Op
+{
+public:
+	static AstNode *Add;
+	static AstNode *Sub;
+	static AstNode *Mult;
+	static AstNode *Div;
+	static AstNode *Mod;
+	static AstNode *Pow;
+	static AstNode *LShift;
+	static AstNode *RShift;
+	static AstNode *BitOr;
+	static AstNode *BitXor;
+	static AstNode *BitAnd;
+	static AstNode *FloorDiv;
+
+	static OperatorType GetOperatorType(const AstNode *node);
+};
+
 class BinOp : public Expr
 {
 public:
-	BinOp(class Ast* _ast, const location& _loc, Expr* _left, OperatorType _op,
-			Expr* _right) :
-			Expr(_ast, _loc), left(_left), op(_op), right(_right)
+	BinOp(class Ast* _ast, const location& _loc,  OperatorType _op, AstNode* _left,
+			AstNode* _right) :
+			Expr(_ast, _loc), op(_op), left(_left), right(_right)
 	{
 	}
 	;
@@ -51,9 +74,11 @@ public:
 	}
 	;
 
-	Expr *left;
-	Expr *right;
 	OperatorType op;
+
+	AstNode *left;
+	AstNode *right;
+
 
 	virtual int Accept(class AstVisitor*);
 };

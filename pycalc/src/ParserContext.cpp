@@ -252,21 +252,27 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::SEMI;
 		break;
 	case pytoken::PLUS:
+		*node = Op::Add;
 		result = tok::PLUS;
 		break;
 	case pytoken::MINUS:
+		*node = Op::Sub;
 		result = tok::MINUS;
 		break;
 	case pytoken::STAR:
+		*node = Op::Mult;
 		result = tok::STAR;
 		break;
 	case pytoken::SLASH:
+		*node = Op::Div;
 		result = tok::SLASH;
 		break;
 	case pytoken::VBAR:
+		*node = Op::BitOr;
 		result = tok::VBAR;
 		break;
 	case pytoken::AMPER:
+		*node = Op::BitAnd;
 		result = tok::AMPER;
 		break;
 	case pytoken::LESS:
@@ -282,6 +288,7 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::DOT;
 		break;
 	case pytoken::PERCENT:
+		*node = Op::Mod;
 		result = tok::PERCENT;
 		break;
 	case pytoken::BACKQUOTE:
@@ -309,15 +316,19 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::TILDE;
 		break;
 	case pytoken::CIRCUMFLEX:
+		*node = Op::BitXor;
 		result = tok::CIRCUMFLEX;
 		break;
 	case pytoken::LEFTSHIFT:
+		*node = Op::LShift;
 		result = tok::LEFTSHIFT;
 		break;
 	case pytoken::RIGHTSHIFT:
+		*node = Op::RShift;
 		result = tok::RIGHTSHIFT;
 		break;
 	case pytoken::DOUBLESTAR:
+		*node = Op::Pow;
 		result = tok::DOUBLESTAR;
 		break;
 	case pytoken::PLUSEQUAL:
@@ -354,6 +365,7 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::DOUBLESTAREQUAL;
 		break;
 	case pytoken::DOUBLESLASH:
+		*node = Op::FloorDiv;
 		result = tok::DOUBLESLASH;
 		break;
 	case pytoken::DOUBLESLASHEQUAL:

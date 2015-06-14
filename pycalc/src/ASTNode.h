@@ -23,13 +23,13 @@ class AstNode
 public:
 	AstNode(class Ast* _ast, const location &_loc) : loc(_loc), ast(_ast) {};
 
-	AstNode() : ast(0) {assert(0);};
+	AstNode() : ast(0) {};
 
 	virtual ~AstNode() {};
 
 	virtual void Print(std::ostream&) const {};
 
-	virtual int Accept(class AstVisitor*) = 0;
+	virtual int Accept(class AstVisitor*) {return 0;};
 
 	// region of source code where this syntax item was defined,
 	// currently use the bison provided location (it works), but

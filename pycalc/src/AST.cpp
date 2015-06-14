@@ -141,6 +141,11 @@ TmpArguments* Ast::CreateTmpArguments(const location& loc)
 	return new TmpArguments(this, loc);
 }
 
+BinOp* Ast::CreateBinOp(const location& _loc, AstNode *op, AstNode* _left,
+		AstNode* _right)
+{
+	return new BinOp(this, _loc, Op::GetOperatorType(op), _left, _right);
+}
 
 } /* namespace py */
 

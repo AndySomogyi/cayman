@@ -66,8 +66,8 @@ INDENT
 DEDENT
 LPAR "("
 RPAR ")"
-LSQB
-RSQB
+LSQB "["
+RSQB "]"
 COLON ":"
 COMMA ","
 SEMI ";"
@@ -75,7 +75,7 @@ PLUS "+"
 MINUS "-"
 STAR "*"
 SLASH "/"
-VBAR
+VBAR "|"
 AMPER "&"
 LESS "<"
 GREATER ">"
@@ -83,8 +83,8 @@ EQUAL "="
 DOT "."
 PERCENT "%"
 BACKQUOTE "`"
-LBRACE 
-RBRACE
+LBRACE "{"
+RBRACE "}"
 EQEQUAL "=="
 NOTEQUAL "!="
 LESSEQUAL "<="
@@ -534,6 +534,9 @@ comp_op:
 expr:
     xor_expr
     | expr "|" xor_expr
+    {
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
     ;
 
 // *python3 xor_expr
@@ -541,6 +544,9 @@ expr:
 xor_expr:
     and_expr
     | xor_expr "^" and_expr
+    {
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
     ;
 
 // *python3 and_expr
@@ -548,35 +554,33 @@ xor_expr:
 and_expr:
     shift_expr
     | and_expr "&" shift_expr
+    {
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
     ;
 
 // *python3 shift_expr
 // shift_expr: arith_expr (('<<'|'>>') arith_expr)*
 shift_expr:
-    arith_expr shift_expr_seq
+    arith_expr
+    | shift_expr shift_op arith_expr
+    {
+       $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
     ;
 
-//     | shift_expr "<<" arith_expr
-//    | shift_expr ">>" arith_expr
-
-
-// (('<<'|'>>') arith_expr)*
-shift_expr_seq:
-    %empty
-    | shift_expr_seq "<<" arith_expr
-    | shift_expr_seq ">>" arith_expr
-;
-
-
-//shift_op:
-//    "<<" | ">>"
-//;
+shift_op:
+    "<<" | ">>"
+    ;
 
 // *python3 arith_expr
 // arith_expr: term (('+'|'-') term)*
 arith_expr:
     term
     | arith_expr arith_op term
+    {
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
     ;
 
 arith_op:
@@ -588,6 +592,9 @@ arith_op:
 term:
     factor
     | term term_op factor
+    {
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
     ;
 
 term_op:
@@ -597,8 +604,8 @@ term_op:
 
 // factor: ('+'|'-'|'~') factor | power
 factor:
-    factor_op factor
-    | power
+    power
+    | factor_op factor
     ;
 
 factor_op:
@@ -609,7 +616,10 @@ factor_op:
 // power: atom_expr ['**' factor]
 power:
     atom_expr
-    | atom_expr "**" factor 
+    | atom_expr "**" factor
+    {
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
     ;
 
 // *python3 atom_expr
