@@ -78,6 +78,11 @@ int Tuple::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
+int Starred::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
 
 } /* namespace py */
 

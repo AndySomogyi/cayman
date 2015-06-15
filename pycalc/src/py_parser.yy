@@ -391,6 +391,9 @@ yield_arg:
 // see https://www.python.org/dev/peps/pep-3132/
 star_expr:
     "*" expr
+    {
+        $$ = ctx.ast->CreateStarred(@$, $2);
+    }
     ;
 
 // *python3
@@ -635,14 +638,29 @@ power:
 // *python3 atom_expr
 // atom_expr: [AWAIT] atom trailer*
 atom_expr:
-    atom trailer_seq
+    atom
+    | atom trailer_seq
+    {
+        Call *call = dynamic_cast<Call*>($2);
+        assert(call);
+        call->SetFunc($1);
+
+        $$ = call;
+    }
+    | "await" atom
+    {
+        assert(0);
+    }
     | "await" atom trailer_seq
+    {
+        assert(0);
+    }
     ;
 
 
-// trailer*
+// trailer+
 trailer_seq:
-    %empty
+    trailer
     | trailer_seq trailer
     ;
 
@@ -651,7 +669,18 @@ trailer_seq:
 trailer:
     "." NAME
     | "(" ")"
+    {
+        // trailer: ()
+        // name is not known until atom expr
+        $$ = ctx.ast->CreateCall(@$);
+    }
     | "(" arglist ")"
+    {
+        // trailer: ( arglist )
+        // name is not known until atom expr
+        $$ = ctx.ast->CreateCall(@$, $2);
+    }
+
     ;
 
 
@@ -660,6 +689,9 @@ trailer:
 arglist:
     arglist_seq
     | arglist_seq ","
+    {
+        $$ = $1;
+    }
     ;
 
 
@@ -667,7 +699,13 @@ arglist:
 // argument (',' argument)*  
 arglist_seq:
    argument
+   {
+       $$ = ctx.ast->CreateTuple(@$, $1);
+   }
    | arglist_seq "," argument
+   {
+       $$ = ctx.ast->CreateTuple(@$, $1, $3);
+   }
    ;
 
 // 
@@ -686,8 +724,15 @@ arglist_seq:
 //             star_expr )
 argument:
     test
+    | star_expr
     | test "=" test
+    {
+        $$ = ctx.ast->CreateKeywordArg(@$, $1, $3);
+    }
     | "**" test
+    {
+        $$ = ctx.ast->CreateDblStarred(@$, $2);
+    }
     ;
 
 

@@ -137,6 +137,12 @@ FunctionDef* Ast::CreateFunctionDef(const location& loc, AstNode* nm,
 	return new FunctionDef(this, loc, nm, args, suite);
 }
 
+
+Call* Ast::CreateCall(const location& loc, AstNode* args)
+{
+	return new Call(this, loc, args);
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);
@@ -146,6 +152,28 @@ BinOp* Ast::CreateBinOp(const location& _loc, AstNode *op, AstNode* _left,
 		AstNode* _right)
 {
 	return new BinOp(this, _loc, TokenAstNodes::GetOperatorType(op), _left, _right);
+}
+
+Starred* Ast::CreateStarred(const location& loc, AstNode* _value,
+		ExprContext ctx)
+{
+	return new Starred(this, loc, _value, ctx);
+}
+
+DblStarred* Ast::CreateDblStarred(const location& loc, AstNode* _value)
+{
+	return new DblStarred(this, loc, _value);
+}
+
+KeywordArg* Ast::CreateKeywordArg(const location& loc, AstNode * name,
+		AstNode* _value)
+{
+	Name *nm = dynamic_cast<Name*>(name);
+
+	if(!nm) {
+		throw syntax_error(loc, "error, name of a keyword argument must be a name");
+	}
+	return new KeywordArg(this, loc, nm->id, _value);
 }
 
 } /* namespace py */

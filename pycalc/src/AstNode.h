@@ -168,6 +168,46 @@ public:
 
 };
 
+/**
+ * A starred expression, i.e. *a, *(a, b, c)
+ */
+class Starred : public AstNode
+{
+public:
+	Starred(class Ast* ast, const location &loc, AstNode *_value, ExprContext ctx = UnknownCtx) :
+		AstNode(ast, loc), value(_value), ctx(ctx) {};
+
+	virtual ~Starred() {};
+
+	AstNode *value;
+
+	ExprContext ctx;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+/**
+ * A double starred expression, i.e. *a, *(a, b, c),
+ *
+ * Only valid inside of an arglist.
+ *
+ * This class is NOT meant to be added to a AST tree, this is only
+ * used internally by the parser to return a double starred expr
+ * in an arglist
+ */
+class DblStarred : public AstNode
+{
+public:
+	DblStarred(class Ast* ast, const location &loc, AstNode *_value) :
+		AstNode(ast, loc), value(_value) {};
+
+	virtual ~DblStarred() {};
+
+	AstNode *value;
+
+	virtual int Accept(class AstVisitor*) { return 0;}
+};
+
 } /* namespace py */
 
 // define these in std namespace

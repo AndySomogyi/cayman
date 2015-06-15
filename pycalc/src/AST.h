@@ -57,6 +57,25 @@ public:
 
 	BinOp *CreateBinOp(const location& _loc, AstNode *op, AstNode* _left, AstNode* _right);
 
+	Starred *CreateStarred(const location &loc, AstNode *_value, ExprContext ctx = UnknownCtx);
+
+
+	/**
+	 * Only to be used by the bison parser
+	 */
+	DblStarred *CreateDblStarred(const location &loc, AstNode *_value);
+
+	/**
+	 * Create a call node, if args is NULL, an empty Call obj is created.
+	 *
+	 * args should be a tuple created in an arglist.
+	 *
+	 * The args node is consumed in the process.
+	 */
+	Call *CreateCall(const location& loc, AstNode* args = NULL);
+
+	KeywordArg *CreateKeywordArg(const location &loc, AstNode *name, AstNode *value);
+
 
 	void Free(AstNode* node);
 

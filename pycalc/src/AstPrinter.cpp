@@ -23,7 +23,7 @@ AstPrinter::~AstPrinter()
 
 int AstPrinter::Visit(Name* nm)
 {
-	os << "Name(" << nm->id << ")" << std::endl;
+	os << "Name(" << nm->id << ")";
 	return 0;
 }
 
@@ -48,7 +48,7 @@ int AstPrinter::Visit(Module* m)
 		(*i)->Accept(this);
 	}
 
-	os << "])" << std::endl;
+	os << "])";
 
 	return 0;
 }
@@ -67,7 +67,7 @@ int AstPrinter::Visit(Assign* a)
 
 	os << a->value->Accept(this);
 
-	os << "]" << std::endl;
+	os << "]";
 
 	return 0;
 }
@@ -267,6 +267,91 @@ int AstPrinter::Visit(FunctionDef* func)
     os << "]" << std::endl << ")";
     
     return 0;
+}
+
+int AstPrinter::Visit(KeywordArg* k)
+{
+	os << "KeywordArg(arg=" << k->arg <<
+			", value=";
+
+	k->value->Accept(this);
+
+	os << ")";
+
+	return 0;
+}
+
+int AstPrinter::Visit(Call* c)
+{
+	os << "Call(func=";
+
+	c->func->Accept(this);
+
+	os << "," << std::endl << "args=[";
+
+
+	for (AstNodes::const_iterator i = c->args.begin(); i != c->args.end(); ++i) {
+		(*i)->Accept(this);
+
+		if(i + 1 < c->args.end()) {
+			os << ",";
+		}
+
+		os << std::endl;
+	}
+
+	os << "], keywords=[";
+
+
+	for (KeywordArgs::const_iterator i = c->kwArgs.begin(); i != c->kwArgs.end(); ++i) {
+		(*i)->Accept(this);
+
+		if(i + 1 < c->kwArgs.end()) {
+			os << ",";
+		}
+
+		os << std::endl;
+	}
+
+	os << "], " << std::endl;
+
+
+	os << "starargs=";
+
+	if(c->starArg) {
+		c->starArg->Accept(this);
+	} else {
+		os << "Null";
+	}
+
+	os << ", kwarg=";
+
+	if (c->kwArg) {
+		c->kwArg->Accept(this);
+	} else {
+		os << "Null";
+	}
+
+
+	os << ")";
+
+	return 0;
+}
+
+int AstPrinter::Visit(Starred* s)
+{
+	os << "Starred(value=";
+
+	if (s->value) {
+		s->value->Accept(this);
+	} else {
+		os << "Null";
+	}
+
+	os << ")";
+
+	return 0;
+
 }
 
 } /* namespace py */

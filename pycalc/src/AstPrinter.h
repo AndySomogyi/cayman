@@ -31,6 +31,10 @@ public:
 	virtual int Visit(Arg*);
 	virtual int Visit(FunctionDef*);
 
+	virtual int Visit(KeywordArg*);
+	virtual int Visit(Call*);
+	virtual int Visit(Starred*);
+
 private:
 	std::ostream &os;
 };

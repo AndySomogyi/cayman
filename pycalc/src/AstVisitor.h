@@ -29,6 +29,10 @@ public:
 	virtual int Visit(class Ast*) = 0;
 	virtual int Visit(Arg*) = 0;
 	virtual int Visit(FunctionDef*) = 0;
+	virtual int Visit(KeywordArg*) = 0;
+	virtual int Visit(Call*) = 0;
+	virtual int Visit(Starred*) = 0;
+
 
 	virtual ~AstVisitor() {};
 };
