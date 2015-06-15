@@ -22,42 +22,39 @@ public:
 
 enum OperatorType
 {
-	Add = 1,
-	Sub = 2,
-	Mult = 3,
-	Div = 4,
-	Mod = 5,
-	Pow = 6,
-	LShift = 7,
-	RShift = 8,
-	BitOr = 9,
-	BitXor = 10,
-	BitAnd = 11,
-	FloorDiv = 12
+	// binary operations
+	Add = 0,
+	Sub,
+	Mult,
+	Div,
+	Mod,
+	Pow,
+	LShift,
+	RShift,
+	BitOr,
+	BitXor,
+	BitAnd,
+	FloorDiv,
+
+	// comparisons
+	// comparisons start at the Eq operator.
+	Eq,
+	NotEq,
+	Lt,
+	LtEq,
+	Gt,
+	GtEq,
+	Is,
+	IsNot,
+	In,
+	NotIn,
+
+	// keep this as the last operator, to know the number of operators
+	// we have, this is NOT a valid operator type.
+	EndOp
 };
 
-/**
- * internal class, map token values to AstNodes, lets us keep a single
- * data type in the parser instead of the more complex variant or union.
- */
-class Op
-{
-public:
-	static AstNode *Add;
-	static AstNode *Sub;
-	static AstNode *Mult;
-	static AstNode *Div;
-	static AstNode *Mod;
-	static AstNode *Pow;
-	static AstNode *LShift;
-	static AstNode *RShift;
-	static AstNode *BitOr;
-	static AstNode *BitXor;
-	static AstNode *BitAnd;
-	static AstNode *FloorDiv;
 
-	static OperatorType GetOperatorType(const AstNode *node);
-};
 
 class BinOp : public Expr
 {

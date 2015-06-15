@@ -252,27 +252,21 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::SEMI;
 		break;
 	case pytoken::PLUS:
-		*node = Op::Add;
 		result = tok::PLUS;
 		break;
 	case pytoken::MINUS:
-		*node = Op::Sub;
 		result = tok::MINUS;
 		break;
 	case pytoken::STAR:
-		*node = Op::Mult;
 		result = tok::STAR;
 		break;
 	case pytoken::SLASH:
-		*node = Op::Div;
 		result = tok::SLASH;
 		break;
 	case pytoken::VBAR:
-		*node = Op::BitOr;
 		result = tok::VBAR;
 		break;
 	case pytoken::AMPER:
-		*node = Op::BitAnd;
 		result = tok::AMPER;
 		break;
 	case pytoken::LESS:
@@ -288,7 +282,6 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::DOT;
 		break;
 	case pytoken::PERCENT:
-		*node = Op::Mod;
 		result = tok::PERCENT;
 		break;
 	case pytoken::BACKQUOTE:
@@ -316,19 +309,15 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::TILDE;
 		break;
 	case pytoken::CIRCUMFLEX:
-		*node = Op::BitXor;
 		result = tok::CIRCUMFLEX;
 		break;
 	case pytoken::LEFTSHIFT:
-		*node = Op::LShift;
 		result = tok::LEFTSHIFT;
 		break;
 	case pytoken::RIGHTSHIFT:
-		*node = Op::RShift;
 		result = tok::RIGHTSHIFT;
 		break;
 	case pytoken::DOUBLESTAR:
-		*node = Op::Pow;
 		result = tok::DOUBLESTAR;
 		break;
 	case pytoken::PLUSEQUAL:
@@ -365,7 +354,6 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::DOUBLESTAREQUAL;
 		break;
 	case pytoken::DOUBLESLASH:
-		*node = Op::FloorDiv;
 		result = tok::DOUBLESLASH;
 		break;
 	case pytoken::DOUBLESLASHEQUAL:
@@ -385,10 +373,123 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		break;
 	}
 
+
+	// if the result node has NOT been already populated with a terminal
+	// node type that has a semnatic value, such as a string, number, or
+	// other type, we check if it is an operator type and get the operator
+	// semantic value.
+	if(*node == NULL)
+	{
+		*node = TokenAstNodes::GetAstNode(result);
+	}
+
 	return result;
 }
 
+
+/**
+ * array of dummy ast nodes to map tokens to ast nodes for the parser.
+ */
+static AstNode tokenAstNodes [py::EndOp];
+
+OperatorType TokenAstNodes::GetTokenOperatorType(int tokenValue)
+{
+	switch(tokenValue)
+	{
+    case tok::PLUS:
+        return Add;
+    case tok::MINUS:
+        return Sub;
+    case tok::STAR:
+        return Mult;
+    case tok::SLASH:
+        return Div;
+    case tok::VBAR:
+        return BitOr;
+    case tok::AMPER:
+        return BitAnd;
+    case tok::LESS:
+        return Lt;
+    case tok::GREATER:
+        return Gt;
+    case tok::PERCENT:
+        return Mod;
+    case tok::EQEQUAL:
+        return Eq;
+    case tok::NOTEQUAL:
+        return NotEq;
+    case tok::LESSEQUAL:
+        return LtEq;
+    case tok::GREATEREQUAL:
+        return GtEq;
+    case tok::CIRCUMFLEX:
+        return BitXor;
+    case tok::LEFTSHIFT:
+        return LShift;
+    case tok::RIGHTSHIFT:
+        return RShift;
+    case tok::DOUBLESTAR:
+        return Pow;
+    case tok::PLUSEQUAL:
+        return Add;
+    case tok::MINEQUAL:
+        return Sub;
+    case tok::STAREQUAL:
+        return Mult;
+    case tok::SLASHEQUAL:
+        return Div;
+    case tok::PERCENTEQUAL:
+        return Mod;
+    case tok::AMPEREQUAL:
+        return BitAnd;
+    case tok::VBAREQUAL:
+        return BitOr;
+    case tok::CIRCUMFLEXEQUAL:
+        return BitXor;
+    case tok::LEFTSHIFTEQUAL:
+        return LShift;
+    case tok::RIGHTSHIFTEQUAL:
+        return RShift;
+    case tok::DOUBLESTAREQUAL:
+        return Pow;
+    case tok::DOUBLESLASH:
+        return FloorDiv;
+    case tok::DOUBLESLASHEQUAL:
+        return FloorDiv;
+    case tok::IN:
+    	return In;
+    case tok::IS:
+    	return Is;
+    default:
+    	return EndOp;
+	}
+}
+
 #undef tok
+
+AstNode *TokenAstNodes::GetAstNode(int tokenValue)
+{
+	unsigned offset = GetTokenOperatorType(tokenValue);
+
+	if (offset < EndOp) {
+		return &tokenAstNodes[offset];
+	}
+
+	return NULL;
+}
+
+
+OperatorType TokenAstNodes::GetOperatorType(const AstNode *node)
+{
+    unsigned offset = node - &tokenAstNodes[0];
+	return (offset < EndOp) ? (OperatorType)(offset) : EndOp;
+}
+
+
+AstNode *TokenAstNodes::GetAstNodeForOperatorType(OperatorType type)
+{
+	return &tokenAstNodes[type];
+}
 
 struct perrdetail {
 	int error;

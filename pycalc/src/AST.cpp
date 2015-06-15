@@ -10,6 +10,7 @@
 #include "AstVisitor.h"
 #include "AstPrinter.h"
 #include "py_parser.hh"
+#include "ParserContext.h"
 
 namespace py
 {
@@ -144,7 +145,7 @@ TmpArguments* Ast::CreateTmpArguments(const location& loc)
 BinOp* Ast::CreateBinOp(const location& _loc, AstNode *op, AstNode* _left,
 		AstNode* _right)
 {
-	return new BinOp(this, _loc, Op::GetOperatorType(op), _left, _right);
+	return new BinOp(this, _loc, TokenAstNodes::GetOperatorType(op), _left, _right);
 }
 
 } /* namespace py */

@@ -507,6 +507,10 @@ not_test:
 comparison:
     expr
     | comparison comp_op expr
+    {
+        // comparison: comparison comp_op expr
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
 ;
 
 
@@ -515,7 +519,15 @@ comparison:
 // # sake of a __future__ import described in PEP 401 (which really works :-)
 // comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
 comp_op:
-    "<"
+    "not" "in"
+    {
+        $$ = TokenAstNodes::GetAstNodeForOperatorType(py::NotIn);
+    }
+    | "is" "not"
+    {
+        $$ = TokenAstNodes::GetAstNodeForOperatorType(py::IsNot);
+    }
+    | "<"
     | ">"
     | "=="
     | ">="
@@ -523,9 +535,7 @@ comp_op:
     | "<>"
     | "!="
     | "in"
-    | "not" "in"
     | "is"
-    | "is" "not"
 ;
 
 

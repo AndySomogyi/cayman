@@ -112,6 +112,36 @@ int AstPrinter::Visit(BinOp* b)
     case FloorDiv:
         os << "//";
         break;
+    case Eq:
+        os << "==";
+        break;
+    case NotEq:
+        os << "!=";
+        break;
+    case Lt:
+        os << "<";
+        break;
+    case LtEq:
+        os << "<=";
+        break;
+    case Gt:
+        os << ">";
+        break;
+    case GtEq:
+        os << ">=";
+        break;
+    case Is:
+        os << "is";
+        break;
+    case IsNot:
+        os << "is not";
+        break;
+    case In:
+        os << "in";
+        break;
+    case NotIn:
+        os << "not in";
+        break;
     default:
     	break;
 	}
