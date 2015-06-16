@@ -49,6 +49,9 @@ enum OperatorType
 	In,
 	NotIn,
 
+	And,
+	Or,
+
 	// keep this as the last operator, to know the number of operators
 	// we have, this is NOT a valid operator type.
 	EndOp

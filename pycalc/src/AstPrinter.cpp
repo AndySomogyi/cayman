@@ -140,8 +140,14 @@ int AstPrinter::Visit(BinOp* b)
         os << "in";
         break;
     case NotIn:
-        os << "not in";
-        break;
+    	os << "not in";
+    	break;
+    case And:
+    	os << "and";
+    	break;
+    case Or:
+    	os << "or";
+    	break;
     default:
     	break;
 	}

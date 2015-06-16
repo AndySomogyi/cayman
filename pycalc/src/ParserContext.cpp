@@ -212,11 +212,24 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		{
 			result = tok::ELSE;
 		}
+		else if (strncmp(a, "and", 3) == 0)
+		{
+			result = tok::AND;
+		}
+		else if (strncmp(a, "or", 2) == 0)
+		{
+			result = tok::OR;
+		}
+		else if (strncmp(a, "not", 3) == 0)
+		{
+			result = tok::NOT;
+		}
 		else
 		{
 			result = tok::NAME;
+            *node = ctx.ast->CreateName(*loc, a, b);
 		}
-		*node = ctx.ast->CreateName(*loc, a, b);
+		
 		break;
 	case pytoken::NUMBER:
 		result = tok::NUMBER;
@@ -464,6 +477,10 @@ OperatorType TokenAstNodes::GetTokenOperatorType(int tokenValue)
     	return In;
     case tok::IS:
     	return Is;
+    case tok::AND:
+    	return And;
+    case tok::OR:
+    	return Or;
     default:
     	return EndOp;
 	}

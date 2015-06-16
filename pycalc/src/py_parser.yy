@@ -124,21 +124,21 @@ STRING
 
 
 // left associativity
-%left "(" ")"
-%left "-" "+"
-%left "*" "/"  "%" "//"
+//%left "(" ")"
+//%left "-" "+"
+//%left "*" "/"  "%" "//"
  //Primary	  left to right	 ()  [ ]  .  -> dynamic_cast typeid
 
-%left "<<"  ">>"
-%left "<"  ">"  "<="  ">="
-%left "=="  "!="
-%left "&" "^" "|"
-%left "and" "or"
-%left ","
+//%left "<<"  ">>"
+//%left "<"  ">"  "<="  ">="
+//%left "=="  "!="
+//%left "&" "^" "|"
+//%left "and" "or"
+//%left ","
 
 
 
-%right "="  "+="  "-="  "*="   "/="  "<<="  ">>="  "%="   "&="  "^="  "|="
+// %right "="  "+="  "-="  "*="   "/="  "<<="  ">>="  "%="   "&="  "^="  "|="
 
  // ++  --  +  -  !  ~  &  *  (type_name)  sizeof new delete
 
@@ -490,20 +490,28 @@ test:
 // or_test: and_test ('or' and_test)*
 or_test:
     and_test
-    | or_test OR and_test
+    | or_test "or" and_test
+    {
+        // or_test: or_test "or" and_test
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
 ;
 
 // *python3 and_test: 
 // and_test: not_test ('and' not_test)*
 and_test:
     not_test
-    | and_test AND not_test
+    | and_test "and" not_test
+    {
+        // and_test: and_test "and" not_test
+        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+    }
 ;
 
 // *python3 not_test: 
 // not_test: 'not' not_test | comparison
 not_test:
-    NOT not_test
+    "not" not_test
    |  comparison
 ;
 
