@@ -58,7 +58,14 @@ enum OperatorType
 };
 
 
-
+/**
+ * A general binary operation betwen two objects.
+ *
+ * Note, CPython had a separate tree items for binary ops and boolean ops,
+ * presubmably because this allowed some optimization in the interpreter. Here,
+ * all code is compiled to native machine types, and any optimization will occur
+ * later in the compilation process. We support type inference as well.
+ */
 class BinOp : public Expr
 {
 public:
@@ -81,6 +88,34 @@ public:
 
 
 	virtual int Accept(class AstVisitor*);
+};
+
+
+class If : public Expr
+{
+public:
+	If(class Ast* _ast, const location& _loc,  AstNode *_test = NULL,
+			AstNode *_body = NULL, AstNode *orelse = NULL);
+
+	virtual ~If() {};
+
+	AstNode *test;
+
+	// sequence of ops for body
+	AstNodes body;
+
+	// sequence of ops for else block
+	AstNodes orelse;
+
+	void SetTest(AstNode *_test);
+	void SetBody(AstNode *_body);
+	void SetOrElse(AstNode *_orelse);
+
+	If *GetTerminalElif();
+
+	virtual int Accept(class AstVisitor*);
+
+
 };
 
 

@@ -33,6 +33,7 @@ public:
 	virtual int Visit(Call*) = 0;
 	virtual int Visit(Starred*) = 0;
 	virtual int Visit(For*) = 0;
+	virtual int Visit(If*) = 0;
 
 
 	virtual ~AstVisitor() {};

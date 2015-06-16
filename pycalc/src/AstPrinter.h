@@ -35,6 +35,7 @@ public:
 	virtual int Visit(Call*);
 	virtual int Visit(Starred*);
 	virtual int Visit(For*);
+	virtual int Visit(If*);
 
 private:
 	std::ostream &os;

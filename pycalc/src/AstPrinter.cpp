@@ -413,6 +413,11 @@ int AstPrinter::Visit(For *f)
 	return 0;
 }
 
+int AstPrinter::Visit(If*)
+{
+	return 0;
+}
+
 } /* namespace py */
 
 

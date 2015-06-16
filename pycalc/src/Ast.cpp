@@ -143,6 +143,42 @@ Call* Ast::CreateCall(const location& loc, AstNode* args)
 	return new Call(this, loc, args);
 }
 
+
+
+If* Ast::CreateElif(const location& loc, AstNode* _elifSeq, AstNode* test,
+		AstNode* body)
+{
+	If *elifSeq = NULL;
+
+	if (_elifSeq) {
+		elifSeq = dynamic_cast<If*>(_elifSeq);
+		assert(elifSeq);
+	}
+
+	If *newIf = new If(this, loc, test, body, NULL);
+
+	if (elifSeq)
+	{
+		elifSeq->SetOrElse(newIf);
+		return elifSeq;
+	}
+
+	return newIf;
+}
+
+If* Ast::CreateIf(const location& loc, AstNode* test, AstNode* body,
+		AstNode* orelse, AstNode* trailingElse)
+{
+	If *newIf = new If(this, loc, test, body, orelse);
+
+	if(trailingElse)
+	{
+		newIf->GetTerminalElif()->SetOrElse(trailingElse);
+	}
+
+	return newIf;
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);

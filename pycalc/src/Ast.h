@@ -81,6 +81,23 @@ public:
 				AstNode *_iter = NULL, AstNode *_body = NULL,
 				AstNode *_orelse = NULL);
 
+	/**
+	 * Creates an if / elif node.
+	 *
+	 * If parentIf is not null, it is expected to the parent if statement in an
+	 * elif statment, and the test and body are for the elif statment.
+	 */
+	If *CreateIf(const location& _loc,  AstNode *_test = NULL,
+			AstNode *_body = NULL, AstNode *orelse = NULL,
+			AstNode *trailingElse = NULL);
+
+	/**
+	 * create an If for an elif block, and add it to the parent sequence
+	 * else pointer.
+	 */
+	If *CreateElif(const location& loc, AstNode *elifSeq, AstNode *test,
+			AstNode *body = NULL);
+
 
 	void Free(AstNode* node);
 

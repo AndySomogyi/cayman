@@ -54,6 +54,7 @@ DEF "def"
 PASS
 IF "if"
 ELSE "else"
+ELIF "elif"
 OR "or"
 NOT "not"
 AND "and"
@@ -822,9 +823,55 @@ compound_stmt:
     funcdef
     | decorated
     | for_stmt
+    | if_stmt
 ;
 
 
+// *python3 
+// if_stmt: 'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite]
+
+if_stmt: 
+    "if" test ":" suite elif_seq
+    {
+        // if_stmt:     "if" test ":" suite elif_seq
+        $$ = ctx.ast->CreateIf(@$, $2, $4, $5);
+    }
+    | "if" test ":" suite elif_seq "else" ":" suite
+    {
+        // if_stmt: "if" test ":" suite elif_seq "else" ":" suite
+        $$ = ctx.ast->CreateIf(@$, $2, $4, $5, $8); 
+    }
+    ;
+
+// ('elif' test ':' suite)*
+elif_seq:
+    %empty
+    {
+        // elif_seq: %empty
+        $$ = NULL;
+    }
+    | elif_seq "elif" test ":" suite
+    {
+        // elif_seq: elif_seq "elif" test ":" suite
+        $$ = ctx.ast->CreateElif(@$, $1, $3, $5);
+    }
+    ;
+
+/*
+
+while_stmt: 'while' test ':' suite ['else' ':' suite]
+for_stmt: 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
+try_stmt: ('try' ':' suite
+           ((except_clause ':' suite)+
+            ['else' ':' suite]
+            ['finally' ':' suite] |
+           'finally' ':' suite))
+with_stmt: 'with' with_item (',' with_item)*  ':' suite
+with_item: test ['as' expr]
+# NB compile.c makes sure that the default except clause is last
+except_clause: 'except' [test ['as' NAME]]
+
+*/
 
 // stmt+
 stmt_seq:
