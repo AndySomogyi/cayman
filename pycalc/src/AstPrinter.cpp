@@ -166,6 +166,9 @@ int AstPrinter::Visit(Tuple* t)
              i != t->items.end(); ++i)
         {
             (*i)->Accept(this);
+            if (i + 1 < t->items.end()) {
+            	os << ", ";
+            }
         }
     }
     
@@ -352,6 +355,56 @@ int AstPrinter::Visit(Starred* s)
 
 	return 0;
 
+}
+
+int AstPrinter::Visit(For *f)
+{
+	os << "For(" << std::endl;
+	os << "target=";
+
+	f->target->Accept(this);
+
+	os << ", " << std::endl << "iter=";
+
+	f->iter->Accept(this);
+
+	os << ", " << std::endl << "body=[" << std::endl;
+
+
+	for (AstNodes::const_iterator i = f->body.begin(); i != f->body.end(); ++i) {
+		(*i)->Accept(this);
+
+		if(i + 1 < f->body.end()) {
+			os << ",";
+		}
+
+		os << std::endl;
+	}
+
+	os << "] " << std::endl;
+
+
+	os << ", " << std::endl << "orelse=[" << std::endl;
+
+
+	for (AstNodes::const_iterator i = f->orelse.begin(); i != f->orelse.end(); ++i) {
+		(*i)->Accept(this);
+
+		if(i + 1 < f->orelse.end()) {
+			os << ",";
+		}
+
+		os << std::endl;
+	}
+
+	os << "] " << std::endl;
+
+
+	os << ")";
+
+
+
+	return 0;
 }
 
 } /* namespace py */

@@ -256,6 +256,55 @@ public:
 	virtual int Accept(class AstVisitor*);
 };
 
+/**
+ * for loop stmt
+ *
+ *  "for" target "in" iter ":" body
+ *  "for" target "in" iter ":" body "else" ":" orelse
+ */
+class For: public Stmt
+{
+public:
+	For(Ast *ast, const location& loc, AstNode *_target = NULL,
+			AstNode *_iter = NULL, AstNode *_body = NULL,
+			AstNode *_orelse = NULL);
+
+	virtual ~For() {};
+
+	virtual int Accept(AstVisitor *);
+
+	/**
+	 * The variable(s) that the loop assigns to, may be either a
+	 * single Name, Tuple or List.
+	 */
+	AstNode *target;
+
+	/**
+	 * The expression that is to be looped over.
+	 */
+	AstNode *iter;
+
+	/**
+	 * sequence of nodes that are executed in the loop body
+	 */
+	AstNodes body;
+
+	/**
+	 * Sequence of nodes that are executed if the loop finishes normally,
+	 * rather than via a break statement.
+	 */
+	AstNodes orelse;
+
+
+	void SetTarget(AstNode *_target);
+
+	void SetIter(AstNode *_iter);
+
+	void SetBody(AstNode *_body);
+
+	void SetOrElse(AstNode *_orelse);
+};
+
 
 
 } /* namespace py */

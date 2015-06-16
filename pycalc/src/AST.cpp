@@ -176,6 +176,12 @@ KeywordArg* Ast::CreateKeywordArg(const location& loc, AstNode * name,
 	return new KeywordArg(this, loc, nm->id, _value);
 }
 
+For* Ast::CreateFor(const location& loc, AstNode* _target, AstNode* _iter,
+		AstNode* _body, AstNode* _orelse)
+{
+	return new For(this, loc, _target, _iter, _body, _orelse);
+}
+
 } /* namespace py */
 
 

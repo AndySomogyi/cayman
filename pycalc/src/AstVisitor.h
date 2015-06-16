@@ -32,6 +32,7 @@ public:
 	virtual int Visit(KeywordArg*) = 0;
 	virtual int Visit(Call*) = 0;
 	virtual int Visit(Starred*) = 0;
+	virtual int Visit(For*) = 0;
 
 
 	virtual ~AstVisitor() {};

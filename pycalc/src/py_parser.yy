@@ -468,7 +468,10 @@ testlist:
 test_seq:
     test
     | test_seq "," test
-;
+    {
+        $$ = ctx.ast->CreateTuple(@$, $1, $3);
+    }
+    ;
 
 
 //comma_opt:
@@ -844,7 +847,13 @@ suite:
 // for_stmt: 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
 for_stmt:
     "for" exprlist "in" testlist ":" suite
+    {
+        $$ = ctx.ast->CreateFor(@$, $2, $4, $6);
+    }
     | "for" exprlist "in" testlist ":" suite "else" ":" suite
+    {
+        $$ = ctx.ast->CreateFor(@$, $2, $4, $6, $9);
+    }
     ;
 
 // *python3
@@ -852,15 +861,28 @@ for_stmt:
 exprlist:
     exprlist_seq
     | exprlist_seq ","
+    {
+        // exprlist:
+        $$ = $1;
+    }
     ;
 
 
 // exprlist_seq: (expr|star_expr) (',' (expr|star_expr))*
 exprlist_seq:
-    expr
-    | star_expr
-    | exprlist_seq "," expr
+    exprlist_seq "," expr
+    {
+        // exprlist_seq: exprlist_seq "," expr
+        $$ = ctx.ast->CreateTuple(@$, $1, $3);
+    }
+
     | exprlist_seq "," star_expr
+    {
+        // exprlist_seq: exprlist_seq "," star_expr
+        $$ = ctx.ast->CreateTuple(@$, $1, $3);
+    }
+    | expr
+    | star_expr
     ;
     
 

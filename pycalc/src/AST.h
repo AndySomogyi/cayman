@@ -77,6 +77,11 @@ public:
 	KeywordArg *CreateKeywordArg(const location &loc, AstNode *name, AstNode *value);
 
 
+	For* CreateFor(const location& loc, AstNode *_target = NULL,
+				AstNode *_iter = NULL, AstNode *_body = NULL,
+				AstNode *_orelse = NULL);
+
+
 	void Free(AstNode* node);
 
 

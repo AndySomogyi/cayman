@@ -192,6 +192,44 @@ int Call::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
+For::For(Ast* ast, const location& loc, AstNode* _target, AstNode* _iter,
+	AstNode* _body, AstNode* _orelse) :
+	Stmt(ast, loc), target(NULL), iter(NULL)
+{
+	if (_target) SetTarget(_target);
+	if (_iter) SetIter(_iter);
+	if (_body) SetBody(_body);
+	if (_orelse) SetOrElse(_orelse);
+}
+
+int For::Accept(AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+void For::SetTarget(AstNode* _target)
+{
+	target = _target;
+}
+
+void For::SetIter(AstNode* _iter)
+{
+	iter = _iter;
+}
+
+void For::SetBody(AstNode* _body)
+{
+	Tuple *tuple = dynamic_cast<Tuple*>(_body);
+
+	body = tuple->items;
+}
+
+void For::SetOrElse(AstNode* _orelse)
+{
+	Tuple *tuple = dynamic_cast<Tuple*>(_orelse);
+	orelse = tuple->items;
+}
+
 } /* namespace py */
 
 

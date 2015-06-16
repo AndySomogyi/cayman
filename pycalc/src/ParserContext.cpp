@@ -208,6 +208,10 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		{
 			result = tok::FOR;
 		}
+		else if(strncmp(a, "else", 4) == 0)
+		{
+			result = tok::ELSE;
+		}
 		else
 		{
 			result = tok::NAME;
