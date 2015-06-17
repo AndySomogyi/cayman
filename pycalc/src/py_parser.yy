@@ -173,6 +173,9 @@ module:
         AstNodeSeq *seq = dynamic_cast<AstNodeSeq*>($1);
         assert(seq);
         ctx.ast->module = ctx.ast->CreateModule(@$, seq->seq);
+
+        // make the parser printer happy, it expects a valid node
+        $$ = ctx.ast->module;
         delete seq;
     }
 ;
