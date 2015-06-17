@@ -109,16 +109,10 @@ Tuple *Ast::CreateTuple(const location& loc, ExprContext ctx, AstNode *seq, AstN
     return tuple;
 }
 
-Arg* Ast::CreateArg(const location& loc, AstNode* nm, AstNode* df,
-		AstNode* tp)
+Arg* Ast::CreateArg(const location& loc, AstNode* nm, AstNode* def,
+		AstNode* type)
 {
 	Name *name = dynamic_cast<Name*>(nm);
-
-	Expr *def = dynamic_cast<Expr*>(df);
-	Expr *type = dynamic_cast<Expr*>(tp);
-
-
-
 	return new Arg(this, loc, name->id, def, type);
 }
 

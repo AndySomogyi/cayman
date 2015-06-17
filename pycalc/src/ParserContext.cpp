@@ -159,20 +159,6 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
     }
     
     
-
-    
-	len = b - a; /* XXX this may compute NULL - NULL */
-	str = (char *) malloc(len + 1);
-	if (str == NULL)
-	{
-		fprintf(stderr, "no mem for next token\n");
-		ctx.error = E_NOMEM;
-		//break;
-	}
-	if (len > 0)
-		strncpy(str, a, len);
-	str[len] = '\0';
-
 	if (a >= ctx.ts->line_start)
 		col_offset = a - ctx.ts->line_start;
 	else
@@ -195,48 +181,50 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		result = tok::ENDMARKER;
 		break;
 	case pytoken::NAME:
-
-		if (strncmp(a, "def", 3) == 0)
-		{
-			result = tok::DEF;
-		}
-		else if (strncmp(a, "in", 2) == 0)
-		{
-			result = tok::IN;
-		}
-		else if (strncmp(a, "for", 3) == 0)
-		{
-			result = tok::FOR;
-		}
-		else if(strncmp(a, "if", 2) == 0)
-		{
-			result = tok::IF;
-		}
-		else if(strncmp(a, "else", 4) == 0)
-		{
-			result = tok::ELSE;
-		}
-		else if(strncmp(a, "elif", 4) == 0)
-		{
-			result = tok::ELIF;
-		}
-		else if (strncmp(a, "and", 3) == 0)
-		{
-			result = tok::AND;
-		}
-		else if (strncmp(a, "or", 2) == 0)
-		{
-			result = tok::OR;
-		}
-		else if (strncmp(a, "not", 3) == 0)
-		{
-			result = tok::NOT;
-		}
-		else
-		{
-			result = tok::NAME;
-            *node = ctx.ast->CreateName(*loc, a, b);
-		}
+        {
+            std::string str(a, b);
+            if (str == "def")
+            {
+                result = tok::DEF;
+            }
+            else if (str == "in")
+            {
+                result = tok::IN;
+            }
+            else if (str == "for")
+            {
+                result = tok::FOR;
+            }
+            else if(str == "if")
+            {
+                result = tok::IF;
+            }
+            else if(str == "else")
+            {
+                result = tok::ELSE;
+            }
+            else if(str == "elif")
+            {
+                result = tok::ELIF;
+            }
+            else if (str == "and")
+            {
+                result = tok::AND;
+            }
+            else if (str == "or")
+            {
+                result = tok::OR;
+            }
+            else if (str == "not")
+            {
+                result = tok::NOT;
+            }
+            else
+            {
+                result = tok::NAME;
+                *node = ctx.ast->CreateName(*loc, a, b);
+            }
+        }
 		
 		break;
 	case pytoken::NUMBER:
