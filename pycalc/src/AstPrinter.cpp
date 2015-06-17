@@ -10,6 +10,25 @@
 
 namespace py
 {
+    
+void AstPrinter::PrintNodes(AstNodes& nodes)
+{
+    os << "[" << std::endl;
+    for(AstNodes::const_iterator i = nodes.begin();
+        i != nodes.end(); ++i)
+    {
+        (*i)->Accept(this);
+        
+        if (i + 1 < nodes.end()) {
+            os << ",";
+        }
+        
+        os << std::endl;
+    }
+    os << "]";
+}
+    
+    
 
 
 AstPrinter::AstPrinter(std::ostream& os) : os(os)
@@ -413,8 +432,23 @@ int AstPrinter::Visit(For *f)
 	return 0;
 }
 
-int AstPrinter::Visit(If*)
+int AstPrinter::Visit(If* i)
 {
+    os << "If(" << std::endl;
+    
+    os << "test=";
+    i->test->Accept(this);
+    os << std::endl;
+    
+    os << "body=";
+    PrintNodes(i->body);
+    
+    os << "else=";
+    PrintNodes(i->orelse);
+    
+    os << ")";
+    
+    
 	return 0;
 }
 

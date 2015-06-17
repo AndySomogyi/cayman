@@ -39,6 +39,8 @@ public:
 
 private:
 	std::ostream &os;
+    
+    void PrintNodes(AstNodes& nodes);
 };
 
 } /* namespace py */

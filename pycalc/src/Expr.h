@@ -23,7 +23,7 @@ public:
 enum OperatorType
 {
 	// binary operations
-	Add = 0,
+	Add = 1,
 	Sub,
 	Mult,
 	Div,
