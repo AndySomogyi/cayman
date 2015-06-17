@@ -208,6 +208,20 @@ int AstPrinter::Visit(Ast* ast)
 	return ast->module->Accept(this);
 }
 
+int AstPrinter::Visit(Attribute* attr)
+{
+	os << "Attribute(value=" << std::endl;
+    attr->value->Accept(this);
+    os << "," << std::endl;
+    
+    os << "attr=" << attr->attr << "," << std::endl;
+    os << "ctx=?" << std::endl;
+    
+    os << ")";
+    
+	return 0;
+}
+
 int AstPrinter::Visit(Arg* arg)
 {
     os << "Arg(id=" << arg->id << ", defaults=";
@@ -232,7 +246,7 @@ int AstPrinter::Visit(Arg* arg)
 
 int AstPrinter::Visit(FunctionDef* func)
 {
-    os << "FunctionDef(id=" << func->id << ", args=[" << std::endl;
+    os << "FunctionDef(id=" << func->name << ", args=[" << std::endl;
     
     for (Args::const_iterator i = func->args.begin(); i != func->args.end(); ++i) {
         (*i)->Accept(this);

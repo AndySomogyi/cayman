@@ -62,7 +62,7 @@ int Arg::Accept(AstVisitor* v)
 
 FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
 		AstNode* s) :
-		Stmt(ast, loc), returns(NULL)
+		Stmt(ast, loc)
 {
 	Tuple *suite = dynamic_cast<Tuple*>(s);
 
@@ -76,11 +76,11 @@ FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
 
 	assert(targs);
 
-	Name *name = dynamic_cast<Name*>(n);
+	Name *nm = dynamic_cast<Name*>(n);
 
-	assert(name);
+	assert(nm);
 
-	id = name->id;
+	name = nm->id;
 	body = suite->items;
 
 	args = targs->args;
@@ -130,67 +130,6 @@ int KeywordArg::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
-Call::Call(Ast* ast, const location& loc, AstNode* _argsTuple) :
-		Stmt(ast, loc), func(NULL), starArg(NULL), kwArg(NULL)
-{
-	if (!_argsTuple) {
-		return;
-	}
-
-	Tuple *argsTuple = dynamic_cast<Tuple*>(_argsTuple);
-
-	if(!argsTuple) {
-		// this is bad, error in the grammar
-		assert(0);
-	}
-
-	for(AstNodes::const_iterator i = argsTuple->items.begin();
-			i != argsTuple->items.end(); ++i)
-	{
-		AddArg(*i);
-	}
-}
-
-void Call::AddArg(AstNode* arg)
-{
-	assert(arg);
-
-	Starred *starred = dynamic_cast<Starred*>(arg);
-
-	if(starred) {
-		if (starArg == NULL) {
-			starArg = starred->value;
-			return;
-		} else {
-			throw syntax_error(starred->loc, "star argument already defined");
-		}
-	}
-
-	KeywordArg *keywordArg = dynamic_cast<KeywordArg*>(arg);
-	if(keywordArg) {
-		kwArgs.push_back(keywordArg);
-		return;
-	}
-
-	DblStarred *dblStarred = dynamic_cast<DblStarred*>(arg);
-	if(dblStarred) {
-		kwArg = dblStarred->value;
-		return;
-	}
-
-	// its a standard arg
-	args.push_back(arg);
-}
-
-void Call::SetFunc(AstNode* f)
-{
-	func = f;
-}
-
-int Call::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 For::For(Ast* ast, const location& loc, AstNode* _target, AstNode* _iter,
 	AstNode* _body, AstNode* _orelse) :

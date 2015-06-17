@@ -173,6 +173,12 @@ If* Ast::CreateIf(const location& loc, AstNode* test, AstNode* body,
 	return newIf;
 }
 
+Attribute* Ast::CreateAttribute(const location& loc, ExprContext ctx,
+		AstNode* value, AstNode* attr)
+{
+	return new Attribute(this, loc, ctx, value, attr);
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);

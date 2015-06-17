@@ -99,6 +99,10 @@ public:
 			AstNode *body = NULL);
 
 
+	Attribute *CreateAttribute(const location& loc,  ExprContext ctx, AstNode* value,
+				AstNode *attr);
+
+
 	void Free(AstNode* node);
 
 

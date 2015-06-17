@@ -52,6 +52,34 @@ Num::Num(class Ast* ast, const location& loc, const char* begin,
 	doubleValue = ::atof(std::string(begin, end).c_str());
 }
 
+static void MakeId(const std::vector<std::string> &ids, std::string &id)
+{
+    id.clear();
+    for (std::vector<std::string>::const_iterator i = ids.begin(); i != ids.end(); ++i)
+    {
+        id += *i;
+        
+        if (i + 1 < ids.end()) {
+            id += ".";
+        }
+    }
+}
+    
+void Name::AppendName(AstNode *name)
+{
+    Name *nm = dynamic_cast<Name*>(name);
+    if (nm == NULL) {
+        throw syntax_error(loc, "can not append a name with a non-name");
+    }
+    
+    ids.insert(ids.end(), nm->ids.begin(), nm->ids.end());
+    MakeId(ids, id);
+}
+    
+void Name::PrependName(AstNode *name)
+{
+    assert(0);
+}
 
 int Name::Accept(class AstVisitor* v)
 {

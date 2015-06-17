@@ -18,6 +18,14 @@
 namespace py
 {
 
+/**
+ * name or identifier.
+ *
+ * TODO, it is very inneficient to store ids as std::strings,
+ * much duplication, come up with more effecient storage scheme.
+ */
+typedef std::string Identifier;
+
 class AstNode
 {
 public:
@@ -97,19 +105,39 @@ public:
 	virtual int Accept(class AstVisitor*);
 };
 
-
+/**
+ * A name or identifier. 
+ *
+ * Names can be dotted, i.e. haveing multiple hierarchcal names, a.b.c.
+ *
+ * TODO: this storage scheme is horribly inneficient, come up with better
+ * system of globally stroring unique ids. 
+ */
 class Name : public AstNode
 {
 public:
 	Name(class Ast *ast, const location &loc, const char* begin, const char* end);
 	virtual ~Name() {};
 
+    /**
+     * The full name, may be dotted
+     */
 	// TODO, ineffecient, need to share names
 	std::string id;
 
 	ExprContext ctx;
+    
+    void AppendName(AstNode *name);
+    
+    void PrependName(AstNode *name);
 
 	virtual int Accept(class AstVisitor*);
+    
+private:
+    /**
+     * sequence of dotted names
+     */
+    std::vector<std::string> ids;
 };
 
 

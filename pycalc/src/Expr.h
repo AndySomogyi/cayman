@@ -20,6 +20,8 @@ public:
 	virtual ~Expr();
 };
 
+
+
 enum OperatorType
 {
 	// binary operations
@@ -117,6 +119,153 @@ public:
 
 
 };
+
+/**
+ * Expressions such as attributes or function calls may be chained, i.e.
+ *
+ * a.b.c().d, etc...
+ *
+ * This sequence is represented as
+ * attr(
+ *   name='d',
+ *   value=call(
+ *     func=attr(
+ *       name='c'
+ *       value=attr(
+ *         value=attr(
+ *         name='b'
+ *         value='a'
+ *         )
+ *       )
+ *     )
+ *   )
+ * )
+ *
+ * The ExprSeq provides a consistent way for the parser to set the
+ * base epxression.
+ */
+class ExprSeq
+{
+public:
+	/**
+	 * Sets the immediate base (parent) expression of the current node
+	 */
+	virtual void SetBaseExpr(AstNode *base) = 0;
+
+	/**
+	 * As these are chained expressions, this gets the terminal, or
+	 * inner-most expression.
+	 *
+	 * The parser first builds the expression sequence from 1:n, then
+	 * once the 1:n sequence is built, the 0'th term is added.
+	 */
+	virtual ExprSeq *GetTerminalExpr() = 0;
+	virtual ~ExprSeq() {};
+};
+
+
+/**
+ * Function or method call
+ */
+class Call : public Expr, public ExprSeq
+{
+public:
+
+	Call(Ast *ast, const location& loc, AstNode *argsTuple = NULL);
+
+	virtual ~Call() {};
+
+	/**
+	 * Name expression of function being called.
+	 */
+	AstNode* func;
+
+	/**
+	 * List of standard arguments
+	 */
+	AstNodes args;
+
+	/**
+	 * List of arguments given with keywords, i.e. foo(kw1=5, kw3=3)
+	 */
+	KeywordArgs kwArgs;
+
+	/**
+	 * The single starred argument, treated as a list
+	 */
+	AstNode *starArg;
+
+	/**
+	 * The double starred argunment, treated as a dict
+	 */
+	AstNode *kwArg;
+
+	/**
+	 * catergorize the given argument and add it to the appropriate
+	 * arg list.
+	 */
+	void AddArg(AstNode *arg);
+
+	/**
+	 * set the func (or object) this is calling
+	 */
+	void SetFunc(AstNode *f);
+
+	/**
+	 * When the Call expr is first created, the base is not known,
+	 * this method allows the parser to set the base once it is known.
+	 *
+	 * The base for a func call is the func expression.
+	 */
+	virtual void SetBaseExpr(AstNode *base);
+
+	virtual ExprSeq *GetTerminalExpr();
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
+
+class Attribute : public Expr, public ExprSeq
+{
+public:
+	Attribute(class Ast* _ast, const location& _loc,  ExprContext _ctx, AstNode* _value,
+			AstNode *_attr);
+
+	virtual ~Attribute() {};
+
+	/**
+	 * load, store???
+	 */
+	ExprContext ctx;
+
+	/**
+	 * The object from which the attribute is requested
+	 */
+	AstNode *value;
+
+	/**
+	 * name of attribute being requested
+	 */
+	Identifier attr;
+
+	void SetValue(AstNode *_value);
+
+	void SetAttr(AstNode *_attr);
+
+	/**
+	 * When the Attribute expr is first created, the base is not known,
+	 * this method allows the parser to set the base once it is known.
+	 *
+	 * The base for an Attribute expr is the value expression.
+	 */
+	virtual void SetBaseExpr(AstNode *base);
+
+	virtual ExprSeq *GetTerminalExpr();
+
+	virtual int Accept(class AstVisitor*);
+};
+
 
 
 

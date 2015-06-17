@@ -1917,11 +1917,12 @@ namespace py {
   case 101:
 
     {
-        Call *call = dynamic_cast<Call*>((yystack_[0].value));
-        assert(call);
-        call->SetFunc((yystack_[1].value));
-
-        (yylhs.value) = call;
+        // atom_expr: atom trailer_seq
+        AstNode *trailer = (yystack_[0].value);
+        ExprSeq *seq = dynamic_cast<ExprSeq*>(trailer);
+        assert(seq);
+        seq->GetTerminalExpr()->SetBaseExpr((yystack_[1].value));
+        (yylhs.value) = trailer;
     }
 
     break;
@@ -1938,6 +1939,30 @@ namespace py {
 
     {
         assert(0);
+    }
+
+    break;
+
+  case 105:
+
+    {
+        // trailer_seq: trailer_seq trailer
+        AstNode *trailer = (yystack_[0].value);
+        ExprSeq *seq = dynamic_cast<ExprSeq*>(trailer);
+        assert(seq);
+        seq->SetBaseExpr((yystack_[1].value));
+        (yylhs.value) = trailer;
+    }
+
+    break;
+
+  case 106:
+
+    {
+        // trailer: "." NAME
+        // base type is not known at this point, filled in 
+        // in trailer_seq
+        (yylhs.value) = ctx.ast->CreateAttribute(yylhs.location, UnknownCtx, NULL, (yystack_[0].value));
     }
 
     break;
@@ -2340,6 +2365,18 @@ namespace py {
         ctx.ast->Free(name);
         ctx.ast->Free(type);
         (yylhs.value) = result;
+    }
+
+    break;
+
+  case 170:
+
+    {
+        Name *dottedName = dynamic_cast<Name*>((yystack_[2].value));
+        assert(dottedName);
+        dottedName->AppendName((yystack_[0].value));
+        ctx.ast->Free((yystack_[0].value));
+        (yylhs.value) = dottedName;
     }
 
     break;
@@ -2913,14 +2950,14 @@ namespace py {
      554,   555,   556,   563,   564,   573,   574,   583,   584,   593,
      594,   601,   601,   607,   608,   615,   615,   621,   622,   629,
      629,   629,   629,   635,   636,   640,   640,   640,   646,   647,
-     656,   657,   665,   669,   678,   679,   685,   686,   692,   705,
-     706,   716,   720,   741,   742,   743,   747,   781,   787,   792,
-     793,   794,   814,   826,   827,   828,   829,   837,   842,   851,
-     856,   881,   885,   894,   898,   907,   911,   920,   921,   931,
-     937,   942,   943,   949,   953,   962,   966,  1006,  1013,  1020,
-    1029,  1036,  1044,  1050,  1058,  1071,  1075,  1086,  1090,  1098,
-    1102,  1115,  1122,  1136,  1137,  1138,  1144,  1145,  1151,  1157,
-    1158
+     656,   657,   666,   670,   679,   680,   694,   701,   707,   720,
+     721,   731,   735,   756,   757,   758,   762,   796,   802,   807,
+     808,   809,   829,   841,   842,   843,   844,   852,   857,   866,
+     871,   896,   900,   909,   913,   922,   926,   935,   936,   946,
+     952,   957,   958,   964,   968,   977,   981,  1021,  1028,  1035,
+    1044,  1051,  1059,  1065,  1073,  1086,  1090,  1101,  1105,  1113,
+    1117,  1130,  1137,  1151,  1152,  1153,  1159,  1160,  1166,  1172,
+    1173
   };
 
   // Print the state stack on the debug stream.

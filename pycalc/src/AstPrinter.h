@@ -36,6 +36,7 @@ public:
 	virtual int Visit(Starred*);
 	virtual int Visit(For*);
 	virtual int Visit(If*);
+	virtual int Visit(Attribute*);
 
 private:
 	std::ostream &os;

@@ -656,11 +656,12 @@ atom_expr:
     atom
     | atom trailer_seq
     {
-        Call *call = dynamic_cast<Call*>($2);
-        assert(call);
-        call->SetFunc($1);
-
-        $$ = call;
+        // atom_expr: atom trailer_seq
+        AstNode *trailer = $2;
+        ExprSeq *seq = dynamic_cast<ExprSeq*>(trailer);
+        assert(seq);
+        seq->GetTerminalExpr()->SetBaseExpr($1);
+        $$ = trailer;
     }
     | "await" atom
     {
@@ -677,12 +678,26 @@ atom_expr:
 trailer_seq:
     trailer
     | trailer_seq trailer
+    {
+        // trailer_seq: trailer_seq trailer
+        AstNode *trailer = $2;
+        ExprSeq *seq = dynamic_cast<ExprSeq*>(trailer);
+        assert(seq);
+        seq->SetBaseExpr($1);
+        $$ = trailer;
+    }
     ;
 
 // *python3 trailer:
 // trailer: '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
 trailer:
     "." NAME
+    {
+        // trailer: "." NAME
+        // base type is not known at this point, filled in 
+        // in trailer_seq
+        $$ = ctx.ast->CreateAttribute(@$, UnknownCtx, NULL, $2);
+    }
     | "(" ")"
     {
         // trailer: ()
@@ -1156,6 +1171,13 @@ decorated:
 dotted_name:
     NAME
     | dotted_name "." NAME
+    {
+        Name *dottedName = dynamic_cast<Name*>($1);
+        assert(dottedName);
+        dottedName->AppendName($3);
+        ctx.ast->Free($3);
+        $$ = dottedName;
+    }
     ;
 
 

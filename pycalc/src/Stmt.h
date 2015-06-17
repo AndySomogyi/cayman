@@ -162,7 +162,7 @@ class FunctionDef: public Arguments, public Stmt
 {
 public:
 	FunctionDef(Ast *ast, const location& loc) :
-			Arguments(), Stmt(ast, loc), returns(NULL)
+			Arguments(), Stmt(ast, loc)
 	{
 	}
 	;
@@ -176,12 +176,17 @@ public:
 	;
 
 	virtual int Accept(AstVisitor *);
+    
+    /**
+     * Adds a list of decorators from a tuple
+     */
+    void AddDecorators(AstNode *tuple);
 
-	std::string id;
+	Identifier name;
+    
+    AstNodes decorators;
 
 	AstNodes body;
-
-	AstNode *returns;
 };
 
 /**
@@ -204,57 +209,6 @@ public:
 
 typedef std::vector<KeywordArg*> KeywordArgs;
 
-
-/**
- * Function or method call
- */
-class Call : public Stmt
-{
-public:
-
-	Call(Ast *ast, const location& loc, AstNode *argsTuple = NULL);
-
-	virtual ~Call() {};
-
-	/**
-	 * Name expression of function being called.
-	 */
-	AstNode* func;
-
-	/**
-	 * List of standard arguments
-	 */
-	AstNodes args;
-
-	/**
-	 * List of arguments given with keywords, i.e. foo(kw1=5, kw3=3)
-	 */
-	KeywordArgs kwArgs;
-
-	/**
-	 * The single starred argument, treated as a list
-	 */
-	AstNode *starArg;
-
-	/**
-	 * The double starred argunment, treated as a dict
-	 */
-	AstNode *kwArg;
-
-	/**
-	 * catergorize the given argument and add it to the appropriate
-	 * arg list.
-	 */
-	void AddArg(AstNode *arg);
-
-	/**
-	 * set the func (or object) this is calling
-	 */
-	void SetFunc(AstNode *f);
-
-
-	virtual int Accept(class AstVisitor*);
-};
 
 /**
  * for loop stmt
