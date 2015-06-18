@@ -41,6 +41,9 @@ public:
 	virtual int Visit(Compare*) = 0;
 	virtual int Visit(Delete*) = 0;
     virtual int Visit(Return*) = 0;
+    virtual int Visit(Pass*) = 0;
+    virtual int Visit(Break*) = 0;
+    virtual int Visit(Continue*) = 0;
     virtual int Visit(While*) = 0;
     virtual int Visit(Raise*) = 0;
     virtual int Visit(Try*) = 0;
@@ -63,6 +66,7 @@ public:
     virtual int Visit(NameConstant*) = 0;
     virtual int Visit(Subscript*) = 0;
     virtual int Visit(List*) = 0;
+
 
 	virtual ~AstVisitor() {};
 };

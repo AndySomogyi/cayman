@@ -129,7 +129,21 @@ public:
                            AstNode *expr);
 
     Delete *CreateDelete(const location &loc, AstNode *expr);
+    
+    Break *CreateBreak(const location &loc);
+    
+    Continue *CreateContinue(const location &loc);
+    
+    Return *CreateReturn(const location &loc, AstNode *expr = NULL);
+    
+    Raise *CreateRaise(const location &loc, AstNode *expr = NULL, AstNode *from = NULL);
+    
+    Yield *CreateYield(const location &loc, AstNode *expr = NULL);
 
+    YieldFrom *CreateYieldFrom(const location &loc, AstNode *from);
+    
+    Pass *CreatePass(const location &loc);
+    
 	void Free(AstNode* node);
 
 

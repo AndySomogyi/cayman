@@ -343,6 +343,21 @@ int ClassDef::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
+int Pass::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int Break::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int Continue::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
 } /* namespace py */
 
 

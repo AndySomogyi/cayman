@@ -216,9 +216,13 @@ namespace py {
         ASYNC = 319,
         FROM = 320,
         YIELD = 321,
-        NAME = 322,
-        NUMBER = 323,
-        STRING = 324
+        BREAK = 322,
+        CONTINUE = 323,
+        RAISE = 324,
+        RETURN = 325,
+        NAME = 326,
+        NUMBER = 327,
+        STRING = 328
       };
     };
 
@@ -404,7 +408,7 @@ namespace py {
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const unsigned char yytable_[];
+  static const unsigned short int yytable_[];
 
   static const short int yycheck_[];
 
@@ -526,12 +530,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 450,     ///< Last index in yytable_.
-      yynnts_ = 68,  ///< Number of nonterminal symbols.
+      yylast_ = 536,     ///< Last index in yytable_.
+      yynnts_ = 73,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 72  ///< Number of tokens.
+      yyntokens_ = 76  ///< Number of tokens.
     };
 
 

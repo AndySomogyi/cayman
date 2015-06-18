@@ -72,6 +72,24 @@ int AstPrinter::Visit(AugAssign* aug)
 
 }
 
+int AstPrinter::Visit(Pass*)
+{
+	os << "Pass()";
+	return 0;
+}
+
+int AstPrinter::Visit(Break*)
+{
+	os << "Break()";
+	return 0;
+}
+
+int AstPrinter::Visit(Continue*)
+{
+	os << "Continue()";
+	return 0;
+}
+
 void AstPrinter::PrintNodes(AstNodes& nodes)
 {
     os << "[" << std::endl;
@@ -643,9 +661,17 @@ int AstPrinter::Visit(Delete* d)
     return 0;
 }
 
-int AstPrinter::Visit(Return*)
+int AstPrinter::Visit(Return *r)
 {
-    os << "Return()";
+    os << "Return(value=";
+    
+    if (r->value) {
+        r->value->Accept(this);
+    } else {
+        os << "NULL";
+    }
+    
+    os << ")";
     return 0;
 }
 
@@ -655,9 +681,21 @@ int AstPrinter::Visit(While*)
     return 0;
 }
 
-int AstPrinter::Visit(Raise*)
+int AstPrinter::Visit(Raise* raise)
 {
-    os << "Raise()";
+    os << "Raise(exc=";
+    if (raise->exc) {
+        raise->exc->Accept(this);
+    } else {
+        os << "NULL";
+    }
+    os << ", cause=";
+    if (raise->cause) {
+        raise->cause->Accept(this);
+    } else {
+        os << "NULL";
+    }
+    os << ")";
     return 0;
 }
 
@@ -745,15 +783,35 @@ int AstPrinter::Visit(GeneratorExpr*)
     return 0;
 }
 
-int AstPrinter::Visit(Yield*)
+int AstPrinter::Visit(Yield* y)
 {
-    os << "Yield()";
+    os << "Yield(value=";
+    
+    if (y->value) {
+        y->value->Accept(this);
+    } else {
+        os << "NULL";
+    }
+    
+    os << ")";
+        
+    
     return 0;
 }
 
-int AstPrinter::Visit(YieldFrom*)
+int AstPrinter::Visit(YieldFrom* y)
 {
-    os << "YieldFrom()";
+    os << "YieldFrom(value=";
+    
+    if (y->value) {
+        y->value->Accept(this);
+    } else {
+        os << "NULL";
+    }
+    
+    os << ")";
+    
+    
     return 0;
 }
 

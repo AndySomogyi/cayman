@@ -223,6 +223,35 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
             {
                 result = tok::DEL;
             }
+            else if (str == "break")
+            {
+                result = tok::BREAK;
+            }
+            else if (str == "return")
+            {
+                result = tok::RETURN;
+            }
+            else if (str == "continue")
+            {
+                result = tok::CONTINUE;
+            }
+            else if (str == "yield")
+            {
+                result = tok::YIELD;
+            }
+            else if (str == "pass")
+            {
+                result = tok::PASS;
+            }
+            else if (str == "raise")
+            {
+                result = tok::RAISE;
+            }
+            else if (str == "from")
+            {
+                result = tok::FROM;
+            }
+            
             else
             {
                 result = tok::NAME;

@@ -370,9 +370,12 @@ public:
 class Yield : public Expr
 {
 public:
-	Yield(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	Yield(class Ast* ast, const location& loc, AstNode *_value) :
+        Expr(ast, loc), value(_value) {};
 
 	virtual ~Yield() {};
+    
+    AstNode *value;
 
 	virtual int Accept(class AstVisitor*);
 };
@@ -380,9 +383,12 @@ public:
 class YieldFrom : public Expr
 {
 public:
-	YieldFrom(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	YieldFrom(class Ast* ast, const location& loc, AstNode *_value) :
+        Expr(ast, loc), value(_value) {};
 
 	virtual ~YieldFrom() {};
+    
+    AstNode *value;
 
 	virtual int Accept(class AstVisitor*);
 };

@@ -51,7 +51,7 @@ namespace py
 
 %token
 DEF "def"
-PASS
+PASS "pass"
 IF "if"
 ELSE "else"
 ELIF "elif"
@@ -114,6 +114,10 @@ AWAIT "await"
 ASYNC "async"
 FROM "from"
 YIELD "yield"
+BREAK "break"
+CONTINUE "continue"
+RAISE "raise"
+RETURN "return"
 NAME
 NUMBER
 STRING
@@ -268,10 +272,69 @@ simple_stmt:
 // small_stmt: (expr_stmt | del_stmt | pass_stmt | flow_stmt |
 //              import_stmt | global_stmt | nonlocal_stmt | assert_stmt)
 small_stmt:
-    pass_stmt
-    | expr_stmt
+    expr_stmt
     | del_stmt
+    | pass_stmt
+    | flow_stmt
     ;
+
+// *python
+// flow_stmt: break_stmt | continue_stmt | return_stmt | raise_stmt | yield_stmt
+flow_stmt: break_stmt | continue_stmt | return_stmt | raise_stmt | yield_stmt;
+
+
+// *python3
+break_stmt: 
+    "break"
+    {
+        $$ = ctx.ast->CreateBreak(@$);
+    }
+    ;
+
+// *python3
+continue_stmt: 
+    "continue"
+    {
+        $$ = ctx.ast->CreateContinue(@$);
+    }
+    ;
+
+// *python3
+// return_stmt: 'return' [testlist]
+return_stmt: 
+    "return"
+    {
+        $$ = ctx.ast->CreateReturn(@$);
+    }
+    | "return" testlist
+    {
+        $$ = ctx.ast->CreateReturn(@$, $2);
+    }
+    ;
+
+// *python3
+// raise_stmt: 'raise' [test ['from' test]]
+raise_stmt:
+    "raise"
+    {
+        $$ = ctx.ast->CreateRaise(@$);
+    }
+    | "raise" test
+    {
+        $$ = ctx.ast->CreateRaise(@$, $2);
+    }
+    | "raise" test "from" test
+    {
+        $$ = ctx.ast->CreateRaise(@$, $2, $4);
+    }
+    ;
+
+// *python3
+yield_stmt: yield_expr;
+
+
+
+
 
 // sequence of small statments, a single small_stmt, followed by
 // an optional sequence of (';' small_stmt)
@@ -301,8 +364,11 @@ del_stmt:
 // *python pass_stmt
 // pass_stmt: 'pass'
 pass_stmt:
-    PASS
-;
+    "pass"
+    {
+        $$ = ctx.ast->CreatePass(@$);
+    }
+    ;
 
 // *python3 expr_stmt
 // expr_stmt: testlist_star_expr (augassign (yield_expr|testlist) |
@@ -382,15 +448,26 @@ assign_expr_seq:
 // yield_expr: 'yield' [yield_arg]
 yield_expr:
     "yield"
-    | "yield" yield_arg
+    {
+        $$ = ctx.ast->CreateYield(@$);
+    }
+    | "yield" testlist
+    {
+        $$ = ctx.ast->CreateYield(@$, $2);
+    }
+    | "yield" "from" test
+    {
+        $$ = ctx.ast->CreateYieldFrom(@$, $3);
+    }
+
     ;
 
 // *python3
 // yield_arg: 'from' test | testlist
-yield_arg:
-    "from" test
-    | testlist
-    ;
+//yield_arg:
+//    "from" test
+//    | testlist
+//    ;
 
 
 

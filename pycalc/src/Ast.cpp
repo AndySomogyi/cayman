@@ -197,6 +197,41 @@ Delete* Ast::CreateDelete(const location& loc, AstNode* expr)
 	return new Delete(this, loc, expr);
 }
 
+Break* Ast::CreateBreak(const location& loc)
+{
+    return new Break(this, loc);
+}
+
+Continue* Ast::CreateContinue(const location& loc)
+{
+    return new Continue(this, loc);
+}
+
+Return* Ast::CreateReturn(const location& loc, AstNode* expr)
+{
+    return new Return(this, loc, expr);
+}
+
+Pass* Ast::CreatePass(const location& loc)
+{
+    return new Pass(this, loc);
+}
+
+Raise* Ast::CreateRaise(const location& loc, AstNode* expr, AstNode* from)
+{
+    return new Raise(this, loc, expr, from);
+}
+
+Yield* Ast::CreateYield(const location& loc, AstNode* expr)
+{
+    return new Yield(this, loc, expr);
+}
+
+YieldFrom* Ast::CreateYieldFrom(const location& loc, AstNode* from)
+{
+    return new YieldFrom(this, loc, from);
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);

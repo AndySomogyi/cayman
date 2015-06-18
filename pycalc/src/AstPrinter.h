@@ -42,6 +42,9 @@ public:
 	virtual int Visit(Compare*);
 	virtual int Visit(Delete*);
     virtual int Visit(Return*);
+    virtual int Visit(Pass*);
+    virtual int Visit(Break*);
+    virtual int Visit(Continue*);
     virtual int Visit(While*);
     virtual int Visit(Raise*);
     virtual int Visit(Try*);

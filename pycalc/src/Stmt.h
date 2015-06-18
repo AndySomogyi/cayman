@@ -356,19 +356,47 @@ class Return: public Stmt
 {
 public:
 
-	/**
-	 * create a basic assignment statement with only a single value (what is being assigned),
-	 * and a single target (what is being assigned to)
-	 */
-	Return(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	Return(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), value(_expr) {};
 
 	virtual ~Return() {};
 
-	AstNode *expr;
+	AstNode *value;
 
 	virtual int Accept(class AstVisitor*);
 };
 
+class Pass: public Stmt
+{
+public:
+
+	Pass(class Ast *ast, const location &loc) : Stmt(ast, loc) {};
+
+	virtual ~Pass() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class Break: public Stmt
+{
+public:
+
+	Break(class Ast *ast, const location &loc) : Stmt(ast, loc) {};
+
+	virtual ~Break() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class Continue: public Stmt
+{
+public:
+
+	Continue(class Ast *ast, const location &loc) : Stmt(ast, loc) {};
+
+	virtual ~Continue() {};
+
+	virtual int Accept(class AstVisitor*);
+};
 
 class While: public Stmt
 {
@@ -397,11 +425,13 @@ public:
 	 * create a basic assignment statement with only a single value (what is being assigned),
 	 * and a single target (what is being assigned to)
 	 */
-	Raise(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	Raise(class Ast *ast, const location &loc, AstNode *_exc, AstNode *_cause) :
+    Stmt(ast, loc), exc(_exc), cause(_cause) {};
 
 	virtual ~Raise() {};
 
-	AstNode *expr;
+	AstNode *exc;
+    AstNode *cause;
 
 	virtual int Accept(class AstVisitor*);
 };
