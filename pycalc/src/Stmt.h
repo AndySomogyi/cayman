@@ -322,6 +322,211 @@ public:
 };
 
 
+/**
+ * Augmented assignment, such as a += 1. In that example, target is a Name node
+ * for a (with the Store context), op is Add, and value is a Num node for 1.
+ * target can be Name, Subscript or Attribute, but not a Tuple or List
+ * (unlike the targets of Assign).
+ */
+class Delete: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	Delete(class Ast *ast, const location &loc, AstNode *targets);
+
+	virtual ~Delete() {};
+
+	AstNodes targets;
+
+	/**
+	 * Add targets to delete. node may be either a simnple node, or a tuple, in which case,
+	 * all elements in the tuple are added.
+	 */
+	void AddTargets(AstNode *node);
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
+class Return: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	Return(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~Return() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
+class While: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	While(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~While() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
+
+class Raise: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	Raise(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~Raise() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
+class Try: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	Try(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~Try() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
+class Assert: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	Assert(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~Assert() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class Import: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	Import(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~Import() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class ImportFrom: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	ImportFrom(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~ImportFrom() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class Global: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	Global(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~Global() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class NonLocal: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	NonLocal(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~NonLocal() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class ClassDef: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	ClassDef(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+
+	virtual ~ClassDef() {};
+
+	AstNode *expr;
+
+	virtual int Accept(class AstVisitor*);
+};
+
 
 } /* namespace py */
 #endif /* _INCLUDED_STATEMENT_H_ */

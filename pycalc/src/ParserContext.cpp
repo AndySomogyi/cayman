@@ -219,6 +219,10 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
             {
                 result = tok::NOT;
             }
+            else if (str == "del")
+            {
+                result = tok::DEL;
+            }
             else
             {
                 result = tok::NAME;

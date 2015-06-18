@@ -30,7 +30,6 @@ public:
 	virtual int Visit(Ast*);
 	virtual int Visit(Arg*);
 	virtual int Visit(FunctionDef*);
-
 	virtual int Visit(KeywordArg*);
 	virtual int Visit(Call*);
 	virtual int Visit(Starred*);
@@ -41,6 +40,30 @@ public:
 	virtual int Visit(UnaryOp*);
 	virtual int Visit(AugAssign*);
 	virtual int Visit(Compare*);
+	virtual int Visit(Delete*);
+    virtual int Visit(Return*);
+    virtual int Visit(While*);
+    virtual int Visit(Raise*);
+    virtual int Visit(Try*);
+    virtual int Visit(Assert*);
+    virtual int Visit(Import*);
+    virtual int Visit(ImportFrom*);
+    virtual int Visit(Global*);
+    virtual int Visit(NonLocal*);
+    virtual int Visit(ClassDef*);
+    virtual int Visit(Lambda*);
+    virtual int Visit(Dict*);
+    virtual int Visit(Set*);
+    virtual int Visit(ListComp*);
+    virtual int Visit(SetComp*);
+    virtual int Visit(DictComp*);
+    virtual int Visit(GeneratorExpr*);
+    virtual int Visit(Yield*);
+    virtual int Visit(YieldFrom*);
+    virtual int Visit(Bytes*);
+    virtual int Visit(NameConstant*);
+    virtual int Visit(Subscript*);
+    virtual int Visit(List*);
 
 private:
 	std::ostream &os;

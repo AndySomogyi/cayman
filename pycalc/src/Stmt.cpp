@@ -271,6 +271,78 @@ void FunctionDef::AddDecorators(AstNode* tuple)
 }
 
 
+Delete::Delete(class Ast* ast, const location& loc, AstNode* _targets) :
+		Stmt(ast, loc)
+{
+	AddTargets(_targets);
+}
+
+void Delete::AddTargets(AstNode* node)
+{
+	Tuple *tuple = dynamic_cast<Tuple*>(node);
+	if (tuple) {
+		targets.insert(targets.end(), tuple->items.begin(), tuple->items.end());
+	}
+	else {
+		targets.push_back(node);
+	}
+}
+
+int Delete::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int Return::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int While::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int Raise::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int Try::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int Assert::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int Import::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int ImportFrom::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int Global::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int NonLocal::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+int ClassDef::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
 } /* namespace py */
 
 

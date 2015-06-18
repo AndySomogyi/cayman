@@ -297,6 +297,138 @@ public:
 };
 
 
+class Lambda : public Expr
+{
+public:
+	Lambda(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~Lambda() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class Dict : public Expr
+{
+public:
+	Dict(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~Dict() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class Set : public Expr
+{
+public:
+	Set(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~Set() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class ListComp : public Expr
+{
+public:
+	ListComp(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~ListComp() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class SetComp : public Expr
+{
+public:
+	SetComp(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~SetComp() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class DictComp : public Expr
+{
+public:
+	DictComp(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~DictComp() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class GeneratorExpr : public Expr
+{
+public:
+	GeneratorExpr(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~GeneratorExpr() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class Yield : public Expr
+{
+public:
+	Yield(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~Yield() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class YieldFrom : public Expr
+{
+public:
+	YieldFrom(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~YieldFrom() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
+class Bytes : public Expr
+{
+public:
+	Bytes(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~Bytes() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class NameConstant : public Expr
+{
+public:
+	NameConstant(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~NameConstant() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class Subscript : public Expr
+{
+public:
+	Subscript(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~Subscript() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+class List : public Expr
+{
+public:
+	List(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+
+	virtual ~List() {};
+
+	virtual int Accept(class AstVisitor*);
+};
+
+
 } /* namespace py */
 #endif /* _INCLUDED_EXPRESSION_H_ */
 

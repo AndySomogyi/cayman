@@ -635,6 +635,150 @@ int AstPrinter::Visit(Compare* cmp)
 	return 0;
 }
 
+int AstPrinter::Visit(Delete* d)
+{
+    os << "Delete(targets=";
+    PrintNodes(d->targets);
+    os << ")";
+    return 0;
+}
+
+int AstPrinter::Visit(Return*)
+{
+    os << "Return()";
+    return 0;
+}
+
+int AstPrinter::Visit(While*)
+{
+    os << "While()";
+    return 0;
+}
+
+int AstPrinter::Visit(Raise*)
+{
+    os << "Raise()";
+    return 0;
+}
+
+int AstPrinter::Visit(Try*)
+{
+    os << "Try()";
+    return 0;
+}
+
+int AstPrinter::Visit(Assert*)
+{
+    os << "Assert()";
+    return 0;
+}
+
+int AstPrinter::Visit(Import*)
+{
+    os << "Import()";
+    return 0;
+}
+
+int AstPrinter::Visit(ImportFrom*)
+{
+    os << "ImportFrom()";
+    return 0;
+}
+
+int AstPrinter::Visit(Global*)
+{
+    os << "Global()";
+    return 0;
+}
+
+int AstPrinter::Visit(NonLocal*)
+{
+    os << "NonLocal()";
+    return 0;
+}
+
+int AstPrinter::Visit(ClassDef*)
+{
+    os << "ClassDef()";
+    return 0;
+}
+
+int AstPrinter::Visit(Lambda*)
+{
+    os << "Lambda()";
+    return 0;
+}
+
+int AstPrinter::Visit(Dict*)
+{
+    os << "Dict()";
+    return 0;
+}
+
+int AstPrinter::Visit(Set*)
+{
+    os << "Set()";
+    return 0;
+}
+
+int AstPrinter::Visit(ListComp*)
+{
+    os << "ListComp()";
+    return 0;
+}
+
+int AstPrinter::Visit(SetComp*)
+{
+    os << "SetComp()";
+    return 0;
+}
+
+int AstPrinter::Visit(DictComp*)
+{
+    os << "DictComp()";
+    return 0;
+}
+
+int AstPrinter::Visit(GeneratorExpr*)
+{
+    os << "GeneratorExpr()";
+    return 0;
+}
+
+int AstPrinter::Visit(Yield*)
+{
+    os << "Yield()";
+    return 0;
+}
+
+int AstPrinter::Visit(YieldFrom*)
+{
+    os << "YieldFrom()";
+    return 0;
+}
+
+int AstPrinter::Visit(Bytes*)
+{
+    os << "Bytes()";
+    return 0;
+}
+
+int AstPrinter::Visit(NameConstant*)
+{
+    os << "NameConstant()";
+    return 0;
+}
+
+int AstPrinter::Visit(Subscript*)
+{
+    os << "Subscript()";
+    return 0;
+}
+
+int AstPrinter::Visit(List*)
+{
+    os << "List()";
+    return 0;
+}
+
 } /* namespace py */
-
-

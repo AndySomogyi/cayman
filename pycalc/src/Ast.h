@@ -128,6 +128,8 @@ public:
     Compare *CreateCompare(const location &loc, AstNode *seq, AstNode *op, 
                            AstNode *expr);
 
+    Delete *CreateDelete(const location &loc, AstNode *expr);
+
 	void Free(AstNode* node);
 
 

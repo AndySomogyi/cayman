@@ -61,6 +61,7 @@ AND "and"
 IN "in"
 IS "is"
 FOR "for"
+DEL "del"
 ENDMARKER
 NEWLINE
 INDENT
@@ -268,14 +269,9 @@ simple_stmt:
 //              import_stmt | global_stmt | nonlocal_stmt | assert_stmt)
 small_stmt:
     pass_stmt
-    {
-        $$ = $1; /* pass_stmt */
-    }
     | expr_stmt
-    {
-        $$ = $1; /* expr_stmt */
-    }
-;
+    | del_stmt
+    ;
 
 // sequence of small statments, a single small_stmt, followed by
 // an optional sequence of (';' small_stmt)
@@ -292,6 +288,15 @@ small_stmt_seq:
     }
 ;
 
+
+// *python3
+// del_stmt: 'del' exprlist
+del_stmt:
+    "del" exprlist
+    {
+        $$ = ctx.ast->CreateDelete(@$, $2);
+    }
+    ;
 
 // *python pass_stmt
 // pass_stmt: 'pass'

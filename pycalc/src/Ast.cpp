@@ -192,6 +192,11 @@ Compare* Ast::CreateCompare(const location& loc, AstNode* seq, AstNode* opNode,
 	return new Compare(this, loc, seq, op, expr);
 }
 
+Delete* Ast::CreateDelete(const location& loc, AstNode* expr)
+{
+	return new Delete(this, loc, expr);
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);

@@ -220,6 +220,69 @@ int Compare::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
+int Lambda::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int Dict::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int Set::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int ListComp::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int SetComp::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int DictComp::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int GeneratorExpr::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int Yield::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int YieldFrom::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int Bytes::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int NameConstant::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int Subscript::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
+int List::Accept(class AstVisitor* v)
+{
+    return v->Visit(this);
+}
+
 } /* namespace py */
-
-
