@@ -258,6 +258,43 @@ public:
 };
 
 
+typedef std::vector<OperatorType> OperatorTypes;
+
+/**
+ * Python has a peculiar syntax where "x < 4 < 5 > 3" is actually
+ * a sequence of compares and'ed together, it actually evaluates
+ * (x < 4) && (4 < 5) && (5 > 3). So, this node stores a length N 
+ * sequence of operands, and a length (N - 1) sequence of compare operators.
+ * 
+ * The operator list must be >= 2, and the operand list must be >= 1. 
+ * 
+ * -- need sequences for compare to distinguish between
+ * -- x < 4 < 3 and (x < 4) < 3
+ */
+class Compare : public Expr
+{
+public:
+    /**
+     * Creates a Compare node with two operands and a single operator.
+     */
+	Compare(class Ast* ast, const location& loc, AstNode *lhs, 
+            OperatorType op, AstNode *rhs);
+			
+
+	virtual ~Compare() {};
+
+    AstNodes operands;
+
+    OperatorTypes operators;
+
+    /**
+     * append an operator and operand to the sequence.
+     */
+    void Append(OperatorType op, AstNode *operand);
+    
+
+	virtual int Accept(class AstVisitor*);
+};
 
 
 } /* namespace py */

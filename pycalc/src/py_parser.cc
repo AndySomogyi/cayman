@@ -1831,7 +1831,7 @@ namespace py {
 
     {
         // comparison: comparison comp_op expr
-        (yylhs.value) = ctx.ast->CreateBinOp(yylhs.location, (yystack_[1].value), (yystack_[2].value), (yystack_[0].value));
+        (yylhs.value) = ctx.ast->CreateCompare(yylhs.location, (yystack_[2].value), (yystack_[1].value), (yystack_[0].value));
     }
 
     break;
@@ -2042,7 +2042,9 @@ namespace py {
 
     {
         // atom: |"(" testlist_comp ")"
-        (yylhs.value) = (yystack_[1].value);
+        AstNode *testlistComp = (yystack_[1].value);
+        testlistComp->SetAtomic(true);
+        (yylhs.value) = testlistComp;
     }
 
     break;
@@ -2945,12 +2947,12 @@ namespace py {
      604,   604,   610,   611,   618,   618,   624,   625,   632,   632,
      632,   632,   638,   639,   646,   646,   646,   652,   653,   662,
      663,   672,   676,   685,   686,   700,   707,   713,   726,   727,
-     737,   741,   762,   763,   764,   768,   802,   808,   813,   814,
-     815,   835,   847,   848,   849,   850,   858,   863,   872,   877,
-     902,   906,   915,   919,   928,   932,   941,   942,   952,   958,
-     963,   964,   970,   974,   983,   987,  1027,  1034,  1041,  1050,
-    1057,  1065,  1071,  1079,  1092,  1096,  1107,  1111,  1119,  1123,
-    1136,  1143,  1157,  1158,  1159,  1165,  1166,  1172,  1178,  1179
+     737,   741,   762,   763,   764,   768,   802,   808,   815,   816,
+     817,   837,   849,   850,   851,   852,   860,   865,   874,   879,
+     904,   908,   917,   921,   930,   934,   943,   944,   954,   960,
+     965,   966,   972,   976,   985,   989,  1029,  1036,  1043,  1052,
+    1059,  1067,  1073,  1081,  1094,  1098,  1109,  1113,  1121,  1125,
+    1138,  1145,  1159,  1160,  1161,  1167,  1168,  1174,  1180,  1181
   };
 
   // Print the state stack on the debug stream.

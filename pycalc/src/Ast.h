@@ -111,6 +111,23 @@ public:
 				AstNode *op, AstNode *value);
 
 
+    /**
+     * Create or extend a Compare node. 
+     *
+     * Compare sequences are handled by the EBNF production rule
+     * comparison: expr (comp_op expr)*
+     * 
+     * Which is implemnted in the parser by the BNF production rule
+     * comparison:
+     *     expr
+     *     | comparison comp_op expr
+     * 
+     * This method creates or extends a Compare node depending on wether 
+     * or not the given seq arg is an expression or an existing Compare.
+     */
+    Compare *CreateCompare(const location &loc, AstNode *seq, AstNode *op, 
+                           AstNode *expr);
+
 	void Free(AstNode* node);
 
 

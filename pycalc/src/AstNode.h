@@ -29,9 +29,9 @@ typedef std::string Identifier;
 class AstNode
 {
 public:
-	AstNode(class Ast* _ast, const location &_loc) : loc(_loc), ast(_ast) {};
+	AstNode(class Ast* _ast, const location &_loc) : loc(_loc), ast(_ast), flags(0) {};
 
-	AstNode() : ast(0) {};
+	AstNode() : ast(0), flags(0) {};
 
 	virtual ~AstNode() {};
 
@@ -44,13 +44,40 @@ public:
 	// in future, might move to differnt one if we replace bison based
 	// parser with something else.
 	location loc;
+
+	/**
+	 * Is this a terminal node, i.e. a primitive, or surounded by parenthesis,
+	 * so (a < b < c) should be atomic.
+	 */
+	bool IsAtomic() { return flags & ATOMIC; }
+
+	void SetAtomic(bool atomic)
+    {
+        if (atomic) {
+            flags |= ATOMIC;
+        } else {
+            flags &= ~ATOMIC;
+        }
+    }
+
+
     
     protected:
+
+	AstNode(class Ast* _ast, const location &_loc, uint32_t _flags) :
+		loc(_loc), ast(_ast), flags(_flags) {};
+
+	enum FlagFields
+	{
+		ATOMIC = 1
+	};
 
 	/**
 	 * the root AST object that ownes this node.
 	 */
 	class Ast *ast;
+
+	uint32_t flags;
 };
     
 typedef std::vector<AstNode*> AstNodes;
@@ -91,7 +118,7 @@ class Tuple : public AstNode
 {
 public:
 	Tuple(class Ast* ast, const location &loc, const AstNodes &items, ExprContext ctx) :
-		AstNode(ast, loc), items(items), ctx(ctx) {};
+		AstNode(ast, loc, ATOMIC), items(items), ctx(ctx) {};
 
 	Tuple(class Ast* _ast, const location &_loc, ExprContext ctx) :
 		AstNode(ast, loc), ctx(ctx) {};
@@ -258,18 +285,19 @@ enum OperatorType
 
 	Invert,
 
-	// comparisons
+	// comparisons,  comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
+
 	// comparisons start at the Eq operator.
-	Eq,
-	NotEq,
-	Lt,
-	LtEq,
-	Gt,
-	GtEq,
-	Is,
-	IsNot,
-	In,
-	NotIn,
+	Eq,             // "=="
+	NotEq,          // "!="
+	Lt,             // "<"
+	LtEq,           // "<="
+	Gt,             // ">"
+	GtEq,           // ">="
+	Is,             // "is"
+	IsNot,          // "is" "not"
+	In,             // "in"
+	NotIn,          // "not" "in"
 
 	And,
 	Or,

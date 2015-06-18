@@ -179,6 +179,19 @@ Attribute* Ast::CreateAttribute(const location& loc, ExprContext ctx,
 	return new Attribute(this, loc, ctx, value, attr);
 }
 
+Compare* Ast::CreateCompare(const location& loc, AstNode* seq, AstNode* opNode,
+		AstNode* expr)
+{
+	OperatorType op = TokenAstNodes::GetOperatorType(opNode);
+	Compare *compSeq = dynamic_cast<Compare*>(seq);
+	if (compSeq && !compSeq->IsAtomic())
+	{
+		compSeq->Append(op, expr);
+		return compSeq;
+	}
+	return new Compare(this, loc, seq, op, expr);
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);

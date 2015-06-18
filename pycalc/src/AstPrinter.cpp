@@ -564,6 +564,77 @@ int AstPrinter::Visit(UnaryOp* op)
 	return 0;
 }
 
+
+/**
+ * // comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
+ */
+int AstPrinter::Visit(Compare* cmp)
+{
+	os << "Compare(operands=[" << std::endl;
+
+    for (AstNodes::const_iterator i = cmp->operands.begin(); i != cmp->operands.end(); ++i)
+    {
+        (*i)->Accept(this);
+        if (i + 1 < cmp->operands.end())
+        {
+            os << ",";
+        }
+        os << std::endl;
+    }
+
+    os << "], " << std::endl << "operators=[" << std::endl;
+
+    for (OperatorTypes::const_iterator i = cmp->operators.begin(); i != cmp->operators.end(); ++i)
+    {
+        switch (*i) {
+        case Eq:
+            os << "\"==\"";
+            break;
+        case NotEq: 
+            os << "\"!=\"";
+            break;
+        case Lt: 
+            os << "\"<\"";
+            break;
+        case LtEq: 
+            os << "\"<=\"";
+            break;
+        case Gt: 
+            os << "\">\"";
+            break;
+        case GtEq: 
+            os << "\">=\"";
+            break;
+        case Is: 
+            os << "\"is\"";
+            break;
+        case IsNot: 
+            os << "\"is not\"";
+            break;
+        case In: 
+            os << "\"in\"";
+            break;
+        case NotIn: 
+            os << "\"not in\"";
+            break;
+            
+        default:
+            os << "\"Unknown Operator\"";
+            break;
+        }
+        
+        if (i + 1 < cmp->operators.end())
+        {
+            os << ",";
+        }
+        os << std::endl;
+    }
+
+    os << "]" << std::endl << ")";
+
+	return 0;
+}
+
 } /* namespace py */
 
 

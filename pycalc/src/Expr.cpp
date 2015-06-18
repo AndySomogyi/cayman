@@ -12,11 +12,6 @@
 namespace py
 {
 
-
-
-
-
-
 Expr::~Expr()
 {
 	AstNode *p = 0;
@@ -193,6 +188,38 @@ int UnaryOp::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
+static void CompareValidOperator(OperatorType op)
+{
+
+}
+
+static void CompareValidOperand(AstNode *operand)
+{
+
+}
+
+Compare::Compare(class Ast* _ast, const location& _loc, AstNode* lhs,
+		OperatorType op, AstNode* rhs) : Expr(_ast, _loc)
+{
+	CompareValidOperand(lhs);
+	operands.push_back(lhs);
+
+	Append(op, rhs);
+}
+
+void Compare::Append(OperatorType op, AstNode* operand)
+{
+	CompareValidOperator(op);
+	CompareValidOperand(operand);
+	operators.push_back(op);
+	operands.push_back(operand);
+}
+
+int Compare::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
 
 } /* namespace py */
+
 

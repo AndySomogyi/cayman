@@ -38,13 +38,13 @@ AstNodeSeq* AstNodeSeq::Add(const location& loc, AstNode* seq, AstNode* node)
 
 Name::Name(class Ast* ast, const location& loc, const char* begin,
            const char* end) :
-    AstNode(ast, loc), id(begin, end)
+    AstNode(ast, loc, ATOMIC), id(begin, end), ctx(UnknownCtx)
 {
 }
 
 Num::Num(class Ast* ast, const location& loc, const char* begin,
          const char* end) :
-    AstNode(ast, loc)
+    AstNode(ast, loc, ATOMIC)
 {
 	type = Double;
 

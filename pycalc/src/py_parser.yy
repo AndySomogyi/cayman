@@ -530,7 +530,7 @@ comparison:
     | comparison comp_op expr
     {
         // comparison: comparison comp_op expr
-        $$ = ctx.ast->CreateBinOp(@$, $2, $1, $3);
+        $$ = ctx.ast->CreateCompare(@$, $1, $2, $3);
     }
 ;
 
@@ -808,7 +808,9 @@ atom:
     |"(" testlist_comp ")"
     {
         // atom: |"(" testlist_comp ")"
-        $$ = $2;
+        AstNode *testlistComp = $2;
+        testlistComp->SetAtomic(true);
+        $$ = testlistComp;
     }
     | NAME       { $$ = $1; /*name*/}
     | NUMBER { $$ = $1; /*num*/} 

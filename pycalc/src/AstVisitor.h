@@ -38,6 +38,7 @@ public:
 	virtual int Visit(IfExpr*) = 0;
 	virtual int Visit(UnaryOp*) = 0;
 	virtual int Visit(AugAssign*) = 0;
+	virtual int Visit(Compare*) = 0;
 
 
 	virtual ~AstVisitor() {};

@@ -263,7 +263,7 @@ void AugAssign::SetValue(AstNode* _value)
 
 int AugAssign::Accept(class AstVisitor* v)
 {
-	v->Visit(this);
+	return v->Visit(this);
 }
 
 void FunctionDef::AddDecorators(AstNode* tuple)

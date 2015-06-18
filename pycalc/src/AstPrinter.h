@@ -40,6 +40,7 @@ public:
 	virtual int Visit(IfExpr*);
 	virtual int Visit(UnaryOp*);
 	virtual int Visit(AugAssign*);
+	virtual int Visit(Compare*);
 
 private:
 	std::ostream &os;
