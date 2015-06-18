@@ -169,6 +169,108 @@ void For::SetOrElse(AstNode* _orelse)
 	orelse = tuple->items;
 }
 
+
+
+If::If(class Ast* _ast, const location& _loc,  AstNode *_test,
+		AstNode *_body, AstNode *_orelse):
+		Stmt(_ast, _loc), test(NULL)
+{
+	SetTest(_test);
+	SetBody(_body);
+	SetOrElse(_orelse);
+}
+
+void If::SetTest(AstNode* _test)
+{
+	test = _test;
+}
+
+void If::SetBody(AstNode* _body)
+{
+	if (_body)
+	{
+		Tuple *tuple = dynamic_cast<Tuple*>(_body);
+		assert(tuple);
+		body = tuple->items;
+	}
+	else
+	{
+		body.clear();
+	}
+}
+
+void If::SetOrElse(AstNode* _orelse)
+{
+	orelse.clear();
+
+	if (_orelse)
+	{
+		If *i = dynamic_cast<If*>(_orelse);
+		if (i)
+		{
+			orelse.push_back(i);
+			return;
+		}
+
+		Tuple *tuple = dynamic_cast<Tuple*>(_orelse);
+		assert(tuple);
+		orelse = tuple->items;
+	}
+}
+
+
+If* If::GetTerminalElif()
+{
+	if (orelse.size() == 1)
+	{
+		If *tail = dynamic_cast<If*>(orelse[0]);
+		if (tail)
+		{
+			return tail->GetTerminalElif();
+		}
+	}
+	return this;
+}
+
+int If::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+AugAssign::AugAssign(class Ast* _ast, const location& _loc, AstNode* _target,
+		OperatorType _op, AstNode* _value) :
+		Stmt(_ast, _loc), target(NULL), op(EndOp), value(NULL)
+{
+	SetTarget(_target);
+	SetOp(_op);
+	SetValue(_value);
+}
+
+void AugAssign::SetOp(OperatorType _op)
+{
+	op = _op;
+}
+
+void AugAssign::SetTarget(AstNode* _target)
+{
+	target = _target;
+}
+
+void AugAssign::SetValue(AstNode* _value)
+{
+	value = _value;
+}
+
+int AugAssign::Accept(class AstVisitor* v)
+{
+	v->Visit(this);
+}
+
+void FunctionDef::AddDecorators(AstNode* tuple)
+{
+}
+
+
 } /* namespace py */
 
 

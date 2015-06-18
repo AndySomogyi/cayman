@@ -236,6 +236,49 @@ public:
 	virtual int Accept(class AstVisitor*) { return 0;}
 };
 
+// typedef enum _unaryop { Invert=1, Not=2, UAdd=3, USub=4 }
+enum OperatorType
+{
+	// binary operations
+	Add = 1,
+	Sub,
+	Mult,
+	Div,
+	Mod,
+	Pow,
+	LShift,
+	RShift,
+	BitOr,
+	BitXor,
+	BitAnd,
+	FloorDiv,
+
+	// special operations only valid in unary
+	Not,
+
+	Invert,
+
+	// comparisons
+	// comparisons start at the Eq operator.
+	Eq,
+	NotEq,
+	Lt,
+	LtEq,
+	Gt,
+	GtEq,
+	Is,
+	IsNot,
+	In,
+	NotIn,
+
+	And,
+	Or,
+
+	// keep this as the last operator, to know the number of operators
+	// we have, this is NOT a valid operator type.
+	EndOp
+};
+
 } /* namespace py */
 
 // define these in std namespace

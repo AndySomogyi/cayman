@@ -64,6 +64,40 @@ public:
 
 };
 
+/**
+ * Augmented assignment, such as a += 1. In that example, target is a Name node
+ * for a (with the Store context), op is Add, and value is a Num node for 1.
+ * target can be Name, Subscript or Attribute, but not a Tuple or List
+ * (unlike the targets of Assign).
+ */
+class AugAssign: public Stmt
+{
+public:
+
+	/**
+	 * create a basic assignment statement with only a single value (what is being assigned),
+	 * and a single target (what is being assigned to)
+	 */
+	AugAssign(class Ast *ast, const location &loc, AstNode *target,
+			OperatorType op, AstNode *value);
+
+
+
+	virtual ~AugAssign() {};
+
+	OperatorType op;
+	AstNode *target;
+	AstNode *value;
+
+	void SetOp(OperatorType op);
+	void SetTarget(AstNode *target);
+	void SetValue(AstNode *value);
+
+	virtual int Accept(class AstVisitor*);
+
+};
+
+
 class Arg: public AstNode
 {
 public:
@@ -257,6 +291,34 @@ public:
 	void SetBody(AstNode *_body);
 
 	void SetOrElse(AstNode *_orelse);
+};
+
+
+class If : public Stmt
+{
+public:
+	If(class Ast* _ast, const location& _loc,  AstNode *_test = NULL,
+			AstNode *_body = NULL, AstNode *orelse = NULL);
+
+	virtual ~If() {};
+
+	AstNode *test;
+
+	// sequence of ops for body
+	AstNodes body;
+
+	// sequence of ops for else block
+	AstNodes orelse;
+
+	void SetTest(AstNode *_test);
+	void SetBody(AstNode *_body);
+	void SetOrElse(AstNode *_orelse);
+
+	If *GetTerminalElif();
+
+	virtual int Accept(class AstVisitor*);
+
+
 };
 
 

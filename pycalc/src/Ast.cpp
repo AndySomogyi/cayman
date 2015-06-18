@@ -218,6 +218,19 @@ For* Ast::CreateFor(const location& loc, AstNode* _target, AstNode* _iter,
 	return new For(this, loc, _target, _iter, _body, _orelse);
 }
 
+UnaryOp* Ast::CreateUnaryOp(const location& loc, AstNode *op,
+		AstNode* operand)
+{
+	return new UnaryOp(this, loc, TokenAstNodes::GetOperatorType(op), operand);
+}
+
+AugAssign* Ast::CreateAugAssign(const location& loc, AstNode* target,
+		AstNode *op, AstNode* value)
+{
+	return new AugAssign(this, loc, target, TokenAstNodes::GetOperatorType(op), value);
+}
+
+
 } /* namespace py */
 
 

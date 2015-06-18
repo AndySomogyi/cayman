@@ -22,42 +22,6 @@ public:
 
 
 
-enum OperatorType
-{
-	// binary operations
-	Add = 1,
-	Sub,
-	Mult,
-	Div,
-	Mod,
-	Pow,
-	LShift,
-	RShift,
-	BitOr,
-	BitXor,
-	BitAnd,
-	FloorDiv,
-
-	// comparisons
-	// comparisons start at the Eq operator.
-	Eq,
-	NotEq,
-	Lt,
-	LtEq,
-	Gt,
-	GtEq,
-	Is,
-	IsNot,
-	In,
-	NotIn,
-
-	And,
-	Or,
-
-	// keep this as the last operator, to know the number of operators
-	// we have, this is NOT a valid operator type.
-	EndOp
-};
 
 
 /**
@@ -93,32 +57,7 @@ public:
 };
 
 
-class If : public Expr
-{
-public:
-	If(class Ast* _ast, const location& _loc,  AstNode *_test = NULL,
-			AstNode *_body = NULL, AstNode *orelse = NULL);
 
-	virtual ~If() {};
-
-	AstNode *test;
-
-	// sequence of ops for body
-	AstNodes body;
-
-	// sequence of ops for else block
-	AstNodes orelse;
-
-	void SetTest(AstNode *_test);
-	void SetBody(AstNode *_body);
-	void SetOrElse(AstNode *_orelse);
-
-	If *GetTerminalElif();
-
-	virtual int Accept(class AstVisitor*);
-
-
-};
 
 /**
  * Expressions such as attributes or function calls may be chained, i.e.
@@ -266,6 +205,57 @@ public:
 	virtual int Accept(class AstVisitor*);
 };
 
+
+/**
+ * The single line ternary if then else operator,
+ * An expression such as a if b else c.
+ *
+ * Unlike the more general If class, each field holds a single node,
+ * as opposed to a block
+ */
+class IfExpr : public Expr
+{
+public:
+	IfExpr(class Ast* _ast, const location& _loc,  AstNode *_test = NULL,
+			AstNode *_body = NULL, AstNode *orelse = NULL);
+
+	virtual ~IfExpr() {};
+
+	AstNode *test;
+	AstNode *body;
+	AstNode *orelse;
+
+	void SetTest(AstNode *_test);
+	void SetBody(AstNode *_body);
+	void SetOrElse(AstNode *_orelse);
+
+	virtual int Accept(class AstVisitor*);
+};
+
+/**
+ * A unary operation
+ *
+ * Uses the same enum from OperatorType, except here, the
+ * operator is applied to the operand.
+ */
+class UnaryOp : public Expr
+{
+public:
+	UnaryOp(class Ast* _ast, const location& _loc,
+			OperatorType op, AstNode *operand);
+
+	virtual ~UnaryOp() {};
+
+	OperatorType op;
+
+	AstNode *operand;
+
+
+	void SetOp(OperatorType op);
+	void SetOperand(AstNode *operand);
+
+	virtual int Accept(class AstVisitor*);
+};
 
 
 

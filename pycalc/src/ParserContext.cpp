@@ -477,6 +477,10 @@ OperatorType TokenAstNodes::GetTokenOperatorType(int tokenValue)
     	return And;
     case tok::OR:
     	return Or;
+    case tok::TILDE:
+        return Invert;
+    case tok::NOT:
+        return Not;
     default:
     	return EndOp;
 	}

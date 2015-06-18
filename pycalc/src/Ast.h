@@ -102,6 +102,14 @@ public:
 	Attribute *CreateAttribute(const location& loc,  ExprContext ctx, AstNode* value,
 				AstNode *attr);
 
+	/**
+	 * @parm op An AstNode for the operator, used by the parser.
+	 */
+	UnaryOp *CreateUnaryOp(const location& _loc, AstNode *op, AstNode *operand);
+
+	AugAssign *CreateAugAssign(const location &loc, AstNode *target,
+				AstNode *op, AstNode *value);
+
 
 	void Free(AstNode* node);
 

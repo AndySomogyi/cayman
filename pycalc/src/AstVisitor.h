@@ -35,6 +35,9 @@ public:
 	virtual int Visit(For*) = 0;
 	virtual int Visit(If*) = 0;
 	virtual int Visit(Attribute*) = 0;
+	virtual int Visit(IfExpr*) = 0;
+	virtual int Visit(UnaryOp*) = 0;
+	virtual int Visit(AugAssign*) = 0;
 
 
 	virtual ~AstVisitor() {};

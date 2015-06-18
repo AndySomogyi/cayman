@@ -37,6 +37,9 @@ public:
 	virtual int Visit(For*);
 	virtual int Visit(If*);
 	virtual int Visit(Attribute*);
+	virtual int Visit(IfExpr*);
+	virtual int Visit(UnaryOp*);
+	virtual int Visit(AugAssign*);
 
 private:
 	std::ostream &os;

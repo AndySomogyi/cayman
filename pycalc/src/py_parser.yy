@@ -105,7 +105,7 @@ VBAREQUAL "|="
 CIRCUMFLEXEQUAL "^="
 LEFTSHIFTEQUAL "<<="
 RIGHTSHIFTEQUAL ">>="
-DOUBLESTAREQUAL "**+"
+DOUBLESTAREQUAL "**="
 DOUBLESLASH "//"
 DOUBLESLASHEQUAL "//="
 AT "@"
@@ -312,7 +312,7 @@ pass_stmt:
 expr_stmt:
     testlist_star_expr augassign testlist
     {
-        throw syntax_error(@$, "not implemented");
+        $$ = ctx.ast->CreateAugAssign(@$, $1, $2, $3);
     }
     | assign_expr_seq
     {
@@ -451,11 +451,11 @@ test_star_expr_seq:
     ;
 
 // *python3
-// augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' |
-//             '<<=' | '>>=' | '**=' | '//=')
+// augassign: ('+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '|=' | '^=' |
+//            '<<=' | '>>=' | '**=' | '//=')
 augassign:
-    "+=" | "-=" | "*=" | "@=" | "/=" | "%=" | "&=" | "|=" | "^=" |
-             "<<=" | ">>=" | "**=" | "//="
+    "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "^=" |
+    "<<=" | ">>=" | "**=" | "//="
     ;
 
 
@@ -516,6 +516,9 @@ and_test:
 // not_test: 'not' not_test | comparison
 not_test:
     "not" not_test
+    {
+        $$ = ctx.ast->CreateUnaryOp(@$, $1, $2);
+    }
    |  comparison
 ;
 
@@ -634,6 +637,9 @@ term_op:
 factor:
     power
     | factor_op factor
+    {
+        $$ = ctx.ast->CreateUnaryOp(@$, $1, $2);
+    }
     ;
 
 factor_op:

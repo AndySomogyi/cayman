@@ -10,7 +10,68 @@
 
 namespace py
 {
-    
+
+int AstPrinter::Visit(AugAssign* aug)
+{
+	os << "AugAssign(target=";
+
+	aug->target->Accept(this);
+
+	os << ", op=";
+
+	switch(aug->op) {
+    case Add:
+        os << "+=";
+        break;
+    case Sub:
+        os << "-=";
+        break;
+    case Mult:
+        os << "*=";
+        break;
+    case Div:
+        os << "/=";
+        break;
+    case Mod:
+        os << "%=";
+        break;
+    case Pow:
+        os << "**=";
+        break;
+    case LShift:
+        os << "<<=";
+        break;
+    case RShift:
+        os << ">>=";
+        break;
+    case BitOr:
+        os << "|=";
+        break;
+    case BitXor:
+        os << "^=";
+        break;
+    case BitAnd:
+        os << "&=";
+        break;
+    case FloorDiv:
+        os << "//=";
+        break;
+    default:
+        os << "Invalid AugAssign Op";
+	}
+
+	os << ", value=";
+
+	aug->value->Accept(this);
+
+	os << ")";
+
+
+	return 0;
+
+
+}
+
 void AstPrinter::PrintNodes(AstNodes& nodes)
 {
     os << "[" << std::endl;
@@ -65,6 +126,13 @@ int AstPrinter::Visit(Module* m)
 			i != m->body.end(); ++i)
 	{
 		(*i)->Accept(this);
+        
+        if (i + 1 < m->body.end()) {
+            os << ",";
+        }
+        
+        os << std::endl;
+
 	}
 
 	os << "])";
@@ -88,6 +156,12 @@ int AstPrinter::Visit(Assign* a)
 
 	os << "]";
 
+	return 0;
+}
+
+int AstPrinter::Visit(IfExpr *i)
+{
+	os << "IfExpr()";
 	return 0;
 }
 
@@ -463,6 +537,30 @@ int AstPrinter::Visit(If* i)
     os << ")";
     
     
+	return 0;
+}
+
+int AstPrinter::Visit(UnaryOp* op)
+{
+	os << "UnaryOp(op=";
+    switch (op->op) {
+        case Add:
+            os << "UAdd, ";
+            break;
+        case Sub:
+            os << "UMinus, ";
+            break;
+        case Not:
+            os << "Not, ";
+            break;
+        case Invert:
+            os << "Invert, ";
+            break;
+        default:
+            assert(0);
+    }
+    op->operand->Accept(this);
+    os << ")";
 	return 0;
 }
 
