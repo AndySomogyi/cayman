@@ -61,7 +61,7 @@ int Arg::Accept(AstVisitor* v)
 }
 
 FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
-		AstNode* s) :
+		AstNode *r, AstNode* s) :
 		Stmt(ast, loc)
 {
 	Tuple *suite = dynamic_cast<Tuple*>(s);
@@ -87,6 +87,8 @@ FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
 	kwOnlyArgs = targs->kwOnlyArgs;
 	vararg = targs->vararg;
 	kwarg = targs->kwarg;
+    
+    returns = r;
 }
 
 int FunctionDef::Accept(AstVisitor* v)

@@ -398,7 +398,17 @@ int AstPrinter::Visit(FunctionDef* func)
         os << std::endl;
     }
     
-    os << "]" << std::endl << ")";
+    os << "]" << std::endl;
+    
+    os << ", returns=";
+    
+    if (func->returns) {
+        func->returns->Accept(this);
+    } else {
+        os << "NULL";
+    }
+    
+    os << ")";
     
     return 0;
 }

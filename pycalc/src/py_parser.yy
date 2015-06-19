@@ -109,6 +109,10 @@ RIGHTSHIFTEQUAL ">>="
 DOUBLESTAREQUAL "**="
 DOUBLESLASH "//"
 DOUBLESLASHEQUAL "//="
+
+LARROW "<-"
+RARROW "->"
+
 AT "@"
 AWAIT "await"
 ASYNC "async"
@@ -1053,11 +1057,13 @@ exprlist_seq:
 funcdef: 
     "def" NAME parameters ":" suite
     {
-        $$ = ctx.ast->CreateFunctionDef(@$, $2, $3, $5);
+        // CreateFunctionDef(loc, nm, args, returns, suite)
+        $$ = ctx.ast->CreateFunctionDef(@$, $2, $3, NULL, $5);
     }
     | "def" NAME parameters "->" test ":" suite
     {
-        $$ = ctx.ast->CreateFunctionDef(@$, $2, $3, $7);
+        // CreateFunctionDef(loc, nm, args, returns, suite)
+        $$ = ctx.ast->CreateFunctionDef(@$, $2, $3, $5, $7);
     }
     ;
 

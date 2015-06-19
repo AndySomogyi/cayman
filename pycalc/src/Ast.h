@@ -53,7 +53,17 @@ public:
 			AstNode *type=NULL);
 
 
-	FunctionDef *CreateFunctionDef(const location& loc, AstNode *nm, AstNode *args, AstNode *suite);
+    /**
+     * Create a fuction def. 
+     *
+     * @param loc src code location
+     * @param nm function name (should be a Name or DottedName
+     * @param args argument list
+     * @param returns an expresion for the return type, may be NULL
+     * @param suite sequence of statements in a Tuple
+     */
+	FunctionDef *CreateFunctionDef(const location& loc, AstNode *nm, AstNode *args,
+        AstNode *returns, AstNode *suite);
 
 	BinOp *CreateBinOp(const location& _loc, AstNode *op, AstNode* _left, AstNode* _right);
 

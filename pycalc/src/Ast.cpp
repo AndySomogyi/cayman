@@ -126,9 +126,9 @@ Tuple* Ast::CreateTuple(const location& loc, AstNode* seq, AstNode* item)
 }
 
 FunctionDef* Ast::CreateFunctionDef(const location& loc, AstNode* nm,
-		AstNode* args, AstNode* suite)
+		AstNode* args, AstNode *returns, AstNode* suite)
 {
-	return new FunctionDef(this, loc, nm, args, suite);
+	return new FunctionDef(this, loc, nm, args, returns, suite);
 }
 
 

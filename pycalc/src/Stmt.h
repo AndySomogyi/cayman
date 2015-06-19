@@ -195,19 +195,12 @@ public:
 class FunctionDef: public Arguments, public Stmt
 {
 public:
-	FunctionDef(Ast *ast, const location& loc) :
-			Arguments(), Stmt(ast, loc)
-	{
-	}
-	;
+
 
 	FunctionDef(Ast *ast, const location& loc, AstNode *name, AstNode *args,
-			AstNode *suite);
+			AstNode *returns, AstNode *suite);
 
-	virtual ~FunctionDef()
-	{
-	}
-	;
+	virtual ~FunctionDef() {};
 
 	virtual int Accept(AstVisitor *);
     
@@ -221,6 +214,11 @@ public:
     AstNodes decorators;
 
 	AstNodes body;
+    
+    /**
+     * The type of the return value
+     */
+    AstNode *returns;
 };
 
 /**

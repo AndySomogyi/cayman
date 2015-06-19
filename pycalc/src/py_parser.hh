@@ -211,18 +211,20 @@ namespace py {
         DOUBLESTAREQUAL = 314,
         DOUBLESLASH = 315,
         DOUBLESLASHEQUAL = 316,
-        AT = 317,
-        AWAIT = 318,
-        ASYNC = 319,
-        FROM = 320,
-        YIELD = 321,
-        BREAK = 322,
-        CONTINUE = 323,
-        RAISE = 324,
-        RETURN = 325,
-        NAME = 326,
-        NUMBER = 327,
-        STRING = 328
+        LARROW = 317,
+        RARROW = 318,
+        AT = 319,
+        AWAIT = 320,
+        ASYNC = 321,
+        FROM = 322,
+        YIELD = 323,
+        BREAK = 324,
+        CONTINUE = 325,
+        RAISE = 326,
+        RETURN = 327,
+        NAME = 328,
+        NUMBER = 329,
+        STRING = 330
       };
     };
 
@@ -530,12 +532,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 536,     ///< Last index in yytable_.
+      yylast_ = 501,     ///< Last index in yytable_.
       yynnts_ = 73,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 76  ///< Number of tokens.
+      yyntokens_ = 77  ///< Number of tokens.
     };
 
 

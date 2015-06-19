@@ -88,10 +88,20 @@ const char *_PyParser_TokenNames[] = {
     "AT",
     /* This table must match the #defines in token.h! */
     "OP",
+    "LARROW",
+    "RARROW",
     "<ERRORTOKEN>",
     "<N_TOKENS>"
 };
 
+
+/*
+OP = 51,
+LARROW = 52,
+RARROW = 53,
+ERRORTOKEN = 54,
+N_TOKENS = 55
+*/
 
 static char *
 PyOS_Readline(FILE *sys_stdin, FILE *sys_stdout, char *prompt)
@@ -1082,7 +1092,7 @@ PyToken_OneChar(int c)
     case '}':           return RBRACE;
     case '^':           return CIRCUMFLEX;
     case '~':           return TILDE;
-    case '@':       return AT;
+    case '@':           return AT;
     default:            return OP;
     }
 }
@@ -1107,6 +1117,7 @@ PyToken_TwoChars(int c1, int c2)
         case '>':               return NOTEQUAL;
         case '=':               return LESSEQUAL;
         case '<':               return LEFTSHIFT;
+        case '-':               return LARROW;
         }
         break;
     case '>':
@@ -1123,6 +1134,7 @@ PyToken_TwoChars(int c1, int c2)
     case '-':
         switch (c2) {
         case '=':               return MINEQUAL;
+        case '>':               return RARROW;
         }
         break;
     case '*':

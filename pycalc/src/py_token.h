@@ -67,8 +67,10 @@ enum _tok
 	AT = 50,
 	/* Don't forget to update the table _PyParser_TokenNames in tokenizer.c! */
 	OP = 51,
-	ERRORTOKEN = 52,
-	N_TOKENS = 53
+    LARROW = 52,
+    RARROW = 53,
+    ERRORTOKEN = 54,
+	N_TOKENS = 55
 };
 
 }

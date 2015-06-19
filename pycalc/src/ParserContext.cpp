@@ -411,6 +411,12 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 	case pytoken::OP:
 		result = 0;
 		break;
+    case pytoken::LARROW:
+        result = tok::LARROW;
+        break;
+    case pytoken::RARROW:
+        result = tok::RARROW;
+        break;
 	case pytoken::ERRORTOKEN:
 		result = 0;
 		break;
