@@ -67,7 +67,6 @@ public:
     virtual int Visit(Subscript*) = 0;
     virtual int Visit(List*) = 0;
 
-
 	virtual ~AstVisitor() {};
 };
 

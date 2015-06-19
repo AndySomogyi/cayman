@@ -117,11 +117,13 @@ AT "@"
 AWAIT "await"
 ASYNC "async"
 FROM "from"
+IMPORT "import"
 YIELD "yield"
 BREAK "break"
 CONTINUE "continue"
 RAISE "raise"
 RETURN "return"
+AS "as"
 NAME
 NUMBER
 STRING
@@ -280,6 +282,7 @@ small_stmt:
     | del_stmt
     | pass_stmt
     | flow_stmt
+    | import_stmt
     ;
 
 // *python
@@ -1261,6 +1264,156 @@ decorators:
 decorated:
     decorators funcdef
     ;
+
+// python3
+// import_stmt: import_name | import_from
+import_stmt: import_name | import_from
+
+// python3
+// import_name: 'import' dotted_as_names
+import_name: 
+    "import" dotted_as_names
+    {
+        $$ = ctx.ast->CreateImport(@$, $2);
+    }
+    ;
+
+
+
+// *python3 import_from:
+// # note below: the ('.' | '...') is necessary because '...' is tokenized as ELLIPSIS
+// import_from: ('from' (('.' | '...')* dotted_name | ('.' | '...')+)
+//               'import' ('*' | '(' import_as_names ')' | import_as_names))
+// 
+// replace dot and tridot seq
+// import_from: ('from' (dot_or_tridot_seq_opt dotted_name | dot_or_tridot_seq)
+//              'import' ('*' | '(' import_as_names ')' | import_as_names))
+// import_from: 
+//     "from" (dot_or_tridot_seq_opt dotted_name | dot_or_tridot_seq)
+//             "import" ('*' | '(' import_as_names ')' | import_as_names)
+import_from: 
+    "from" dotted_name "import" "*"
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, $2, $4);
+    }
+    |"from" dotted_name "import" "(" import_as_names ")"
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, $2, $5);
+    }
+    |"from" dotted_name "import" import_as_names
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, $2, $4);
+    }
+    |"from" import_dots dotted_name "import" "*"
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, $3, $5, $2);
+    }
+    |"from" import_dots dotted_name "import" "(" import_as_names ")"
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, $3, $6, $2);
+    }
+    |"from" import_dots dotted_name "import" import_as_names 
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, $3, $5, $2);
+    }
+    |"from" import_dots "import" "*"
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, NULL, $4, $2);
+    }
+    |"from" import_dots "import" "(" import_as_names ")"
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, NULL, $5, $2);
+    }
+    |"from" import_dots "import" import_as_names 
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, NULL, $4, $2);
+    }
+    ;
+
+// ('.' | '...')+
+// Sets the level on a ImportFrom node. 
+// this is ONLY called from the import_from rule, so its OK to 
+// make a new ImportFrom node here.
+import_dots:
+    "."
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, 1);
+    }
+    | "..."
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, 3);
+    }
+    | import_dots "."
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, $1, 3);
+    }
+    | import_dots "..."
+    {
+        $$ = ctx.ast->CreateImportFrom(@$, $1, 3);
+    }
+    ;
+  
+
+// python3
+// dotted_as_name: dotted_name ['as' NAME]
+// dotted_as_names: dotted_as_name (',' dotted_as_name)*
+dotted_as_names:
+    dotted_as_names_seq
+    | dotted_as_names_seq ","
+    ;
+
+// dotted_as_name (',' dotted_as_name)*
+dotted_as_names_seq: 
+    dotted_name
+    {
+        $$ = ctx.ast->CreateAliasNodes(@$, NULL, $1, NULL);
+    }
+    | dotted_name "as" NAME
+    {
+        $$ = ctx.ast->CreateAliasNodes(@$, NULL, $1, $3);
+    }
+    | dotted_as_names_seq "," dotted_name
+    {
+        $$ = ctx.ast->CreateAliasNodes(@$, $1, $3, NULL);
+    }
+    | dotted_as_names_seq "," dotted_name "as" NAME
+    {
+        $$ = ctx.ast->CreateAliasNodes(@$, $1, $3, $5);
+    }
+    ;
+
+
+
+
+// python3
+// import_as_name: NAME ['as' NAME]
+// import_as_names: import_as_name (',' import_as_name)* [',']
+import_as_names: 
+    import_as_names_seq
+    | import_as_names_seq ","
+    ;
+
+import_as_names_seq: 
+    NAME 
+    {
+        $$ = ctx.ast->CreateAliasNodes(@$, NULL, $1, NULL);
+    }
+    | NAME "as" NAME
+    {
+        $$ = ctx.ast->CreateAliasNodes(@$, NULL, $1, $3);
+    }
+    | import_as_names_seq "," NAME
+    {
+        $$ = ctx.ast->CreateAliasNodes(@$, $1, $3, NULL);
+    }
+    | import_as_names_seq "," NAME "as" NAME
+    {
+        $$ = ctx.ast->CreateAliasNodes(@$, $1, $3, $5);
+    }
+    ;
+
+
+
 
 // *python3
 // dotted_name: NAME ('.' NAME)*

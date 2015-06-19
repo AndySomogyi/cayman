@@ -40,6 +40,8 @@ Name::Name(class Ast* ast, const location& loc, const char* begin,
            const char* end) :
     AstNode(ast, loc, ATOMIC), id(begin, end), ctx(UnknownCtx)
 {
+    // TODO verify non-dotted name
+    ids.push_back(id);
 }
 
 Num::Num(class Ast* ast, const location& loc, const char* begin,
@@ -110,6 +112,8 @@ int Starred::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
 }
+
+
 
 
 } /* namespace py */

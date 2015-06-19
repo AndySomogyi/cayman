@@ -470,6 +470,21 @@ public:
 	virtual int Accept(class AstVisitor*);
 };
 
+/**
+ * mapping of what is imported to what name it should have.
+ *
+ * Just strings, no need to make a new AstNode here.
+ */
+struct Alias {
+	Alias() {};
+	Alias(const Identifier& n, const Identifier& a) : name(n), asname(a) {};
+	Identifier name;
+	Identifier asname;
+};
+
+
+typedef std::vector<Alias> Aliases;
+
 class Import: public Stmt
 {
 public:
@@ -478,11 +493,11 @@ public:
 	 * create a basic assignment statement with only a single value (what is being assigned),
 	 * and a single target (what is being assigned to)
 	 */
-	Import(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	Import(class Ast *ast, const location &loc, AstNode *names);
 
 	virtual ~Import() {};
 
-	AstNode *expr;
+	Aliases names;
 
 	virtual int Accept(class AstVisitor*);
 };
@@ -495,14 +510,48 @@ public:
 	 * create a basic assignment statement with only a single value (what is being assigned),
 	 * and a single target (what is being assigned to)
 	 */
-	ImportFrom(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	ImportFrom(class Ast *ast, const location &loc, AstNode *module, AstNode *names, int level);
 
 	virtual ~ImportFrom() {};
 
-	AstNode *expr;
+	Aliases names;
+
+	Identifier module;
+    
+    int level;
+
+	void SetModule(AstNode*);
+
+	void SetNames(AstNode*);
 
 	virtual int Accept(class AstVisitor*);
 };
+
+/**
+ * Temprary nodes only used by the parser to build an ImportFrom
+ *
+ * NOT part of grammar, only used by the parser.
+ *
+ * TODO, not very effcient, replace with a better way of building the ImportFrom
+ * nodes.
+ */
+class AliasNodes : public AstNode
+{
+public:
+	AliasNodes(class Ast *ast, const location &loc, AstNode *nm, AstNode *asnm);
+
+	virtual ~AliasNodes() {};
+
+	Aliases names;
+
+	void AddAlias(AstNode *name, AstNode *asname);
+
+	/**
+	 * not part of grammar, can not be visited.
+	 */
+	virtual int Accept(class AstVisitor*) { assert(0); return 0; }
+};
+
 
 class Global: public Stmt
 {

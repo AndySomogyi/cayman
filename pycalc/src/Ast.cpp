@@ -232,6 +232,53 @@ YieldFrom* Ast::CreateYieldFrom(const location& loc, AstNode* from)
     return new YieldFrom(this, loc, from);
 }
 
+AliasNodes* Ast::CreateAliasNodes(const location& loc, AstNode *prev, AstNode* name, AstNode* asname)
+{
+    AliasNodes *nodes;
+    if (prev) {
+        nodes = dynamic_cast<AliasNodes*>(prev);
+        assert(nodes);
+        nodes->AddAlias(name, asname);
+        return nodes;
+    }
+	return new AliasNodes(this, loc, name, asname);
+}
+
+Import* Ast::CreateImport(const location& loc, AstNode* names)
+{
+	return new Import(this, loc, names);
+}
+
+ImportFrom* Ast::CreateImportFrom(const location& loc, AstNode* module,
+		AstNode* names, AstNode* level)
+{
+	ImportFrom *impf = dynamic_cast<ImportFrom*>(level);
+
+	if(level) assert(impf);
+
+	if (impf) {
+		impf->SetModule(module);
+		impf->SetNames(names);
+		return impf;
+	}
+
+	return new ImportFrom(this, loc, module, names, 0);
+}
+
+ImportFrom* Ast::CreateImportFrom(const location& loc, int level)
+{
+	return new ImportFrom(this, loc, NULL, NULL, level);
+}
+
+ImportFrom* Ast::CreateImportFrom(const location& loc, AstNode* prevLevel,
+		int level)
+{
+	ImportFrom *impf = dynamic_cast<ImportFrom*>(prevLevel);
+	assert(impf);
+	impf->level += level;
+	return impf;
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);

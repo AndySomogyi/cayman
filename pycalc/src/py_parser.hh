@@ -217,14 +217,16 @@ namespace py {
         AWAIT = 320,
         ASYNC = 321,
         FROM = 322,
-        YIELD = 323,
-        BREAK = 324,
-        CONTINUE = 325,
-        RAISE = 326,
-        RETURN = 327,
-        NAME = 328,
-        NUMBER = 329,
-        STRING = 330
+        IMPORT = 323,
+        YIELD = 324,
+        BREAK = 325,
+        CONTINUE = 326,
+        RAISE = 327,
+        RETURN = 328,
+        AS = 329,
+        NAME = 330,
+        NUMBER = 331,
+        STRING = 332
       };
     };
 
@@ -532,12 +534,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 501,     ///< Last index in yytable_.
-      yynnts_ = 73,  ///< Number of nonterminal symbols.
+      yylast_ = 598,     ///< Last index in yytable_.
+      yynnts_ = 81,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 77  ///< Number of tokens.
+      yyntokens_ = 80  ///< Number of tokens.
     };
 
 

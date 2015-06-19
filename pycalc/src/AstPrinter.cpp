@@ -78,6 +78,7 @@ int AstPrinter::Visit(Pass*)
 	return 0;
 }
 
+
 int AstPrinter::Visit(Break*)
 {
 	os << "Break()";
@@ -720,16 +721,34 @@ int AstPrinter::Visit(Assert*)
     os << "Assert()";
     return 0;
 }
-
-int AstPrinter::Visit(Import*)
+    
+void AstPrinter::PrintAliases(Aliases& names)
 {
-    os << "Import()";
+    os << "names=[" << std::endl;
+    for (Aliases::const_iterator i = names.begin(); i != names.end(); ++i) {
+        os << "alias(name=\"" << (*i).name << "\", asname=\"" << (*i).asname << "\")";
+        if (i + 1 < names.end()) {
+            os << ",";
+        }
+        os << std::endl;
+    }
+    os << "]";
+}
+
+int AstPrinter::Visit(Import* imp)
+{
+    os << "Import(";
+    PrintAliases(imp->names);
+    os << ")";
     return 0;
 }
 
-int AstPrinter::Visit(ImportFrom*)
+int AstPrinter::Visit(ImportFrom* imp)
 {
-    os << "ImportFrom()";
+    os << "ImportFrom(module=\"" << imp->module << "\", ";
+    PrintAliases(imp->names);
+    os << ", level=" << imp->level;
+    os << ")";
     return 0;
 }
 

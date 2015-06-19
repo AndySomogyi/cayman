@@ -72,6 +72,7 @@ private:
 	std::ostream &os;
     
     void PrintNodes(AstNodes& nodes);
+    void PrintAliases(Aliases&);
 };
 
 } /* namespace py */

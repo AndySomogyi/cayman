@@ -251,7 +251,14 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
             {
                 result = tok::FROM;
             }
-            
+            else if (str == "import")
+            {
+                result = tok::IMPORT;
+            }
+            else if (str == "as")
+            {
+                result = tok::AS;
+            }
             else
             {
                 result = tok::NAME;

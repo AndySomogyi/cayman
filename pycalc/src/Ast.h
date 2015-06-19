@@ -154,8 +154,23 @@ public:
     
     Pass *CreatePass(const location &loc);
     
-	void Free(AstNode* node);
+    AliasNodes *CreateAliasNodes(const location &loc, AstNode *prev, AstNode *name, AstNode *asname = NULL);
 
+    Import *CreateImport(const location &loc, AstNode *names);
+
+    ImportFrom *CreateImportFrom(const location &loc, AstNode *module, AstNode *names, AstNode *level=NULL);
+
+    ImportFrom *CreateImportFrom(const location &loc, int level);
+
+    /**
+     * Used by the parser to increment the level,
+     *
+     * @param prevLevel: a ImportFrom node from prev interation
+     * @param level: current dot level
+     */
+    ImportFrom *CreateImportFrom(const location &loc, AstNode *prevLevel, int level);
+
+	void Free(AstNode* node);
 
 
 

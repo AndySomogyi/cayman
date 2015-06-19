@@ -295,6 +295,65 @@ int Delete::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
+
+
+ImportFrom::ImportFrom(class Ast* ast, const location& loc, AstNode* _module,
+		AstNode* _names, int level) :
+	Stmt(ast, loc), level(level)
+{
+	SetModule(_module);
+	SetNames(_names);
+}
+
+void ImportFrom::SetModule(AstNode *m)
+{
+	if (m)
+	{
+		Name *nm = dynamic_cast<Name*>(m);
+		assert(nm);
+		module = nm->id;
+	}
+	else
+	{
+		module.clear();
+	}
+}
+
+void ImportFrom::SetNames(AstNode *n)
+{
+	names.clear();
+	if (n)
+	{
+		AliasNodes *nodes = dynamic_cast<AliasNodes*>(n);
+		assert(nodes);
+		names = nodes->names;
+	}
+}
+
+AliasNodes::AliasNodes(class Ast* ast, const location& loc, AstNode* nm, AstNode* asnm) :
+		AstNode(ast, loc)
+{
+	AddAlias(nm, asnm);
+}
+
+void AliasNodes::AddAlias(AstNode* name, AstNode* asname)
+{
+	Alias alias;
+
+	Name *n = dynamic_cast<Name*>(name);
+	assert(n);
+	alias.name = n->id;
+
+	if(asname) {
+		Name *a = dynamic_cast<Name*>(asname);
+		assert(a);
+		alias.asname = a->id;
+	}
+
+	names.push_back(alias);
+}
+
+
 int Return::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
@@ -318,6 +377,16 @@ int Try::Accept(class AstVisitor* v)
 int Assert::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
+}
+
+Import::Import(class Ast* ast, const location& loc, AstNode* nm) :
+    Stmt(ast, loc)
+{
+	if (nm) {
+		AliasNodes *nodes = dynamic_cast<AliasNodes*>(nm);
+		assert(nodes);
+		names = nodes->names;
+	}
 }
 
 int Import::Accept(class AstVisitor* v)
