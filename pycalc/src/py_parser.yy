@@ -811,7 +811,7 @@ trailer:
     {
         // trailer: ( arglist )
         // name is not known until atom expr
-        $$ = ctx.ast->CreateCall(@$, $2);
+        $$ = ctx.ast->CreateCall(@$, NULL, $2);
     }
 
     ;
@@ -1273,8 +1273,17 @@ tfpdef:
 //decorator: '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
 decorator:
     "@" dotted_name NEWLINE
+    {
+        $$ = $2;
+    }
     | "@" dotted_name "(" ")" NEWLINE
+    {
+        $$ = ctx.ast->CreateCall(@$, $2, NULL);
+    }
     | "@" dotted_name "(" arglist ")" NEWLINE
+    {
+        $$ = ctx.ast->CreateCall(@$, $2, $4);
+    }
     ;
 
 // *python3
@@ -1282,15 +1291,21 @@ decorator:
 decorators:
     decorator
     | decorators decorator
+    {
+        $$ = ctx.ast->CreateTuple(@$, $1, $2);
+    }
     ;
 
 // *python3
 //decorated: decorators (classdef | funcdef | async_funcdef)
 decorated:
     decorators funcdef
+    {
+        $$ = ctx.ast->CreateDecorated(@$, $1, $2);
+    }
     ;
 
-// python3
+// python3gg
 // import_stmt: import_name | import_from
 import_stmt: import_name | import_from
 

@@ -409,6 +409,9 @@ int AstPrinter::Visit(FunctionDef* func)
         os << "NULL";
     }
     
+    os << "," << std::endl << "decorators=" << std::endl;
+    PrintNodes(func->decorators);
+    
     os << ")";
     
     return 0;

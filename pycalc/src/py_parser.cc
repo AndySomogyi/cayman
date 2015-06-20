@@ -2288,7 +2288,7 @@ namespace py {
     {
         // trailer: ( arglist )
         // name is not known until atom expr
-        (yylhs.value) = ctx.ast->CreateCall(yylhs.location, (yystack_[1].value));
+        (yylhs.value) = ctx.ast->CreateCall(yylhs.location, NULL, (yystack_[1].value));
     }
 
     break;
@@ -2691,6 +2691,46 @@ namespace py {
         ctx.ast->Free(name);
         ctx.ast->Free(type);
         (yylhs.value) = result;
+    }
+
+    break;
+
+  case 184:
+
+    {
+        (yylhs.value) = (yystack_[1].value);
+    }
+
+    break;
+
+  case 185:
+
+    {
+        (yylhs.value) = ctx.ast->CreateCall(yylhs.location, (yystack_[3].value), NULL);
+    }
+
+    break;
+
+  case 186:
+
+    {
+        (yylhs.value) = ctx.ast->CreateCall(yylhs.location, (yystack_[4].value), (yystack_[2].value));
+    }
+
+    break;
+
+  case 188:
+
+    {
+        (yylhs.value) = ctx.ast->CreateTuple(yylhs.location, (yystack_[1].value), (yystack_[0].value));
+    }
+
+    break;
+
+  case 189:
+
+    {
+        (yylhs.value) = ctx.ast->CreateDecorated(yylhs.location, (yystack_[1].value), (yystack_[0].value));
     }
 
     break;
@@ -3581,11 +3621,11 @@ namespace py {
      988,   992,  1018,  1022,  1031,  1035,  1044,  1048,  1057,  1058,
     1068,  1074,  1079,  1080,  1086,  1091,  1101,  1105,  1145,  1152,
     1159,  1168,  1175,  1183,  1189,  1197,  1210,  1214,  1225,  1229,
-    1237,  1241,  1254,  1261,  1275,  1276,  1277,  1283,  1284,  1290,
-    1295,  1295,  1300,  1320,  1324,  1328,  1332,  1336,  1340,  1344,
-    1348,  1352,  1363,  1368,  1373,  1378,  1390,  1391,  1396,  1400,
-    1404,  1408,  1421,  1422,  1426,  1430,  1434,  1438,  1450,  1451,
-    1464,  1472,  1473,  1483,  1492,  1496
+    1237,  1241,  1254,  1261,  1275,  1279,  1283,  1292,  1293,  1302,
+    1310,  1310,  1315,  1335,  1339,  1343,  1347,  1351,  1355,  1359,
+    1363,  1367,  1378,  1383,  1388,  1393,  1405,  1406,  1411,  1415,
+    1419,  1423,  1436,  1437,  1441,  1445,  1449,  1453,  1465,  1466,
+    1479,  1487,  1488,  1498,  1507,  1511
   };
 
   // Print the state stack on the debug stream.

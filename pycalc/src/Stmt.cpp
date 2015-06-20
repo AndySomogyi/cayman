@@ -269,8 +269,15 @@ int AugAssign::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
-void FunctionDef::AddDecorators(AstNode* tuple)
+void FunctionDef::AddDecorators(AstNode* dec)
 {
+    Tuple *tuple = dynamic_cast<Tuple*>(dec);
+    if (tuple) {
+        decorators.insert(decorators.end(), tuple->items.begin(), tuple->items.end());
+    }
+    else {
+        decorators.push_back(dec);
+    }
 }
 
 

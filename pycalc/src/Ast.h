@@ -82,7 +82,7 @@ public:
 	 *
 	 * The args node is consumed in the process.
 	 */
-	Call *CreateCall(const location& loc, AstNode* args = NULL);
+	Call *CreateCall(const location& loc, AstNode *name=NULL, AstNode* args = NULL);
 
 	KeywordArg *CreateKeywordArg(const location &loc, AstNode *name, AstNode *value);
 
@@ -179,6 +179,9 @@ public:
 
     While *CreateWhile(const location &loc, AstNode *test, AstNode *body,
                        AstNode *orelse = NULL);
+    
+    
+    AstNode *CreateDecorated(const location& loc, AstNode *decorators, AstNode *thing);
 
 	void Free(AstNode* node);
 

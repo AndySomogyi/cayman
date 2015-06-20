@@ -132,9 +132,13 @@ FunctionDef* Ast::CreateFunctionDef(const location& loc, AstNode* nm,
 }
 
 
-Call* Ast::CreateCall(const location& loc, AstNode* args)
+Call* Ast::CreateCall(const location& loc, AstNode *name, AstNode* args)
 {
-	return new Call(this, loc, args);
+	Call *call = new Call(this, loc, args);
+    if (name) {
+        call->SetFunc(name);
+    }
+    return call;
 }
 
 
@@ -349,6 +353,19 @@ While* Ast::CreateWhile(const location& loc, AstNode* test, AstNode* body,
 		AstNode* orelse)
 {
 	return new While(this, loc, test, body, orelse);
+}
+    
+AstNode *Ast::CreateDecorated(const location& loc, AstNode *decorators, AstNode *thing)
+{
+    FunctionDef *func = dynamic_cast<FunctionDef*>(thing);
+    
+    if (func) {
+        func->AddDecorators(decorators);
+        return func;
+    }
+    
+    assert(0);
+    return 0;
 }
 
 
