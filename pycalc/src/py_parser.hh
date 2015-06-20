@@ -226,9 +226,11 @@ namespace py {
         RETURN = 329,
         AS = 330,
         GLOBAL = 331,
-        NAME = 332,
-        NUMBER = 333,
-        STRING = 334
+        NONLOCAL = 332,
+        ASSERT = 333,
+        NAME = 334,
+        NUMBER = 335,
+        STRING = 336
       };
     };
 
@@ -536,12 +538,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 595,     ///< Last index in yytable_.
-      yynnts_ = 83,  ///< Number of nonterminal symbols.
+      yylast_ = 619,     ///< Last index in yytable_.
+      yynnts_ = 85,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 81  ///< Number of tokens.
+      yyntokens_ = 83  ///< Number of tokens.
     };
 
 

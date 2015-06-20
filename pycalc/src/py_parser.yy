@@ -126,6 +126,8 @@ RAISE "raise"
 RETURN "return"
 AS "as"
 GLOBAL "global"
+NONLOCAL "nonlocal"
+ASSERT "assert"
 NAME
 NUMBER
 STRING
@@ -286,6 +288,8 @@ small_stmt:
     | flow_stmt
     | import_stmt
     | global_stmt
+    | nonlocal_stmt
+    | assert_stmt
     ;
 
 // *python
@@ -556,11 +560,11 @@ augassign:
 testlist:
     test_seq 
     | test_seq ","
-;
+    ;
 
-// test_seq comma_opt
-
+// test_seq 
 // sequence of one or more test statments
+// test_seq: test (, test)*
 test_seq:
     test
     | test_seq "," test
@@ -1452,6 +1456,28 @@ name_seq:
     {
         // name_seq: name_seq "," NAME
         $$ = ctx.ast->CreateTuple(@$, $1, $3);
+    }
+    ;
+
+// python3
+// nonlocal_stmt: 'nonlocal' NAME (',' NAME)*
+nonlocal_stmt:
+    "nonlocal" name_seq
+    {
+        $$ = ctx.ast->CreateNonLocal(@$, $2);
+    }
+    ;
+
+// python3
+// assert_stmt: 'assert' test [',' test]
+assert_stmt:
+    "assert" test
+    {
+        $$ = ctx.ast->CreateAssert(@$, $2);
+    }
+    | "assert" test "," test
+    {
+        $$ = ctx.ast->CreateAssert(@$, $2, $4);
     }
     ;
 

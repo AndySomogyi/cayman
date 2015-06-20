@@ -457,15 +457,13 @@ class Assert: public Stmt
 {
 public:
 
-	/**
-	 * create a basic assignment statement with only a single value (what is being assigned),
-	 * and a single target (what is being assigned to)
-	 */
-	Assert(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	Assert(class Ast *ast, const location &loc, AstNode *_test, AstNode *_msg=NULL);
 
 	virtual ~Assert() {};
 
-	AstNode *expr;
+	AstNode *test;
+
+	AstNode *msg;
 
 	virtual int Accept(class AstVisitor*);
 };
@@ -556,12 +554,7 @@ public:
 class Global: public Stmt
 {
 public:
-
-	/**
-	 * create a basic assignment statement with only a single value (what is being assigned),
-	 * and a single target (what is being assigned to)
-	 */
-	Global(class Ast *ast, const location &loc, AstNode *_names);
+	Global(class Ast *ast, const location &loc, AstNode *names);
 
 	virtual ~Global() {};
 
@@ -573,16 +566,11 @@ public:
 class NonLocal: public Stmt
 {
 public:
-
-	/**
-	 * create a basic assignment statement with only a single value (what is being assigned),
-	 * and a single target (what is being assigned to)
-	 */
-	NonLocal(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	NonLocal(class Ast *ast, const location &loc, AstNode *names);
 
 	virtual ~NonLocal() {};
 
-	AstNode *expr;
+	Identifiers names;
 
 	virtual int Accept(class AstVisitor*);
 };
@@ -590,12 +578,7 @@ public:
 class ClassDef: public Stmt
 {
 public:
-
-	/**
-	 * create a basic assignment statement with only a single value (what is being assigned),
-	 * and a single target (what is being assigned to)
-	 */
-	ClassDef(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	ClassDef(class Ast *ast, const location &loc, AstNode *names);
 
 	virtual ~ClassDef() {};
 

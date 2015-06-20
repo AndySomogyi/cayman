@@ -263,6 +263,14 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
             {
                 result = tok::GLOBAL;
             }
+            else if (str == "nonlocal")
+            {
+                result = tok::NONLOCAL;
+            }
+            else if (str == "assert")
+            {
+                result = tok::ASSERT;
+            }
             else
             {
                 result = tok::NAME;

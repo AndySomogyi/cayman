@@ -373,6 +373,26 @@ Global::Global(class Ast* ast, const location& loc, AstNode* _names) :
 	names.push_back(name->id);
 }
 
+NonLocal::NonLocal(class Ast* ast, const location& loc, AstNode* _names) :
+    Stmt(ast, loc)
+{
+	Tuple *tuple = dynamic_cast<Tuple*>(_names);
+
+	if (tuple) {
+		for (AstNodes::const_iterator i = tuple->items.begin();
+				i != tuple->items.end(); ++i) {
+			Name *name = dynamic_cast<Name*>(*i);
+			assert(name);
+			names.push_back(name->id);
+		}
+		return;
+	}
+
+	Name *name = dynamic_cast<Name*>(_names);
+	assert(name);
+	names.push_back(name->id);
+}
+
 
 int Return::Accept(class AstVisitor* v)
 {
@@ -392,6 +412,14 @@ int Raise::Accept(class AstVisitor* v)
 int Try::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
+}
+
+Assert::Assert(class Ast* ast, const location& loc, AstNode* _test,
+		AstNode* _msg) :
+    Stmt(ast, loc)
+{
+	test = _test;
+	msg = _msg;
 }
 
 int Assert::Accept(class AstVisitor* v)

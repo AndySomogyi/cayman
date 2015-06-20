@@ -335,6 +335,15 @@ Global *Ast::CreateGlobal(const location &loc, AstNode *names)
     return new Global(this, loc, names);
 }
 
+NonLocal *Ast::CreateNonLocal(const location &loc, AstNode *names)
+{
+    return new NonLocal(this, loc, names);
+}
+
+Assert* Ast::CreateAssert(const location &loc, AstNode *test, AstNode *msg)
+{
+	return new Assert(this, loc, test, msg);
+}
 
 } /* namespace py */
 

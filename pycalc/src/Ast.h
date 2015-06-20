@@ -173,6 +173,10 @@ public:
     
     Global *CreateGlobal(const location &loc, AstNode *names);
 
+    NonLocal *CreateNonLocal(const location &loc, AstNode *names);
+
+    Assert *CreateAssert(const location &loc, AstNode *test, AstNode *msg=NULL);
+
 	void Free(AstNode* node);
 
 

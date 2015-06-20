@@ -716,9 +716,24 @@ int AstPrinter::Visit(Try*)
     return 0;
 }
 
-int AstPrinter::Visit(Assert*)
+int AstPrinter::Visit(Assert *a)
 {
-    os << "Assert()";
+    os << "Assert(test=";
+    if (a->test) {
+        a->test->Accept(this);
+    } else {
+        os << "NULL";
+    }
+    
+    os << ", msg=";
+    if (a->msg) {
+        a->msg->Accept(this);
+    } else {
+        os << "NULL";
+    }
+    
+    os << ")";
+    
     return 0;
 }
     
@@ -769,9 +784,20 @@ int AstPrinter::Visit(Global *g)
     return 0;
 }
 
-int AstPrinter::Visit(NonLocal*)
+int AstPrinter::Visit(NonLocal *n)
 {
-    os << "NonLocal()";
+    os << "NonLocal(names=[" << std::endl;
+    
+    for (Identifiers::const_iterator i = n->names.begin();
+         i != n->names.end(); ++i) {
+        os << "\"" << *i << "\"";
+        if (i + 1 < n->names.end()) {
+            os << ",";
+        }
+        os << std::endl;
+    }
+    
+    os << "])";
     return 0;
 }
 
