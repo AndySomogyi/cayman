@@ -329,6 +329,11 @@ AugAssign* Ast::CreateAugAssign(const location& loc, AstNode* target,
 {
 	return new AugAssign(this, loc, target, TokenAstNodes::GetOperatorType(op), value);
 }
+    
+Global *Ast::CreateGlobal(const location &loc, AstNode *names)
+{
+    return new Global(this, loc, names);
+}
 
 
 } /* namespace py */

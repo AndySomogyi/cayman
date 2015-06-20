@@ -26,6 +26,8 @@ namespace py
  */
 typedef std::string Identifier;
 
+typedef std::vector<Identifier> Identifiers;
+
 class AstNode
 {
 public:

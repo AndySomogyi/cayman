@@ -353,6 +353,26 @@ void AliasNodes::AddAlias(AstNode* name, AstNode* asname)
 	names.push_back(alias);
 }
 
+Global::Global(class Ast* ast, const location& loc, AstNode* _names) :
+    Stmt(ast, loc)
+{
+	Tuple *tuple = dynamic_cast<Tuple*>(_names);
+
+	if (tuple) {
+		for (AstNodes::const_iterator i = tuple->items.begin();
+				i != tuple->items.end(); ++i) {
+			Name *name = dynamic_cast<Name*>(*i);
+			assert(name);
+			names.push_back(name->id);
+		}
+		return;
+	}
+
+	Name *name = dynamic_cast<Name*>(_names);
+	assert(name);
+	names.push_back(name->id);
+}
+
 
 int Return::Accept(class AstVisitor* v)
 {

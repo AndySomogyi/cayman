@@ -169,6 +169,9 @@ public:
      * @param level: current dot level
      */
     ImportFrom *CreateImportFrom(const location &loc, AstNode *prevLevel, int level);
+    
+    
+    Global *CreateGlobal(const location &loc, AstNode *names);
 
 	void Free(AstNode* node);
 

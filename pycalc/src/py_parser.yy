@@ -125,6 +125,7 @@ CONTINUE "continue"
 RAISE "raise"
 RETURN "return"
 AS "as"
+GLOBAL "global"
 NAME
 NUMBER
 STRING
@@ -284,6 +285,7 @@ small_stmt:
     | pass_stmt
     | flow_stmt
     | import_stmt
+    | global_stmt
     ;
 
 // *python
@@ -1434,6 +1436,24 @@ dotted_name:
     }
     ;
 
+// *python3
+// global_stmt: 'global' NAME (',' NAME)*
+global_stmt:
+    "global" name_seq
+    {
+        $$ = ctx.ast->CreateGlobal(@$, $2);
+    }
+    ;
+
+// NAME (',' NAME)*
+name_seq:
+    NAME
+    | name_seq "," NAME
+    {
+        // name_seq: name_seq "," NAME
+        $$ = ctx.ast->CreateTuple(@$, $1, $3);
+    }
+    ;
 
 
 %%

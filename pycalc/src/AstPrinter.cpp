@@ -752,9 +752,20 @@ int AstPrinter::Visit(ImportFrom* imp)
     return 0;
 }
 
-int AstPrinter::Visit(Global*)
+int AstPrinter::Visit(Global *g)
 {
-    os << "Global()";
+    os << "Global(names=[" << std::endl;
+    
+    for (Identifiers::const_iterator i = g->names.begin();
+         i != g->names.end(); ++i) {
+        os << "\"" << *i << "\"";
+        if (i + 1 < g->names.end()) {
+            os << ",";
+        }
+        os << std::endl;
+    }
+    
+    os << "])";
     return 0;
 }
 

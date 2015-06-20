@@ -259,6 +259,10 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
             {
                 result = tok::AS;
             }
+            else if (str == "global")
+            {
+                result = tok::GLOBAL;
+            }
             else
             {
                 result = tok::NAME;

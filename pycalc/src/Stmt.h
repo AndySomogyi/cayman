@@ -561,11 +561,11 @@ public:
 	 * create a basic assignment statement with only a single value (what is being assigned),
 	 * and a single target (what is being assigned to)
 	 */
-	Global(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	Global(class Ast *ast, const location &loc, AstNode *_names);
 
 	virtual ~Global() {};
 
-	AstNode *expr;
+	Identifiers names;
 
 	virtual int Accept(class AstVisitor*);
 };
