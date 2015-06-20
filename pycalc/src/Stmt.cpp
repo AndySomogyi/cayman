@@ -161,6 +161,7 @@ void For::SetIter(AstNode* _iter)
 void For::SetBody(AstNode* _body)
 {
 	Tuple *tuple = dynamic_cast<Tuple*>(_body);
+	assert(tuple);
 
 	body = tuple->items;
 }
@@ -397,6 +398,46 @@ NonLocal::NonLocal(class Ast* ast, const location& loc, AstNode* _names) :
 int Return::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
+}
+
+While::While(class Ast* ast, const location& loc, AstNode* _test, AstNode* _body,
+		AstNode* _orelse) :
+    Stmt(ast, loc), test(NULL)
+{
+	SetTest(_test);
+	SetBody(_body);
+	SetOrElse(_orelse);
+}
+
+void While::SetTest(AstNode* _test)
+{
+	test = _test;
+}
+
+void While::SetBody(AstNode* _body)
+{
+	if (_body)
+	{
+		Tuple *tuple = dynamic_cast<Tuple*>(_body);
+		assert(tuple);
+		body = tuple->items;
+	}
+	else
+	{
+		body.clear();
+	}
+}
+
+void While::SetOrElse(AstNode* _orelse)
+{
+	orelse.clear();
+
+	if (_orelse)
+	{
+		Tuple *tuple = dynamic_cast<Tuple*>(_orelse);
+		assert(tuple);
+		orelse = tuple->items;
+	}
 }
 
 int While::Accept(class AstVisitor* v)

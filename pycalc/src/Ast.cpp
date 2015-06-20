@@ -345,6 +345,12 @@ Assert* Ast::CreateAssert(const location &loc, AstNode *test, AstNode *msg)
 	return new Assert(this, loc, test, msg);
 }
 
-} /* namespace py */
+While* Ast::CreateWhile(const location& loc, AstNode* test, AstNode* body,
+		AstNode* orelse)
+{
+	return new While(this, loc, test, body, orelse);
+}
 
+
+} /* namespace py */
 

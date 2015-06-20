@@ -128,6 +128,7 @@ AS "as"
 GLOBAL "global"
 NONLOCAL "nonlocal"
 ASSERT "assert"
+WHILE "while"
 NAME
 NUMBER
 STRING
@@ -942,11 +943,12 @@ testlist_comp:
 // compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef
 //     | classdef | decorated
 compound_stmt:
-    funcdef
-    | decorated
+    if_stmt
+    | while_stmt
     | for_stmt
-    | if_stmt
-;
+    | funcdef
+    | decorated
+    ;
 
 
 // *python3 
@@ -979,9 +981,25 @@ elif_seq:
     }
     ;
 
+
+// python3
+// while_stmt: 'while' test ':' suite ['else' ':' suite]
+while_stmt:
+    "while" test ":" suite
+    {
+        $$ = ctx.ast->CreateWhile(@$, $2, $4);
+    }
+    | "while" test ":" suite "else" ":" suite
+    {
+        $$ = ctx.ast->CreateWhile(@$, $2, $4, $7);
+    }
+    ;
+
+
 /*
 
-while_stmt: 'while' test ':' suite ['else' ':' suite]
+
+
 for_stmt: 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
 try_stmt: ('try' ':' suite
            ((except_clause ':' suite)+

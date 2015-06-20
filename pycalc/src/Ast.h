@@ -177,6 +177,9 @@ public:
 
     Assert *CreateAssert(const location &loc, AstNode *test, AstNode *msg=NULL);
 
+    While *CreateWhile(const location &loc, AstNode *test, AstNode *body,
+                       AstNode *orelse = NULL);
+
 	void Free(AstNode* node);
 
 

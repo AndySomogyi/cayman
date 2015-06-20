@@ -271,6 +271,10 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
             {
                 result = tok::ASSERT;
             }
+            else if (str == "while")
+            {
+                result = tok::WHILE;
+            }
             else
             {
                 result = tok::NAME;

@@ -400,15 +400,33 @@ class While: public Stmt
 {
 public:
 
-	/**
-	 * create a basic assignment statement with only a single value (what is being assigned),
-	 * and a single target (what is being assigned to)
-	 */
-	While(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	While(class Ast *ast, const location &loc, AstNode *test, AstNode *body,
+			AstNode *orelse=NULL);
 
 	virtual ~While() {};
 
-	AstNode *expr;
+	/**
+	 * The expression that is to be looped over.
+	 */
+	AstNode *test;
+
+	/**
+	 * sequence of nodes that are executed in the loop body
+	 */
+	AstNodes body;
+
+	/**
+	 * Sequence of nodes that are executed if the loop finishes normally,
+	 * rather than via a break statement.
+	 */
+	AstNodes orelse;
+
+
+	void SetTest(AstNode *_test);
+
+	void SetBody(AstNode *_body);
+
+	void SetOrElse(AstNode *_orelse);
 
 	virtual int Accept(class AstVisitor*);
 };
