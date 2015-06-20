@@ -213,20 +213,21 @@ namespace py {
         DOUBLESLASHEQUAL = 316,
         LARROW = 317,
         RARROW = 318,
-        AT = 319,
-        AWAIT = 320,
-        ASYNC = 321,
-        FROM = 322,
-        IMPORT = 323,
-        YIELD = 324,
-        BREAK = 325,
-        CONTINUE = 326,
-        RAISE = 327,
-        RETURN = 328,
-        AS = 329,
-        NAME = 330,
-        NUMBER = 331,
-        STRING = 332
+        ELLIPSIS = 319,
+        AT = 320,
+        AWAIT = 321,
+        ASYNC = 322,
+        FROM = 323,
+        IMPORT = 324,
+        YIELD = 325,
+        BREAK = 326,
+        CONTINUE = 327,
+        RAISE = 328,
+        RETURN = 329,
+        AS = 330,
+        NAME = 331,
+        NUMBER = 332,
+        STRING = 333
       };
     };
 
@@ -534,7 +535,7 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 598,     ///< Last index in yytable_.
+      yylast_ = 586,     ///< Last index in yytable_.
       yynnts_ = 81,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,

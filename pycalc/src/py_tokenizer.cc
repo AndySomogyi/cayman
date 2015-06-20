@@ -86,10 +86,11 @@ const char *_PyParser_TokenNames[] = {
     "DOUBLESLASH",
     "DOUBLESLASHEQUAL",
     "AT",
-    /* This table must match the #defines in token.h! */
-    "OP",
     "LARROW",
     "RARROW",
+    "ELLIPSIS",
+    /* This table must match the #defines in token.h! */
+    "OP",
     "<ERRORTOKEN>",
     "<N_TOKENS>"
 };
@@ -1217,6 +1218,16 @@ PyToken_ThreeChars(int c1, int c2, int c3)
             break;
         }
         break;
+    case '.':
+        switch (c2) {
+        case '.':
+            switch (c3) {
+            case '.':
+                return ELLIPSIS;
+            }
+            break;
+        }
+        break;
     }
     return OP;
 }
@@ -1444,13 +1455,22 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         c = tok_nextc(tok);
         if (isdigit(c)) {
             goto fraction;
-        }
-        else {
+        } else if (c == '.') {
+            c = tok_nextc(tok);
+            if (c == '.') {
+                *p_start = tok->start;
+                *p_end = tok->cur;
+                return ELLIPSIS;
+            } else {
+                tok_backup(tok, c);
+            }
+            tok_backup(tok, '.');
+        } else {
             tok_backup(tok, c);
-            *p_start = tok->start;
-            *p_end = tok->cur;
-            return DOT;
         }
+        *p_start = tok->start;
+        *p_end = tok->cur;
+        return DOT;
     }
 
     /* Number */

@@ -112,6 +112,7 @@ DOUBLESLASHEQUAL "//="
 
 LARROW "<-"
 RARROW "->"
+ELLIPSIS "..."
 
 AT "@"
 AWAIT "await"
@@ -1337,18 +1338,22 @@ import_from:
 import_dots:
     "."
     {
+        // import_dots: "."
         $$ = ctx.ast->CreateImportFrom(@$, 1);
     }
     | "..."
     {
+        // import_dots: "..."
         $$ = ctx.ast->CreateImportFrom(@$, 3);
     }
     | import_dots "."
     {
-        $$ = ctx.ast->CreateImportFrom(@$, $1, 3);
+        // import_dots: import_dots "."
+        $$ = ctx.ast->CreateImportFrom(@$, $1, 1);
     }
     | import_dots "..."
     {
+        // import_dots: import_dots "..."
         $$ = ctx.ast->CreateImportFrom(@$, $1, 3);
     }
     ;
