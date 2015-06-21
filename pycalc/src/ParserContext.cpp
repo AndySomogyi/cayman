@@ -275,6 +275,42 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
             {
                 result = tok::WHILE;
             }
+            else if (str == "False")
+            {
+                result = tok::FALSE;
+            }
+            else if (str == "None")
+            {
+                result = tok::NONE;
+            }
+            else if (str == "True")
+            {
+                result = tok::TRUE;
+            }
+            else if (str == "class")
+            {
+                result = tok::CLASS;
+            }
+            else if (str == "except")
+            {
+                result = tok::EXCEPT;
+            }
+            else if (str == "finally")
+            {
+                result = tok::FINALLY;
+            }
+            else if (str == "lambda")
+            {
+                result = tok::LAMBDA;
+            }
+            else if (str == "try")
+            {
+                result = tok::TRY;
+            }
+            else if (str == "with")
+            {
+                result = tok::WITH;
+            }
             else
             {
                 result = tok::NAME;

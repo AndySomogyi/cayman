@@ -129,6 +129,15 @@ GLOBAL "global"
 NONLOCAL "nonlocal"
 ASSERT "assert"
 WHILE "while"
+FALSE "False"
+NONE "None"
+TRUE "True"
+CLASS "class"
+EXCEPT "except"
+FINALLY "finally"
+LAMBDA "lambda"
+TRY "try"
+WITH "with"
 NAME
 NUMBER
 STRING
@@ -508,11 +517,6 @@ star_expr:
 // and there is only one elment in the sequence, a length 1 tuple
 // is returned. 
 testlist_star_expr:
-//    test_star_expr test_star_expr_seq
-//    | test_star_expr test_star_expr_seq ","
-//    ;
-
-
     test_star_expr_seq
     {
         AstNode *a1 = $1;
@@ -813,8 +817,27 @@ trailer:
         // name is not known until atom expr
         $$ = ctx.ast->CreateCall(@$, NULL, $2);
     }
+    ;
+
+// python3
+// classdef: 'class' NAME ['(' [arglist] ')'] ':' suite
+classdef:
+    "class" NAME ":" suite
+    {
+        $$ = ctx.ast->CreateClassDef(@$, $2, NULL, $4);
+    }
+    | "class" NAME "(" ")" ":" suite
+    {
+        $$ = ctx.ast->CreateClassDef(@$, $2, NULL, $6);
+    }
+    | "class" NAME "(" arglist ")" ":" suite
+    {
+        $$ = ctx.ast->CreateClassDef(@$, $2, $4, $7);
+    }
 
     ;
+
+
 
 
 // *python3 arglist
@@ -833,10 +856,12 @@ arglist:
 arglist_seq:
    argument
    {
+       // arglist_seq: argument
        $$ = ctx.ast->CreateTuple(@$, $1);
    }
    | arglist_seq "," argument
    {
+       // arglists_seq: arglist_seq "," argument
        $$ = ctx.ast->CreateTuple(@$, $1, $3);
    }
    ;
@@ -868,11 +893,32 @@ argument:
     }
     ;
 
+/*
+ **python3
+ arglist: (argument ',')* (argument [',']
+                          |'*' test (',' argument)* [',' '**' test] 
+                          |'**' test)
+ # The reason that keywords are test nodes instead of NAME is that using NAME
+ # results in an ambiguity. ast.c makes sure it's a NAME.
+ argument: test [comp_for] | test '=' test  # Really [keyword '='] test
+*/
 
 
-
+// *python3
 //comp_iter: comp_for | comp_if
+comp_iter:
+    comp_for
+    ;
+
+// *python3
 //comp_for: 'for' exprlist 'in' or_test [comp_iter]
+comp_for:
+    "for" exprlist "in" or_test
+    | "for" exprlist "in" or_test comp_iter
+    ;
+
+
+
 //comp_if: 'if' test_nocond [comp_iter]
 
 
@@ -909,10 +955,73 @@ atom:
         testlistComp->SetAtomic(true);
         $$ = testlistComp;
     }
+    |"[" testlist_comp "]"
+    {
+        // atom: |"[" testlist_comp "]"
+        AstNode *testlistComp = $2;
+        testlistComp->SetAtomic(true);
+        $$ = testlistComp;
+    }
+    // treated as a dict, empty curly braces 
+    | "{" "}"
+    {
+        $$ = ctx.ast->CreateDict(@$);
+    }
+    | "{" dictorsetmaker "}"
+    {
+        $$ = $2;
+    }
+
     | NAME       { $$ = $1; /*name*/}
     | NUMBER { $$ = $1; /*num*/} 
     | STRING { $$ = $1; /*str*/}
 ;
+
+
+/*
+*python3
+dictorsetmaker: ( (test ':' test (comp_for | (',' test ':' test)* [','])) |
+                  (test (comp_for | (',' test)* [','])) )
+
+
+dictorsetmaker: 
+( 
+  (test ':' test (comp_for | (',' test ':' test)* [','])) 
+  |
+  (test (comp_for | (',' test)* [','])) 
+)
+*/
+
+dictorsetmaker: 
+    dict
+    ;
+
+
+// Standard dict syntax
+// test ':' test (',' test ':' test)* [',']
+
+dict:
+    dict_seq
+    | dict_seq ","
+    {
+        $$ = $1;
+    }
+    ;
+
+dict_seq:
+    test ":" test
+    {
+        $$ = ctx.ast->CreateDict(@$, NULL, $1, $3);
+    }
+    | dict_seq "," test ":" test
+    {
+        $$ = ctx.ast->CreateDict(@$, $1, $3, $5);
+    }
+    ;
+
+
+
+
 
 
 // *python3
@@ -932,11 +1041,8 @@ atom:
 //                |(test|star_expr) (comp_for)
 testlist_comp:
     testlist_star_expr
+    | test_star_expr comp_for
     ;
-
-
-
-
 
 
 // * python compound_stmt
@@ -947,6 +1053,7 @@ compound_stmt:
     | while_stmt
     | for_stmt
     | funcdef
+    | classdef
     | decorated
     ;
 
@@ -1300,6 +1407,10 @@ decorators:
 //decorated: decorators (classdef | funcdef | async_funcdef)
 decorated:
     decorators funcdef
+    {
+        $$ = ctx.ast->CreateDecorated(@$, $1, $2);
+    }
+    | decorators classdef
     {
         $$ = ctx.ast->CreateDecorated(@$, $1, $2);
     }

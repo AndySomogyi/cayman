@@ -183,6 +183,18 @@ public:
     
     AstNode *CreateDecorated(const location& loc, AstNode *decorators, AstNode *thing);
 
+	/**
+	 * classdef: 'class' NAME ['(' [arglist] ')'] ':' suite
+	 *
+	 * @param arglist: optional, may be NULL
+	 */
+	ClassDef *CreateClassDef(const location &loc, AstNode *name,
+			AstNode *arglist, AstNode *suite);
+
+
+	Dict *CreateDict(const location &loc, AstNode *seq = NULL,
+				AstNode *key=NULL, AstNode *value=NULL);
+
 	void Free(AstNode* node);
 
 

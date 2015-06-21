@@ -368,6 +368,24 @@ AstNode *Ast::CreateDecorated(const location& loc, AstNode *decorators, AstNode 
     return 0;
 }
 
+ClassDef* Ast::CreateClassDef(const location& loc, AstNode* name,
+		AstNode* arglist, AstNode* suite)
+{
+	return new ClassDef(this, loc, name, arglist, suite);
+}
+
+Dict* Ast::CreateDict(const location& loc, AstNode* seq, AstNode* key,
+		AstNode* value)
+{
+	Dict *dict = dynamic_cast<Dict*>(seq);
+	if (dict != NULL) {
+		dict->AddKeyValue(key, value);
+		return dict;
+	}
+
+	return new Dict(this, loc, key, value);
+}
 
 } /* namespace py */
+
 

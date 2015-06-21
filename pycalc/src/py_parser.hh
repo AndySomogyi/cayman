@@ -229,9 +229,18 @@ namespace py {
         NONLOCAL = 332,
         ASSERT = 333,
         WHILE = 334,
-        NAME = 335,
-        NUMBER = 336,
-        STRING = 337
+        FALSE = 335,
+        NONE = 336,
+        TRUE = 337,
+        CLASS = 338,
+        EXCEPT = 339,
+        FINALLY = 340,
+        LAMBDA = 341,
+        TRY = 342,
+        WITH = 343,
+        NAME = 344,
+        NUMBER = 345,
+        STRING = 346
       };
     };
 
@@ -539,12 +548,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 597,     ///< Last index in yytable_.
-      yynnts_ = 86,  ///< Number of nonterminal symbols.
+      yylast_ = 802,     ///< Last index in yytable_.
+      yynnts_ = 92,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 84  ///< Number of tokens.
+      yyntokens_ = 93  ///< Number of tokens.
     };
 
 

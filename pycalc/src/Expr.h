@@ -310,9 +310,14 @@ public:
 class Dict : public Expr
 {
 public:
-	Dict(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	Dict(class Ast* ast, const location& loc, AstNode *key = NULL, AstNode *value = NULL) ;
 
 	virtual ~Dict() {};
+
+	AstNodes keys;
+	AstNodes values;
+
+	void AddKeyValue(AstNode *key, AstNode *value);
 
 	virtual int Accept(class AstVisitor*);
 };

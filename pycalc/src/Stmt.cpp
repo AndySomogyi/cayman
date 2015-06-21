@@ -505,6 +505,44 @@ int NonLocal::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
+ClassDef::ClassDef(class Ast* ast, const location& loc, AstNode* nm,
+		AstNode* arglist, AstNode* suite) :
+    Stmt(ast, loc), starargs(NULL), kwargs(NULL)
+{
+	SetName(nm);
+	SetBody(suite);
+	ParseArglist(arglist);
+}
+
+void ClassDef::AddDecorators(AstNode* dec)
+{
+    Tuple *tuple = dynamic_cast<Tuple*>(dec);
+    if (tuple) {
+        decorators.insert(decorators.end(), tuple->items.begin(), tuple->items.end());
+    }
+    else {
+        decorators.push_back(dec);
+    }
+}
+
+void ClassDef::SetName(AstNode* nm)
+{
+	Name *n = dynamic_cast<Name*>(nm);
+	assert(n);
+	name = n->id;
+}
+
+void ClassDef::SetBody(AstNode* suite)
+{
+	Tuple *tuple = dynamic_cast<Tuple*>(suite);
+	assert(tuple);
+	body = tuple->items;
+}
+
+void ClassDef::ParseArglist(AstNode* arglist)
+{
+}
+
 int ClassDef::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
@@ -524,6 +562,8 @@ int Continue::Accept(class AstVisitor* v)
 {
 	return v->Visit(this);
 }
+
+
 
 } /* namespace py */
 

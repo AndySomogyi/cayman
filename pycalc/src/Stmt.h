@@ -221,6 +221,81 @@ public:
     AstNode *returns;
 };
 
+class ClassDef: public Stmt
+{
+public:
+	/**
+	 * classdef: 'class' NAME ['(' [arglist] ')'] ':' suite
+	 *
+	 * @param arglist: optional, may be NULL
+	 */
+	ClassDef(class Ast *ast, const location &loc,
+			AstNode *name, AstNode *arglist, AstNode *suite);
+
+	virtual ~ClassDef() {};
+
+	/**
+	 * name is a raw string for the class name
+	 */
+    Identifier name;
+
+	/**
+	 * bases is a list of nodes for explicitly specified base classes.
+	 */
+    AstNodes bases;
+
+    /**
+     * keywords is a list of keyword nodes, principally for ‘metaclass’.
+     * Other keywords will be passed to the metaclass, as per PEP-3115.
+     */
+    AstNodes keywords;
+
+    /**
+     * starargs and kwargs are each a single node, as in a function call.
+     * starargs will be expanded to join the list of base classes.
+     */
+    AstNode *starargs;
+
+    /**
+     * starargs and kwargs are each a single node, as in a function call.
+     * kwargs will be passed to the metaclass.
+     */
+    AstNode *kwargs;
+
+    /**
+     * body is a list of nodes representing the code within the class definition.
+     */
+    AstNodes body;
+
+    /**
+     *  a list of nodes, as in FunctionDef.
+     */
+    AstNodes decorators;
+
+	virtual int Accept(class AstVisitor*);
+
+    /**
+     * Adds a list of decorators from a tuple
+     */
+    void AddDecorators(AstNode *tuple);
+
+    /**
+     * makes sure the node is a Name and sets the name
+     */
+	void SetName(AstNode *nm);
+
+	/**
+	 * makes sure the node is a tuple, and sets the body.
+	 */
+	void SetBody(AstNode *suite);
+
+	/**
+	 * pulls the required bits out of the arglist
+	 */
+	void ParseArglist(AstNode *arglist);
+};
+
+
 /**
  * A named argument in a function call
  */
@@ -593,17 +668,6 @@ public:
 	virtual int Accept(class AstVisitor*);
 };
 
-class ClassDef: public Stmt
-{
-public:
-	ClassDef(class Ast *ast, const location &loc, AstNode *names);
-
-	virtual ~ClassDef() {};
-
-	AstNode *expr;
-
-	virtual int Accept(class AstVisitor*);
-};
 
 
 } /* namespace py */

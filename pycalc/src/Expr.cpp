@@ -225,6 +225,22 @@ int Lambda::Accept(class AstVisitor* v)
     return v->Visit(this);
 }
 
+Dict::Dict(class Ast* ast, const location& loc, AstNode* key, AstNode* value) :
+		Expr(ast, loc)
+{
+	AddKeyValue(key, value);
+}
+
+void Dict::AddKeyValue(AstNode* key, AstNode* value)
+{
+	if (key && value) {
+		keys.push_back(key);
+		values.push_back(value);
+	}
+}
+
+
+
 int Dict::Accept(class AstVisitor* v)
 {
     return v->Visit(this);
@@ -286,3 +302,5 @@ int List::Accept(class AstVisitor* v)
 }
 
 } /* namespace py */
+
+
