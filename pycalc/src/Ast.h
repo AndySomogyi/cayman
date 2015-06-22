@@ -47,6 +47,18 @@ public:
 
     Tuple *CreateTuple(const location& loc, ExprContext ctx, AstNode *seq, AstNode *item=NULL);
     
+    /**
+     * Creates or appends a tuple sequence.
+     *
+     * If seq is NOT a tuple, then a new tuple is created and seq is set as the
+     * first item, i.e. CreateTuple(loc, Name) will create a tuple (Name).
+     *
+     * If seq is NOT a tuple, and item is given, a new tuple containing both
+     * elements will be created.
+     *
+     * If seq is a tuple, then item will be appended to it, provided item is NOT
+     * null.
+     */
     Tuple *CreateTuple(const location& loc, AstNode *seq, AstNode *item=NULL);
 
 	Arg *CreateArg(const location& loc, AstNode *name, AstNode *def=NULL,
@@ -194,6 +206,12 @@ public:
 
 	Dict *CreateDict(const location &loc, AstNode *seq = NULL,
 				AstNode *key=NULL, AstNode *value=NULL);
+
+	/**
+	 * Assembles the given args into a correctly sequenced list of arguments.
+	 */
+	Tuple *CreateArgList(const location& loc, AstNode *args = NULL,
+			AstNode *starredArg = NULL, AstNode *dblStarredArgs=NULL);
 
 	void Free(AstNode* node);
 

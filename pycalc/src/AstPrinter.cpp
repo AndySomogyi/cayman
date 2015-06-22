@@ -298,7 +298,13 @@ int AstPrinter::Visit(Tuple* t)
 
 int AstPrinter::Visit(Ast* ast)
 {
-	return ast->module->Accept(this);
+    if (ast->module) {
+        return ast->module->Accept(this);
+    }
+    else {
+        os << "Error, no module" << std::endl;
+        return 0;
+    }
 }
 
 int AstPrinter::Visit(Attribute* attr)

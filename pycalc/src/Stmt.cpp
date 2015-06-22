@@ -9,7 +9,8 @@
 #include "Expr.h"
 #include "py_parser.hh"
 #include "AstVisitor.h"
-#include <Stmt.h>
+#include "Stmt.h"
+#include "ParserContext.h"
 
 namespace py
 {
@@ -332,6 +333,15 @@ void ImportFrom::SetNames(AstNode *n)
 	names.clear();
 	if (n)
 	{
+		// The given name could be a "*" token,
+		// TOOO FIX THIS HACK!!!, maybe make a proper Operator Ast Node?
+		if (TokenAstNodes::GetOperatorType(n) == Mult)
+		{
+			Alias name("*", "");
+			names.push_back(name);
+            return;
+		}
+
 		AliasNodes *nodes = dynamic_cast<AliasNodes*>(n);
 		assert(nodes);
 		names = nodes->names;

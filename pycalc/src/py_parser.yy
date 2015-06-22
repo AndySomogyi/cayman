@@ -838,70 +838,101 @@ classdef:
     ;
 
 
-
-
-// *python3 arglist
-// arglist: argument (',' argument)*  [',']
-arglist:
-    arglist_seq
-    | arglist_seq ","
-    {
-        $$ = $1;
-    }
-    ;
-
-
-// sequence of one or more 'argument', comma separated.
-// argument (',' argument)*  
-arglist_seq:
-   argument
-   {
-       // arglist_seq: argument
-       $$ = ctx.ast->CreateTuple(@$, $1);
-   }
-   | arglist_seq "," argument
-   {
-       // arglists_seq: arglist_seq "," argument
-       $$ = ctx.ast->CreateTuple(@$, $1, $3);
-   }
-   ;
-
-// 
-// # The reason that keywords are test nodes instead of NAME is that using NAME
-// # results in an ambiguity. ast.c makes sure it's a NAME.
-// # "test '=' test" is really "keyword '=' test", but we have no such token.
-// # These need to be in a single rule to avoid grammar that is ambiguous
-// # to our LL(1) parser. Even though 'test' includes '*expr' in star_expr,
-// # we explicitly match '*' here, too, to give it proper precedence.
-// # Illegal combinations and orderings are blocked in ast.c:
-// # multiple (test comp_for) arguements are blocked; keyword unpackings
-// # that precede iterable unpackings are blocked; etc.
-// argument: ( test [comp_for] |
-//             test '=' test |
-//             '**' test |
-//             star_expr )
-argument:
-    test
-    | star_expr
-    | test "=" test
-    {
-        $$ = ctx.ast->CreateKeywordArg(@$, $1, $3);
-    }
-    | "**" test
-    {
-        $$ = ctx.ast->CreateDblStarred(@$, $2);
-    }
-    ;
-
 /*
- **python3
+ * python3
  arglist: (argument ',')* (argument [',']
                           |'*' test (',' argument)* [',' '**' test] 
                           |'**' test)
  # The reason that keywords are test nodes instead of NAME is that using NAME
  # results in an ambiguity. ast.c makes sure it's a NAME.
- argument: test [comp_for] | test '=' test  # Really [keyword '='] test
+
+
+ * the result of an arglist is a tuple containing a sequence of arguments
 */
+
+arglist:
+    argument_seq
+    {
+        // arglist: argument_seq:
+        $$ = $1;
+    }
+
+    | argument_seq ","
+    {
+        // arglist: argument_seq ","
+        $$ = $1;
+    }
+
+    // starred has to follow arg seq, but you can have
+    // kw args (**args)  after a starred arg.
+    | "*" test
+    {
+        // arglist:  "*" test
+        // AstNode *args1 = NULL, 
+        // args, starredArg,  dblStarredArgs
+        $$ = ctx.ast->CreateArgList(@$, NULL, $2, NULL); 
+    }
+    | argument_seq "," "*" test
+    {
+        // arglist: argument_seq "," "*" test
+        // args, starredArg,  dblStarredArgs
+        $$ = ctx.ast->CreateArgList(@$, $1, $4, NULL);
+    }
+
+    // double starred has to be the last in the seq
+    | "**" test
+    {
+        // arglist: "**" test
+        // args, starredArg,  dblStarredArgs
+        $$ = ctx.ast->CreateArgList(@$, NULL, NULL, $2);
+    }
+
+    | argument_seq "," "**" test
+    {
+        // arglist: argument_seq "," "**" test
+        // args, starredArg,  dblStarredArgs
+        $$ = ctx.ast->CreateArgList(@$, $1, NULL, $4);
+    }
+    | argument_seq "," "*" test "," "**" test
+    {
+        // arglist: argument_seq "," "*" test "," "**" test
+        // args, starredArg,  dblStarredArgs
+        $$ = ctx.ast->CreateArgList(@$, $1, $4, $7);
+    }
+    ;
+
+    
+
+
+
+// sequence of one or more 'argument', comma separated.
+// argument (argument ',')*  
+argument_seq:
+    argument 
+    {
+        // argument_seq : argument ","
+        // create a length 1 tuple containing the arg.
+        $$ = ctx.ast->CreateTuple(@$, $1);
+    }
+    | argument_seq "," argument
+    {
+        // argument_seq: argument_seq argument
+        // add argument to the seq
+        $$ = ctx.ast->CreateTuple(@$, $1, $3);
+    }
+    ;
+
+
+// *python3
+// argument: test [comp_for] | test '=' test  # Really [keyword '='] test
+argument:
+    test
+    | test comp_for
+    | test "=" test
+    {
+        $$ = ctx.ast->CreateKeywordArg(@$, $1, $3);
+    }
+    ;
 
 
 // *python3
@@ -975,6 +1006,8 @@ atom:
     | NAME       { $$ = $1; /*name*/}
     | NUMBER { $$ = $1; /*num*/} 
     | STRING { $$ = $1; /*str*/}
+    | "True"
+    | "False"
 ;
 
 
@@ -1218,7 +1251,7 @@ parameters:
 //  *python3
 //  typedargslist: (tfpdef ['=' test] (',' tfpdef ['=' test])* [','
 //     ['*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef]]
-//     |  '*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef)
+//     |'*' [tfpdef] (',' tfpdef ['=' test])* [',' '**' tfpdef] | '**' tfpdef)
 //
 //  re-indent and newline to line things up better
 //  typedargslist:

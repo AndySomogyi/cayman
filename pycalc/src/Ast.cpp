@@ -386,6 +386,32 @@ Dict* Ast::CreateDict(const location& loc, AstNode* seq, AstNode* key,
 	return new Dict(this, loc, key, value);
 }
 
+Tuple* Ast::CreateArgList(const location& loc, AstNode* args,
+		AstNode* starredArg, AstNode* dblStarredArg)
+{
+	Tuple *seq = NULL;
+
+
+	if (args) {
+		seq = dynamic_cast<Tuple*>(args);
+		assert(seq);
+	} else {
+		seq = CreateTuple(loc, NULL, NULL);
+	}
+
+	if (starredArg) {
+		AstNode *sa = this->CreateStarred(starredArg->loc, starredArg);
+		seq->items.push_back(sa);
+	}
+
+	if (dblStarredArg) {
+		AstNode *dbls = this->CreateDblStarred(dblStarredArg->loc, dblStarredArg);
+		seq->items.push_back(dbls);
+	}
+
+	return seq;
+}
+
 } /* namespace py */
 
 
