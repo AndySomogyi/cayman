@@ -1005,10 +1005,24 @@ atom:
 
     | NAME       { $$ = $1; /*name*/}
     | NUMBER { $$ = $1; /*num*/} 
-    | STRING { $$ = $1; /*str*/}
+    | STRING
+    {
+        //str
+        $$ = $1;
+    }
     | "True"
+    {
+        $$ = ctx.ast->CreateNameConstant(@$, NameConstant::True);
+    }
     | "False"
-;
+    {
+        $$ = ctx.ast->CreateNameConstant(@$, NameConstant::False);
+    }
+    | "None"
+    {
+        $$ = ctx.ast->CreateNameConstant(@$, NameConstant::None);
+    }
+    ;
 
 
 /*
@@ -1380,6 +1394,7 @@ tfpdef_test:
     }
     | tfpdef "=" test
     {
+        // tfpdef_test : tfpdef "=" test
         Arg *arg = dynamic_cast<Arg*>($1);
         assert(arg);
         arg->def = $3;

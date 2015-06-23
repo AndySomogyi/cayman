@@ -66,6 +66,13 @@ Num* Ast::CreateNum(const location& loc, const char* begin, const char* end)
 	nodes.push_back(n);
 	return n;
 }
+    
+Str* Ast::CreateStr(const location& loc, const char* begin, const char* end)
+{
+    Str *s = new Str(this, loc, begin, end);
+    nodes.push_back(s);
+    return s;
+}
 
 
 Tuple *Ast::CreateTuple(const location &loc, const AstNodes &items, ExprContext ctx)
@@ -412,6 +419,13 @@ Tuple* Ast::CreateArgList(const location& loc, AstNode* args,
 
 	return seq;
 }
+
+NameConstant* Ast::CreateNameConstant(const location& loc,
+		NameConstant::NameConstantType _type)
+{
+	return new NameConstant(this, loc, _type);
+}
+
 
 } /* namespace py */
 

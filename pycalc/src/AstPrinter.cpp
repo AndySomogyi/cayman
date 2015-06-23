@@ -132,8 +132,9 @@ int AstPrinter::Visit(Num* num)
 	return 0;
 }
 
-int AstPrinter::Visit(Str*)
+int AstPrinter::Visit(Str* s)
 {
+	os << "Str(s=\"" << s->s << "\")";
 	return 0;
 }
 
@@ -936,9 +937,23 @@ int AstPrinter::Visit(Bytes*)
     return 0;
 }
 
-int AstPrinter::Visit(NameConstant*)
+int AstPrinter::Visit(NameConstant* c)
 {
-    os << "NameConstant()";
+    os << "NameConstant(value=";
+
+    switch(c->value) {
+    case NameConstant::True:
+    	os << "True";
+    	break;
+    case NameConstant::False:
+    	os << "False";
+    	break;
+    default:
+    	os << "None";
+    	break;
+    }
+    os << ")";
+
     return 0;
 }
 

@@ -54,6 +54,16 @@ Num::Num(class Ast* ast, const location& loc, const char* begin,
 	doubleValue = ::atof(std::string(begin, end).c_str());
 }
 
+    
+
+    
+Str::Str(class Ast* ast, const location& loc, const char* begin,
+         const char* end) :
+    AstNode(ast, loc, ATOMIC), s(begin, end)
+{
+}
+
+    
 static void MakeId(const std::vector<std::string> &ids, std::string &id)
 {
     id.clear();

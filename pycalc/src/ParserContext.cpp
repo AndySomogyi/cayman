@@ -325,6 +325,7 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 		break;
 	case pytoken::STRING:
 		result = tok::STRING;
+        *node = ctx.ast->CreateStr(*loc, a, b);
 		break;
 	case pytoken::NEWLINE:
 		result = tok::NEWLINE;

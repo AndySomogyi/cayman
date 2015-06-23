@@ -205,12 +205,12 @@ public:
 class Str : public AstNode
 {
 public:
-	Str();
-	virtual ~Str();
+	Str(class Ast *ast, const location &loc, const char* begin, const char* end);
+	virtual ~Str() {};
 
 	virtual int Accept(class AstVisitor*);
 
-	std::string str;
+	std::string s;
 };
 
 

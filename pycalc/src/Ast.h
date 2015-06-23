@@ -37,6 +37,8 @@ public:
 	Name *CreateName(location &loc, const char* begin, const char* end);
 
 	Num *CreateNum(const location &loc, const char* begin, const char* end);
+    
+    Str *CreateStr(const location &loc, const char* begin, const char* end);
 
 	Module *CreateModule(const location &loc, const AstNodes &body);
 
@@ -212,6 +214,9 @@ public:
 	 */
 	Tuple *CreateArgList(const location& loc, AstNode *args = NULL,
 			AstNode *starredArg = NULL, AstNode *dblStarredArgs=NULL);
+
+	NameConstant *CreateNameConstant(const location& loc,
+			NameConstant::NameConstantType _type);
 
 	void Free(AstNode* node);
 

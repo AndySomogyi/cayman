@@ -412,11 +412,19 @@ public:
 class NameConstant : public Expr
 {
 public:
-	NameConstant(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	enum NameConstantType
+	{
+		True, False, None
+	};
+
+	NameConstant(class Ast* ast, const location& loc,
+			NameConstantType _type) : Expr(ast, loc), value(_type) {};
 
 	virtual ~NameConstant() {};
 
 	virtual int Accept(class AstVisitor*);
+
+	NameConstantType value;
 };
 
 class Subscript : public Expr
