@@ -817,7 +817,54 @@ trailer:
         // name is not known until atom expr
         $$ = ctx.ast->CreateCall(@$, NULL, $2);
     }
+    | "[" "]"
+    {
+        // trailer: []
+        // name is not known until atom expr
+        $$ = ctx.ast->CreateSubscript(@$);
+
+    }
+    | "[" subscriptlist "]"
+    {
+        // trailer: [ subscriptlist ]
+        // name is not known until atom expr
+        $$ = ctx.ast->CreateSubscript(@$);
+    }
     ;
+
+// python3
+// subscriptlist: subscript (',' subscript)* [',']
+subscriptlist:
+    subscript_seq
+    | subscript_seq ","
+    ;
+
+// subscript (',' subscript)* 
+subscript_seq:
+    subscript 
+    | subscript_seq "," subscript
+    ;
+
+// *python3
+// subscript: test | [test] ':' [test] [sliceop]
+subscript:
+    test
+    | ":" 
+    | ":" sliceop
+    | ":" test 
+    | ":" test sliceop
+    | test ":" 
+    | test ":" sliceop
+    | test ":" test 
+    | test ":" test sliceop
+    ;
+
+// *python3
+sliceop:
+    ":"
+    | ":" test
+    ;
+
 
 // python3
 // classdef: 'class' NAME ['(' [arglist] ')'] ':' suite
@@ -1003,13 +1050,9 @@ atom:
         $$ = $2;
     }
 
-    | NAME       { $$ = $1; /*name*/}
-    | NUMBER { $$ = $1; /*num*/} 
-    | STRING
-    {
-        //str
-        $$ = $1;
-    }
+    | NAME     
+    | NUMBER 
+    | str
     | "True"
     {
         $$ = ctx.ast->CreateNameConstant(@$, NameConstant::True);
@@ -1021,6 +1064,19 @@ atom:
     | "None"
     {
         $$ = ctx.ast->CreateNameConstant(@$, NameConstant::None);
+    }
+    ;
+
+str:
+    STRING
+    | str STRING
+    {
+        Str *s1 = dynamic_cast<Str*>($1);
+        assert(s1);
+        Str *s2 = dynamic_cast<Str*>($2);
+        assert(s2);
+        s1->s += s2->s;
+        $$ = s1;
     }
     ;
 
@@ -1099,6 +1155,7 @@ compound_stmt:
     if_stmt
     | while_stmt
     | for_stmt
+    | with_stmt
     | funcdef
     | classdef
     | decorated
@@ -1177,6 +1234,24 @@ stmt_seq:
     {
         $$ = ctx.ast->CreateTuple(@$, $1, $2);
     }
+    ;
+
+// python3
+// with_stmt: 'with' with_item (',' with_item)*  ':' suite
+with_stmt:
+    "with" with_item_seq ":" suite
+    ;
+
+with_item_seq:
+    with_item
+    | with_item_seq "," with_item
+    ;
+
+// python3
+// with_item: test ['as' expr]
+with_item:
+    test
+    | test "as" expr
     ;
 
 // *python3

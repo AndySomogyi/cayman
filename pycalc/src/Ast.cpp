@@ -372,6 +372,12 @@ AstNode *Ast::CreateDecorated(const location& loc, AstNode *decorators, AstNode 
         return func;
     }
     
+    ClassDef *classDef = dynamic_cast<ClassDef*>(thing);
+    if (classDef) {
+        classDef->AddDecorators(decorators);
+        return classDef;
+    }
+    
     assert(0);
     return 0;
 }
@@ -426,6 +432,11 @@ NameConstant* Ast::CreateNameConstant(const location& loc,
 	return new NameConstant(this, loc, _type);
 }
 
+Subscript* Ast::CreateSubscript(const location& loc, AstNode* name,
+		AstNode* args)
+{
+	return new Subscript(this, loc, args);
+}
 
 } /* namespace py */
 

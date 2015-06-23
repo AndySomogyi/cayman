@@ -415,7 +415,7 @@ namespace py {
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
   // means the default is an error.
-  static const unsigned char yydefact_[];
+  static const unsigned short int yydefact_[];
 
   // YYPGOTO[NTERM-NUM].
   static const short int yypgoto_[];
@@ -548,8 +548,8 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 1020,     ///< Last index in yytable_.
-      yynnts_ = 92,  ///< Number of nonterminal symbols.
+      yylast_ = 1080,     ///< Last index in yytable_.
+      yynnts_ = 100,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,

@@ -48,9 +48,9 @@ AstToken AstTokenInitializer::tokens [] = {
     AstToken("GREATER", ">", tok::GREATER, Gt),
     AstToken("GREATEREQUAL", ">=", tok::GREATEREQUAL, GtEq),
     AstToken("IS", "is", tok::IS, Is),
-	AstToken("IS NOT", "pass", 0),
+	AstToken("IS NOT", "is not", 0, IsNot),
     AstToken("IN", "in", tok::IN, In),
-	AstToken("NOT IN", "def", 0),
+	AstToken("NOT IN", "not in", 0, NotIn),
     AstToken("AND", "and", tok::AND, And),
     AstToken("OR", "or", tok::OR, Or),
 	AstToken("END_OP", "", 0, EndOp),
@@ -168,6 +168,8 @@ AstTokenInitializer::AstTokenInitializer()
 }
 
 #undef tok
+    
+AstTokenInitializer dummy;
 
 AstNode *AstToken::GetAstNode(int tokenValue)
 {
@@ -181,10 +183,16 @@ AstNode *AstToken::GetAstNode(int tokenValue)
 }
 
 
-OperatorType AstToken::GetOperatorType(const AstNode *node)
+OperatorType AstToken::GetOperatorType(AstNode *node)
 {
-    const AstToken *token = dynamic_cast<const AstToken*>(node);
-    return token ? token->operatorType : EndOp;
+    // can't dynamic_cast because these are stack allocated
+    // objects
+    if (node >= &AstTokenInitializer::tokens[0] &&
+        node < &AstTokenInitializer::tokens[numTokens]) {
+        AstToken *token = static_cast<AstToken*>(node);
+        return token->operatorType;
+    }
+    return  EndOp;
 }
 
 AstNode* AstToken::GetAstNodeForOperatorType(OperatorType operatorType)

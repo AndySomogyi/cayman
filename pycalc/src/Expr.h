@@ -427,12 +427,26 @@ public:
 	NameConstantType value;
 };
 
-class Subscript : public Expr
+class Subscript : public Expr, public ExprSeq
 {
 public:
-	Subscript(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	Subscript(class Ast* ast, const location& loc, AstNode *subscript) : Expr(ast, loc) {};
 
 	virtual ~Subscript() {};
+
+	/**
+	 * Sets the immediate base (parent) expression of the current node
+	 */
+	virtual void SetBaseExpr(AstNode *base);
+
+	/**
+	 * As these are chained expressions, this gets the terminal, or
+	 * inner-most expression.
+	 *
+	 * The parser first builds the expression sequence from 1:n, then
+	 * once the 1:n sequence is built, the 0'th term is added.
+	 */
+	virtual ExprSeq *GetTerminalExpr();
 
 	virtual int Accept(class AstVisitor*);
 };

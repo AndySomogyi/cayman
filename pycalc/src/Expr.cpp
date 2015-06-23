@@ -291,6 +291,15 @@ int NameConstant::Accept(class AstVisitor* v)
     return v->Visit(this);
 }
 
+void Subscript::SetBaseExpr(AstNode* base)
+{
+}
+
+ExprSeq* Subscript::GetTerminalExpr()
+{
+	return this;
+}
+
 int Subscript::Accept(class AstVisitor* v)
 {
     return v->Visit(this);

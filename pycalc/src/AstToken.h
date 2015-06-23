@@ -93,7 +93,7 @@ public:
 	 */
 	static AstNode *GetAstNode(int pyTokenValue);
 
-	static OperatorType GetOperatorType(const AstNode *node);
+	static OperatorType GetOperatorType(AstNode *node);
 
 	static AstNode *GetAstNodeForOperatorType(OperatorType);
 

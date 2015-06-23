@@ -98,6 +98,9 @@ public:
 	 */
 	Call *CreateCall(const location& loc, AstNode *name=NULL, AstNode* args = NULL);
 
+
+	Subscript *CreateSubscript(const location& loc, AstNode *name=NULL, AstNode* args = NULL);
+
 	KeywordArg *CreateKeywordArg(const location &loc, AstNode *name, AstNode *value);
 
 
