@@ -494,124 +494,13 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 	// semantic value.
 	if(*node == NULL)
 	{
-		*node = TokenAstNodes::GetAstNode(result);
+		*node = AstToken::GetAstNode(result);
 	}
 
 	return result;
 }
 
 
-/**
- * array of dummy ast nodes to map tokens to ast nodes for the parser.
- */
-static AstNode tokenAstNodes [py::EndOp];
-
-OperatorType TokenAstNodes::GetTokenOperatorType(int tokenValue)
-{
-	switch(tokenValue)
-	{
-    case tok::PLUS:
-        return Add;
-    case tok::MINUS:
-        return Sub;
-    case tok::STAR:
-        return Mult;
-    case tok::SLASH:
-        return Div;
-    case tok::VBAR:
-        return BitOr;
-    case tok::AMPER:
-        return BitAnd;
-    case tok::LESS:
-        return Lt;
-    case tok::GREATER:
-        return Gt;
-    case tok::PERCENT:
-        return Mod;
-    case tok::EQEQUAL:
-        return Eq;
-    case tok::NOTEQUAL:
-        return NotEq;
-    case tok::LESSEQUAL:
-        return LtEq;
-    case tok::GREATEREQUAL:
-        return GtEq;
-    case tok::CIRCUMFLEX:
-        return BitXor;
-    case tok::LEFTSHIFT:
-        return LShift;
-    case tok::RIGHTSHIFT:
-        return RShift;
-    case tok::DOUBLESTAR:
-        return Pow;
-    case tok::PLUSEQUAL:
-        return Add;
-    case tok::MINEQUAL:
-        return Sub;
-    case tok::STAREQUAL:
-        return Mult;
-    case tok::SLASHEQUAL:
-        return Div;
-    case tok::PERCENTEQUAL:
-        return Mod;
-    case tok::AMPEREQUAL:
-        return BitAnd;
-    case tok::VBAREQUAL:
-        return BitOr;
-    case tok::CIRCUMFLEXEQUAL:
-        return BitXor;
-    case tok::LEFTSHIFTEQUAL:
-        return LShift;
-    case tok::RIGHTSHIFTEQUAL:
-        return RShift;
-    case tok::DOUBLESTAREQUAL:
-        return Pow;
-    case tok::DOUBLESLASH:
-        return FloorDiv;
-    case tok::DOUBLESLASHEQUAL:
-        return FloorDiv;
-    case tok::IN:
-    	return In;
-    case tok::IS:
-    	return Is;
-    case tok::AND:
-    	return And;
-    case tok::OR:
-    	return Or;
-    case tok::TILDE:
-        return Invert;
-    case tok::NOT:
-        return Not;
-    default:
-    	return EndOp;
-	}
-}
-
-#undef tok
-
-AstNode *TokenAstNodes::GetAstNode(int tokenValue)
-{
-	unsigned offset = GetTokenOperatorType(tokenValue);
-
-	if (offset < EndOp) {
-		return &tokenAstNodes[offset];
-	}
-
-	return NULL;
-}
-
-
-OperatorType TokenAstNodes::GetOperatorType(const AstNode *node)
-{
-    unsigned offset = node - &tokenAstNodes[0];
-	return (offset < EndOp) ? (OperatorType)(offset) : EndOp;
-}
-
-
-AstNode *TokenAstNodes::GetAstNodeForOperatorType(OperatorType type)
-{
-	return &tokenAstNodes[type];
-}
 
 struct perrdetail {
 	int error;

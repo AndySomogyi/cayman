@@ -9,6 +9,7 @@ set(SRC
   Expr.cpp
   Stmt.cpp
   AstPrinter.cpp
+  AstToken.cpp
   )
   
 set(HEADERS
@@ -29,6 +30,7 @@ set(HEADERS
   Stmt.h
   AstVisitor.h
   AstPrinter.h
+  AstToken.h
   )
 
 

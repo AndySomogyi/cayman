@@ -9,6 +9,7 @@
 #include "Ast.h"
 #include "AstVisitor.h"
 #include "AstPrinter.h"
+#include "AstToken.h"
 #include "py_parser.hh"
 #include "ParserContext.h"
 
@@ -186,7 +187,7 @@ Attribute* Ast::CreateAttribute(const location& loc, ExprContext ctx,
 Compare* Ast::CreateCompare(const location& loc, AstNode* seq, AstNode* opNode,
 		AstNode* expr)
 {
-	OperatorType op = TokenAstNodes::GetOperatorType(opNode);
+	OperatorType op = AstToken::GetOperatorType(opNode);
 	Compare *compSeq = dynamic_cast<Compare*>(seq);
 	if (compSeq && !compSeq->IsAtomic())
 	{
@@ -291,7 +292,7 @@ TmpArguments* Ast::CreateTmpArguments(const location& loc)
 BinOp* Ast::CreateBinOp(const location& _loc, AstNode *op, AstNode* _left,
 		AstNode* _right)
 {
-	return new BinOp(this, _loc, TokenAstNodes::GetOperatorType(op), _left, _right);
+	return new BinOp(this, _loc, AstToken::GetOperatorType(op), _left, _right);
 }
 
 Starred* Ast::CreateStarred(const location& loc, AstNode* _value,
@@ -325,13 +326,13 @@ For* Ast::CreateFor(const location& loc, AstNode* _target, AstNode* _iter,
 UnaryOp* Ast::CreateUnaryOp(const location& loc, AstNode *op,
 		AstNode* operand)
 {
-	return new UnaryOp(this, loc, TokenAstNodes::GetOperatorType(op), operand);
+	return new UnaryOp(this, loc, AstToken::GetOperatorType(op), operand);
 }
 
 AugAssign* Ast::CreateAugAssign(const location& loc, AstNode* target,
 		AstNode *op, AstNode* value)
 {
-	return new AugAssign(this, loc, target, TokenAstNodes::GetOperatorType(op), value);
+	return new AugAssign(this, loc, target, AstToken::GetOperatorType(op), value);
 }
     
 Global *Ast::CreateGlobal(const location &loc, AstNode *names)

@@ -643,11 +643,11 @@ comparison:
 comp_op:
     "not" "in"
     {
-        $$ = TokenAstNodes::GetAstNodeForOperatorType(py::NotIn);
+        $$ = AstToken::GetAstNodeForOperatorType(py::NotIn);
     }
     | "is" "not"
     {
-        $$ = TokenAstNodes::GetAstNodeForOperatorType(py::IsNot);
+        $$ = AstToken::GetAstNodeForOperatorType(py::IsNot);
     }
     | "<"
     | ">"

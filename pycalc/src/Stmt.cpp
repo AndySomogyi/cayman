@@ -11,6 +11,7 @@
 #include "AstVisitor.h"
 #include "Stmt.h"
 #include "ParserContext.h"
+#include "AstToken.h"
 
 namespace py
 {
@@ -335,7 +336,7 @@ void ImportFrom::SetNames(AstNode *n)
 	{
 		// The given name could be a "*" token,
 		// TOOO FIX THIS HACK!!!, maybe make a proper Operator Ast Node?
-		if (TokenAstNodes::GetOperatorType(n) == Mult)
+		if (AstToken::GetOperatorType(n) == Mult)
 		{
 			Alias name("*", "");
 			names.push_back(name);

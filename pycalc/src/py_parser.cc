@@ -2248,7 +2248,7 @@ namespace py {
   case 80:
 
     {
-        (yylhs.value) = TokenAstNodes::GetAstNodeForOperatorType(py::NotIn);
+        (yylhs.value) = AstToken::GetAstNodeForOperatorType(py::NotIn);
     }
 
     break;
@@ -2256,7 +2256,7 @@ namespace py {
   case 81:
 
     {
-        (yylhs.value) = TokenAstNodes::GetAstNodeForOperatorType(py::IsNot);
+        (yylhs.value) = AstToken::GetAstNodeForOperatorType(py::IsNot);
     }
 
     break;
