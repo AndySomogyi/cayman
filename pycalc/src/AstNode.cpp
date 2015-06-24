@@ -63,6 +63,17 @@ Str::Str(class Ast* ast, const location& loc, const char* begin,
 {
 }
 
+void Str::Print(std::ostream& os) const
+{
+	os << "Str(loc=" << loc << ")";
+}
+
+int Str::Accept(class AstVisitor* v)
+{
+	return v->Visit(this);
+}
+
+
     
 static void MakeId(const std::vector<std::string> &ids, std::string &id)
 {
@@ -103,10 +114,7 @@ int Num::Accept(class AstVisitor* v)
 	return v->Visit(this);
 }
 
-int Str::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
+
 
 int Module::Accept(class AstVisitor* v)
 {
@@ -152,5 +160,4 @@ ostream& operator<<(ostream& os, const py::AstNode* node)
 }
 
 }
-
 

@@ -143,35 +143,37 @@ NUMBER
 STRING
 ;
 
-//%token <std::string> NAME "name"
-//%token <int> NUMBER "number"
-//%token <std::string> STRING "string"
-//%type <AstNode*> atom
 
+/**
+ * operator associativity
+ taken care of by the order in which the production rules are defined 
+ in terms of other rules, hence no left or right associativity expressions
+ are required. 
 
-// left associativity
-//%left "(" ")"
-//%left "-" "+"
-//%left "*" "/"  "%" "//"
+ associativity rules are same as C, and are:
+
+ * left associativity
+ %left "(" ")"
+ %left "-" "+"
+ %left "*" "/"  "%" "//"
  //Primary	  left to right	 ()  [ ]  .  -> dynamic_cast typeid
 
-//%left "<<"  ">>"
-//%left "<"  ">"  "<="  ">="
-//%left "=="  "!="
-//%left "&" "^" "|"
-//%left "and" "or"
-//%left ","
+ %left "<<"  ">>"
+ %left "<"  ">"  "<="  ">="
+ %left "=="  "!="
+ %left "&" "^" "|"
+ %left "and" "or"
+ %left ","
 
-
-
-// %right "="  "+="  "-="  "*="   "/="  "<<="  ">>="  "%="   "&="  "^="  "|="
+ %right "="  "+="  "-="  "*="   "/="  "<<="  ">>="  "%="   "&="  "^="  "|="
 
  // ++  --  +  -  !  ~  &  *  (type_name)  sizeof new delete
 
- //   C++ Pointer to Member	left to right	.*->*
- //Conditional	 right to left	 ? :
- //Assignment	 right to left	 =  +=  -=  *=   /=  <<=  >>=  %=   &=  ^=  |=
- //Comma	 left to right	 ,
+ C++ Pointer to Member	left to right	.*->*
+ Conditional	 right to left	 ? :
+ Assignment	 right to left	 =  +=  -=  *=   /=  <<=  >>=  %=   &=  ^=  |=
+ Comma	 left to right	 ,
+ */
 
 %printer { yyoutput << $$; } <>
 
@@ -275,7 +277,6 @@ stmt:
 
 // *python simple_stmt
 // simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
-
 simple_stmt:
     small_stmt_seq  NEWLINE
     {
@@ -358,8 +359,6 @@ yield_stmt: yield_expr;
 
 
 
-
-
 // sequence of small statments, a single small_stmt, followed by
 // an optional sequence of (';' small_stmt)
 // small_stmt (';' small_stmt)*
@@ -373,7 +372,7 @@ small_stmt_seq:
         // // small_stmt_seq: small_stmt_seq ";" small_stmt
         $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3); 
     }
-;
+    ;
 
 
 // *python3
@@ -417,7 +416,7 @@ expr_stmt:
     {
         $$ = $1; // expr_stmt: testlist_star_expr
     }
-;
+    ;
 
 
 // assign_expr_seq: testlist_star_expr '=' (yield_expr|testlist_star_expr))*
@@ -455,21 +454,10 @@ assign_expr_seq:
     ;
 
 
-// ('=' (yield_expr|testlist_star_expr))*
-//assign_rhs_seq:
-//    %empty
-//    | assign_rhs_seq "=" yeild_expr_or_testlist_star_expr
-//    ;
-    
-// yield_expr|testlist_star_expr
-// placeholder for yeild expressions
-//yeild_or_testlist_star_expr:
-//    yield_expr
-//    | testlist_star_expr
-//;
-
 // *python3
 // yield_expr: 'yield' [yield_arg]
+// yield_arg: 'from' test | testlist
+// combind yield and yield_arg into single rule
 yield_expr:
     "yield"
     {
@@ -483,17 +471,7 @@ yield_expr:
     {
         $$ = ctx.ast->CreateYieldFrom(@$, $3);
     }
-
     ;
-
-// *python3
-// yield_arg: 'from' test | testlist
-//yield_arg:
-//    "from" test
-//    | testlist
-//    ;
-
-
 
 // *python3
 // star_expr: '*' expr
@@ -1155,6 +1133,7 @@ compound_stmt:
     if_stmt
     | while_stmt
     | for_stmt
+    | try_stmt
     | with_stmt
     | funcdef
     | classdef
@@ -1207,23 +1186,6 @@ while_stmt:
     ;
 
 
-/*
-
-
-
-for_stmt: 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
-try_stmt: ('try' ':' suite
-           ((except_clause ':' suite)+
-            ['else' ':' suite]
-            ['finally' ':' suite] |
-           'finally' ':' suite))
-with_stmt: 'with' with_item (',' with_item)*  ':' suite
-with_item: test ['as' expr]
-# NB compile.c makes sure that the default except clause is last
-except_clause: 'except' [test ['as' NAME]]
-
-*/
-
 // stmt+
 stmt_seq:
     stmt
@@ -1234,6 +1196,37 @@ stmt_seq:
     {
         $$ = ctx.ast->CreateTuple(@$, $1, $2);
     }
+    ;
+
+
+// python3
+/*
+try_stmt: ('try' ':' suite
+           ((except_clause ':' suite)+
+            ['else' ':' suite]
+            ['finally' ':' suite] |
+           'finally' ':' suite))
+*/
+
+try_stmt:
+    "try" ":" suite except_clause_seq
+    | "try" ":" suite except_clause_seq "else" ":" suite
+    | "try" ":" suite except_clause_seq "else" ":" suite "finally" ":" suite
+    | "try" ":" suite except_clause_seq "finally" ":" suite
+    ;
+
+// (except_clause ':' suite)+
+except_clause_seq:
+    except_clause ":" suite
+    | except_clause_seq except_clause ":" suite
+    ;
+
+// python3
+// except_clause: 'except' [test ['as' NAME]]
+except_clause:
+    "except" 
+    | "except" test 
+    | "except" test "as" NAME
     ;
 
 // python3

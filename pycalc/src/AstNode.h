@@ -210,6 +210,8 @@ public:
 
 	virtual int Accept(class AstVisitor*);
 
+	virtual void Print(std::ostream&) const;
+
 	std::string s;
 };
 

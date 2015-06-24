@@ -82,21 +82,11 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 {
 	char *a, *b;
     pytoken::_tok type;
-	size_t len;
-	char *str;
+
 	int col_offset;
 	int result = tok::ENDMARKER;
     
     *node = NULL;
-    *loc = location();
-    
-    //if (ctx.ts->done == E_EOF) {
-    //    *node = NULL;
-    //
-    //    return 0;
-    //}
-    
-
 
 	type = (pytoken::_tok)PyTokenizer_Get(ctx.ts, &a, &b);
     
@@ -160,9 +150,9 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
     
     
 	if (a >= ctx.ts->line_start)
-		col_offset = a - ctx.ts->line_start;
+		col_offset = (int)(a - ctx.ts->line_start);
 	else
-		col_offset = -1;
+		col_offset = 0;
 
 	// TODO calc end pos of token
 	*loc = location(position(NULL, ctx.ts->lineno, col_offset));
