@@ -155,6 +155,11 @@ tok_new(void)
     tok->read_coding_spec = 0;
     tok->encoding = NULL;
     tok->cont_line = 0;
+
+    tok->loc_startln = 0;
+    tok->loc_endln = 0;
+    tok->loc_startcol = 0;
+    tok->loc_endcol = 0;
 //#ifndef PGEN
 //    tok->decoding_readline = NULL;
 //    tok->decoding_buffer = NULL;
@@ -957,7 +962,7 @@ tok_nextc(register struct tok_state *tok)
                 tok->end = tok->inp + 1;
             }
         }
-        else {
+        else { // tok->prompt == NULL
             int done = 0;
             Py_ssize_t cur = 0;
             char *pt;
@@ -1248,6 +1253,17 @@ indenterror(struct tok_state *tok)
     return 0;
 }
 
+/**
+ * set the tokenizer loc_ fields to the location calculated from the
+ * given pointers.
+ *
+ * Only for single line tokens, strings are special.
+ */
+static void tok_sline_loc(tok_state *tok, char *p_start, char *p_end)
+{
+
+}
+
 /* Get next token, after space stripping etc. */
 
 static int
@@ -1257,6 +1273,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
     int blankline;
 
     *p_start = *p_end = NULL;
+    tok->loc_startln = tok->loc_endln = tok->loc_startcol = tok->loc_endcol = -1;
   nextline:
     tok->start = NULL;
     blankline = 0;
@@ -1436,6 +1453,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         tok_backup(tok, c);
         *p_start = tok->start;
         *p_end = tok->cur;
+        tok_sline_loc(tok, *p_start, *p_end);
         return NAME;
     }
 
@@ -1447,6 +1465,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         *p_start = tok->start;
         *p_end = tok->cur - 1; /* Leave '\n' out of the string */
         tok->cont_line = 0;
+        tok_sline_loc(tok, *p_start, *p_end);
         return NEWLINE;
     }
 
@@ -1460,6 +1479,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
             if (c == '.') {
                 *p_start = tok->start;
                 *p_end = tok->cur;
+                tok_sline_loc(tok, *p_start, *p_end);
                 return ELLIPSIS;
             } else {
                 tok_backup(tok, c);
@@ -1470,6 +1490,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         }
         *p_start = tok->start;
         *p_end = tok->cur;
+        tok_sline_loc(tok, *p_start, *p_end);
         return DOT;
     }
 
@@ -1585,6 +1606,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
                         tok_backup(tok, e);
                         *p_start = tok->start;
                         *p_end = tok->cur;
+                        tok_sline_loc(tok, *p_start, *p_end);
                         return NUMBER;
                     }
                     do {
@@ -1602,6 +1624,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         tok_backup(tok, c);
         *p_start = tok->start;
         *p_end = tok->cur;
+        tok_sline_loc(tok, *p_start, *p_end);
         return NUMBER;
     }
 
@@ -1612,6 +1635,8 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         int quote = c;
         int triple = 0;
         int tripcount = 0;
+        tok->loc_startcol = tok->start - tok->line_start;
+        tok->loc_startln = tok->lineno;
         for (;;) {
             c = tok_nextc(tok);
             if (c == '\n') {
@@ -1659,6 +1684,8 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
         }
         *p_start = tok->start;
         *p_end = tok->cur;
+        tok->loc_endcol = tok->cur - tok->line_start;
+        tok->loc_endln = tok->lineno;
         return STRING;
     }
 
@@ -1697,6 +1724,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
             }
             *p_start = tok->start;
             *p_end = tok->cur;
+            tok_sline_loc(tok, *p_start, *p_end);
             return token;
         }
         tok_backup(tok, c2);
@@ -1719,6 +1747,7 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
     /* Punctuation character */
     *p_start = tok->start;
     *p_end = tok->cur;
+    tok_sline_loc(tok, *p_start, *p_end);
     return PyToken_OneChar(c);
 }
 

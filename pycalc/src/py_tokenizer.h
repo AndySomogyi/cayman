@@ -48,6 +48,11 @@ struct tok_state {
     const char* enc;
     const char* str;
     const char* input; /* Tokenizer's newline translated copy of the string. */
+
+    int loc_startln;     /* current token starting line # */
+    int loc_endln;       /* current token ending line # */
+    int loc_startcol;    /* current token starting col # */
+    int loc_endcol;      /* current token ending line # */
 };
 
 tok_state *PyTokenizer_FromString(const char *, int);
