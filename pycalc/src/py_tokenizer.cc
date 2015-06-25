@@ -1261,7 +1261,10 @@ indenterror(struct tok_state *tok)
  */
 static void tok_sline_loc(tok_state *tok, char *p_start, char *p_end)
 {
-
+    assert(p_start >= tok->line_start);
+    tok->loc_startln = tok->loc_endln = tok->lineno;
+    tok->loc_startcol = p_start - tok->line_start;
+    tok->loc_endcol = p_end - tok->line_start;
 }
 
 /* Get next token, after space stripping etc. */

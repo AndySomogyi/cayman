@@ -148,20 +148,13 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
         ctx.pending = 0;
     }
     
-    
-	if (a >= ctx.ts->line_start)
-		col_offset = (int)(a - ctx.ts->line_start);
-	else
-		col_offset = 0;
 
 	// TODO calc end pos of token
-	*loc = location(position(NULL, ctx.ts->lineno, col_offset));
+	*loc = location(position(NULL, ctx.ts->loc_startln, ctx.ts->loc_startcol),
+                    position(NULL, ctx.ts->loc_endln, ctx.ts->loc_endcol));
 
-	// print token
-	
 
 	*node = NULL;
-
 
     // TODO, make sure its OK to strncmp to length len+1!!!
 
