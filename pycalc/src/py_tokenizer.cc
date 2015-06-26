@@ -882,7 +882,7 @@ error_clear:
 /* Get next char, updating state; error code goes into tok->done */
 
 static int
-tok_nextc(register struct tok_state *tok)
+tok_nextc(struct tok_state *tok)
 {
     for (;;) {
         if (tok->cur != tok->inp) {
@@ -1053,7 +1053,7 @@ tok_nextc(register struct tok_state *tok)
 /* Back-up one character */
 
 static void
-tok_backup(register struct tok_state *tok, register int c)
+tok_backup(struct tok_state *tok, int c)
 {
     if (c != EOF) {
         if (--tok->cur < tok->buf)
@@ -1270,9 +1270,9 @@ static void tok_sline_loc(tok_state *tok, char *p_start, char *p_end)
 /* Get next token, after space stripping etc. */
 
 static int
-tok_get(register struct tok_state *tok, char **p_start, char **p_end)
+tok_get(struct tok_state *tok, char **p_start, char **p_end)
 {
-    register int c;
+    int c;
     int blankline;
 
     *p_start = *p_end = NULL;
@@ -1283,8 +1283,8 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
 
     /* Get indentation level */
     if (tok->atbol) {
-        register int col = 0;
-        register int altcol = 0;
+        int col = 0;
+        int altcol = 0;
         tok->atbol = 0;
         for (;;) {
             c = tok_nextc(tok);
@@ -1363,10 +1363,12 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
     if (tok->pendin != 0) {
         if (tok->pendin < 0) {
             tok->pendin++;
+            tok_sline_loc(tok, tok->start, tok->cur);
             return DEDENT;
         }
         else {
             tok->pendin--;
+            tok_sline_loc(tok, tok->start, tok->cur);
             return INDENT;
         }
     }
@@ -1381,42 +1383,10 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
     /* Set start of current token */
     tok->start = tok->cur - 1;
 
-    /* Skip comment, while looking for tab-setting magic */
-    if (c == '#') {
-        static const char *tabforms[] = {
-            "tab-width:",                       /* Emacs */
-            ":tabstop=",                        /* vim, full form */
-            ":ts=",                             /* vim, abbreviated form */
-            "set tabsize=",                     /* will vi never die? */
-        /* more templates can be added here to support other editors */
-        };
-        char cbuf[80];
-        char *tp;
-        const char **cp;
-        tp = cbuf;
-        do {
-            *tp++ = c = tok_nextc(tok);
-        } while (c != EOF && c != '\n' &&
-                 (size_t)(tp - cbuf + 1) < sizeof(cbuf));
-        *tp = '\0';
-        for (cp = tabforms;
-             cp < tabforms + sizeof(tabforms)/sizeof(tabforms[0]);
-             cp++) {
-            if ((tp = strstr(cbuf, *cp))) {
-                int newsize = atoi(tp + strlen(*cp));
-
-                if (newsize >= 1 && newsize <= 40) {
-                    tok->tabsize = newsize;
-                    if (true)
-                        fprintf(stderr,
-                        "Tab size set to %d\n",
-                        newsize);
-                }
-            }
-        }
+    /* Skip comment */
+    if (c == '#') 
         while (c != EOF && c != '\n')
             c = tok_nextc(tok);
-    }
 
     /* Check for EOF and errors now */
     if (c == EOF) {
@@ -1504,10 +1474,8 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
             c = tok_nextc(tok);
             if (c == '.')
                 goto fraction;
-#ifndef WITHOUT_COMPLEX
             if (c == 'j' || c == 'J')
                 goto imaginary;
-#endif
             if (c == 'x' || c == 'X') {
 
                 /* Hex */
@@ -1562,10 +1530,8 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
                     goto fraction;
                 else if (c == 'e' || c == 'E')
                     goto exponent;
-#ifndef WITHOUT_COMPLEX
                 else if (c == 'j' || c == 'J')
                     goto imaginary;
-#endif
                 else if (found_decimal) {
                     tok->done = E_TOKEN;
                     tok_backup(tok, c);
