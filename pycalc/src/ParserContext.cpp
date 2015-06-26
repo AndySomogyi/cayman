@@ -10,6 +10,8 @@
 #include "py_errcode.h"
 #include "py_token.h"
 #include <cstring>
+#include "cxx11/unordered_map.h"
+
 
 namespace py
 {
@@ -51,6 +53,72 @@ void ParserContext::Error(const py_parser::location_type& l, const std::string& 
 
 #define tok py_parser::token
 
+/**
+ * class to map names to token values
+ * this really should be in the tokenizer, but as we're using 
+ * the cpython tokenizer which doesn't support this capability, 
+ * have to hack it on here. 
+ */
+class NamedTokens
+{
+public:
+
+	typedef cxx11_ns::unordered_map<std::string, py_parser::token_type> Map;
+
+	NamedTokens()
+	{
+		map["def"] = tok::DEF;
+		map["pass"] = tok::PASS;
+		map["if"] = tok::IF;
+		map["else"] = tok::ELSE;
+		map["elif"] = tok::ELIF;
+		map["or"] = tok::OR;
+		map["not"] = tok::NOT;
+		map["and"] = tok::AND;
+		map["in"] = tok::IN;
+		map["is"] = tok::IS;
+		map["for"] = tok::FOR;
+		map["del"] = tok::DEL;
+		map["await"] = tok::AWAIT;
+		map["async"] = tok::ASYNC;
+		map["from"] = tok::FROM;
+		map["import"] = tok::IMPORT;
+		map["yield"] = tok::YIELD;
+		map["break"] = tok::BREAK;
+		map["continue"] = tok::CONTINUE;
+		map["raise"] = tok::RAISE;
+		map["return"] = tok::RETURN;
+		map["as"] = tok::AS;
+		map["global"] = tok::GLOBAL;
+		map["nonlocal"] = tok::NONLOCAL;
+		map["assert"] = tok::ASSERT;
+		map["while"] = tok::WHILE;
+		map["False"] = tok::FALSE;
+		map["None"] = tok::NONE;
+		map["True"] = tok::TRUE;
+		map["class"] = tok::CLASS;
+		map["except"] = tok::EXCEPT;
+		map["finally"] = tok::FINALLY;
+		map["lambda"] = tok::LAMBDA;
+		map["try"] = tok::TRY;
+		map["with"] = tok::WITH;
+	}
+
+	Map map;
+
+	py_parser::token_type Find(const std::string& name) const
+	{
+		Map::const_iterator i = map.find(name);
+		if (i != map.end()) {
+			return i->second;
+		}
+
+		return tok::ENDMARKER;
+	}
+};
+
+static NamedTokens namedTokens;
+
 std::string dump_done(int done)
 {
     switch (done)
@@ -83,7 +151,6 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 	char *a, *b;
     pytoken::_tok type;
 
-	int col_offset;
 	int result = tok::ENDMARKER;
     
     *node = NULL;
@@ -166,135 +233,8 @@ int yylex(py_parser::semantic_type* node, py_parser::location_type* loc,
 	case pytoken::NAME:
         {
             std::string str(a, b);
-            if (str == "def")
-            {
-                result = tok::DEF;
-            }
-            else if (str == "in")
-            {
-                result = tok::IN;
-            }
-            else if (str == "for")
-            {
-                result = tok::FOR;
-            }
-            else if(str == "if")
-            {
-                result = tok::IF;
-            }
-            else if(str == "else")
-            {
-                result = tok::ELSE;
-            }
-            else if(str == "elif")
-            {
-                result = tok::ELIF;
-            }
-            else if (str == "and")
-            {
-                result = tok::AND;
-            }
-            else if (str == "or")
-            {
-                result = tok::OR;
-            }
-            else if (str == "not")
-            {
-                result = tok::NOT;
-            }
-            else if (str == "del")
-            {
-                result = tok::DEL;
-            }
-            else if (str == "break")
-            {
-                result = tok::BREAK;
-            }
-            else if (str == "return")
-            {
-                result = tok::RETURN;
-            }
-            else if (str == "continue")
-            {
-                result = tok::CONTINUE;
-            }
-            else if (str == "yield")
-            {
-                result = tok::YIELD;
-            }
-            else if (str == "pass")
-            {
-                result = tok::PASS;
-            }
-            else if (str == "raise")
-            {
-                result = tok::RAISE;
-            }
-            else if (str == "from")
-            {
-                result = tok::FROM;
-            }
-            else if (str == "import")
-            {
-                result = tok::IMPORT;
-            }
-            else if (str == "as")
-            {
-                result = tok::AS;
-            }
-            else if (str == "global")
-            {
-                result = tok::GLOBAL;
-            }
-            else if (str == "nonlocal")
-            {
-                result = tok::NONLOCAL;
-            }
-            else if (str == "assert")
-            {
-                result = tok::ASSERT;
-            }
-            else if (str == "while")
-            {
-                result = tok::WHILE;
-            }
-            else if (str == "False")
-            {
-                result = tok::FALSE;
-            }
-            else if (str == "None")
-            {
-                result = tok::NONE;
-            }
-            else if (str == "True")
-            {
-                result = tok::TRUE;
-            }
-            else if (str == "class")
-            {
-                result = tok::CLASS;
-            }
-            else if (str == "except")
-            {
-                result = tok::EXCEPT;
-            }
-            else if (str == "finally")
-            {
-                result = tok::FINALLY;
-            }
-            else if (str == "lambda")
-            {
-                result = tok::LAMBDA;
-            }
-            else if (str == "try")
-            {
-                result = tok::TRY;
-            }
-            else if (str == "with")
-            {
-                result = tok::WITH;
-            }
-            else
+
+            if ((result = namedTokens.Find(str)) == tok::ENDMARKER)
             {
                 result = tok::NAME;
                 *node = ctx.ast->CreateName(*loc, a, b);

@@ -215,32 +215,33 @@ namespace py {
         RARROW = 318,
         ELLIPSIS = 319,
         AT = 320,
-        AWAIT = 321,
-        ASYNC = 322,
-        FROM = 323,
-        IMPORT = 324,
-        YIELD = 325,
-        BREAK = 326,
-        CONTINUE = 327,
-        RAISE = 328,
-        RETURN = 329,
-        AS = 330,
-        GLOBAL = 331,
-        NONLOCAL = 332,
-        ASSERT = 333,
-        WHILE = 334,
-        FALSE = 335,
-        NONE = 336,
-        TRUE = 337,
-        CLASS = 338,
-        EXCEPT = 339,
-        FINALLY = 340,
-        LAMBDA = 341,
-        TRY = 342,
-        WITH = 343,
-        NAME = 344,
-        NUMBER = 345,
-        STRING = 346
+        ATEQUAL = 321,
+        AWAIT = 322,
+        ASYNC = 323,
+        FROM = 324,
+        IMPORT = 325,
+        YIELD = 326,
+        BREAK = 327,
+        CONTINUE = 328,
+        RAISE = 329,
+        RETURN = 330,
+        AS = 331,
+        GLOBAL = 332,
+        NONLOCAL = 333,
+        ASSERT = 334,
+        WHILE = 335,
+        FALSE = 336,
+        NONE = 337,
+        TRUE = 338,
+        CLASS = 339,
+        EXCEPT = 340,
+        FINALLY = 341,
+        LAMBDA = 342,
+        TRY = 343,
+        WITH = 344,
+        NAME = 345,
+        NUMBER = 346,
+        STRING = 347
       };
     };
 
@@ -548,12 +549,12 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 1075,     ///< Last index in yytable_.
-      yynnts_ = 103,  ///< Number of nonterminal symbols.
+      yylast_ = 1171,     ///< Last index in yytable_.
+      yynnts_ = 105,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 93  ///< Number of tokens.
+      yyntokens_ = 94  ///< Number of tokens.
     };
 
 

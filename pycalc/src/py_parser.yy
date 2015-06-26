@@ -115,6 +115,7 @@ RARROW "->"
 ELLIPSIS "..."
 
 AT "@"
+ATEQUAL "@="
 AWAIT "await"
 ASYNC "async"
 FROM "from"
@@ -530,10 +531,11 @@ test_star_expr_seq:
     ;
 
 // *python3
-// augassign: ('+=' | '-=' | '*=' | '/=' | '%=' | '&=' | '|=' | '^=' |
+// augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' |
 //            '<<=' | '>>=' | '**=' | '//=')
+
 augassign:
-    "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "^=" |
+    "+=" | "-=" | "*=" | "@=" | "/=" | "%=" | "&=" | "|=" | "^=" |
     "<<=" | ">>=" | "**=" | "//="
     ;
 
@@ -568,6 +570,12 @@ test:
     or_test
     | or_test IF or_test "else" test
 ;
+
+// *python3
+// test_nocond: or_test | lambdef_nocond
+test_nocond:
+    or_test
+    ;
 
 // *python3 or_test:
 // or_test: and_test ('or' and_test)*
@@ -698,7 +706,7 @@ arith_op:
     ;
 
 // *python3 term
-// term: factor (('*'|'/'|'%'|'//') factor)*
+// term: factor (('*'|'@'|'/'|'%'|'//') factor)*
 term:
     factor
     | term term_op factor
@@ -708,7 +716,7 @@ term:
     ;
 
 term_op:
-    "*" | "/" | "%" | "//"
+    "*" | "@" | "/" | "%" | "//"
     ;
 
 
@@ -964,6 +972,7 @@ argument:
 //comp_iter: comp_for | comp_if
 comp_iter:
     comp_for
+    | comp_if
     ;
 
 // *python3
@@ -974,18 +983,13 @@ comp_for:
     ;
 
 
+// *python3
+// comp_if: 'if' test_nocond [comp_iter]
 
-//comp_if: 'if' test_nocond [comp_iter]
-
-
-
-
-// comp_iter: comp_for | comp_if
-
-// comp_for: 'for' exprlist 'in' or_test [comp_iter]
-
-// comp_if: 'if' old_test [comp_iter]
-
+comp_if:
+    "if" test_nocond
+    | "if" test_nocond comp_iter
+    ;
 
 
 
@@ -1010,6 +1014,10 @@ atom:
         AstNode *testlistComp = $2;
         testlistComp->SetAtomic(true);
         $$ = testlistComp;
+    }
+    | "[" "]"
+    {
+        $$ = ctx.ast->CreateList(@$);
     }
     |"[" testlist_comp "]"
     {
@@ -1204,8 +1212,16 @@ stmt_seq:
 try_stmt: ('try' ':' suite
            ((except_clause ':' suite)+
             ['else' ':' suite]
+       .
+     ['finally' ':' suite] |
+           'finally' ':' suite))
+
+try_stmt: ('try' ':' suite
+           ((except_clause ':' suite)+
+            ['else' ':' suite]
             ['finally' ':' suite] |
            'finally' ':' suite))
+
 */
 
 try_stmt:
@@ -1213,6 +1229,7 @@ try_stmt:
     | "try" ":" suite except_clause_seq "else" ":" suite
     | "try" ":" suite except_clause_seq "else" ":" suite "finally" ":" suite
     | "try" ":" suite except_clause_seq "finally" ":" suite
+    | "try" ":" suite "finally" ":" suite
     ;
 
 // (except_clause ':' suite)+

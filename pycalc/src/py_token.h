@@ -65,14 +65,15 @@ enum _tok
 	DOUBLESLASH = 48,
 	DOUBLESLASHEQUAL = 49,
 	AT = 50,
-    LARROW = 51,
-    RARROW = 52,
-	ELLIPSIS = 53,
+	ATEQUAL = 51,
+    LARROW = 52,
+    RARROW = 53,
+	ELLIPSIS = 54,
 	/* Don't forget to update the table _PyParser_TokenNames in tokenizer.c! */
-	OP = 54,
+	OP = 55,
 
-    ERRORTOKEN = 55,
-	N_TOKENS = 56
+    ERRORTOKEN = 56,
+	N_TOKENS = 57
 };
 
 }

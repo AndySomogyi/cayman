@@ -454,9 +454,17 @@ public:
 class List : public Expr
 {
 public:
-	List(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	List(class Ast* ast, const location &loc, const AstNodes &items, ExprContext ctx) :
+		Expr(ast, loc), items(items), ctx(ctx) {};
+
+	List(class Ast* _ast, const location &_loc, ExprContext ctx) :
+		Expr(ast, loc), ctx(ctx) {};
 
 	virtual ~List() {};
+
+	AstNodes items;
+
+	ExprContext ctx;
 
 	virtual int Accept(class AstVisitor*);
 };

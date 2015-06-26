@@ -221,6 +221,13 @@ public:
 	NameConstant *CreateNameConstant(const location& loc,
 			NameConstant::NameConstantType _type);
 
+
+	List *CreateList(const location &loc, const AstNodes &items, ExprContext ctx);
+
+	List *CreateList(const location &_loc, ExprContext ctx = UnknownCtx);
+
+	List *CreateList(const location& loc, ExprContext ctx, AstNode *seq, AstNode *item=NULL);
+
 	void Free(AstNode* node);
 
 

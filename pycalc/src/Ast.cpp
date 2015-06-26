@@ -117,6 +117,49 @@ Tuple *Ast::CreateTuple(const location& loc, ExprContext ctx, AstNode *seq, AstN
     return tuple;
 }
 
+
+List *Ast::CreateList(const location &loc, const AstNodes &items, ExprContext ctx)
+{
+	List *n = new List(this, loc, items, ctx);
+	nodes.push_back(n);
+	return n;
+
+}
+
+List *Ast::CreateList(const location &_loc, ExprContext ctx)
+{
+	List *n = new List(this, loc, ctx);
+	nodes.push_back(n);
+	return n;
+
+}
+
+List *Ast::CreateList(const location& loc, ExprContext ctx, AstNode *seq, AstNode *item)
+{
+	List *tuple = NULL;
+	if (seq)
+	{
+		tuple = dynamic_cast<List*>(seq);
+
+        if(!tuple)
+        {
+            tuple = CreateList(loc, ctx);
+            tuple->items.push_back(seq);
+        }
+	}
+	else
+	{
+		tuple = CreateList(loc, ctx);
+	}
+
+    if(item)
+    {
+        tuple->items.push_back(item);
+    }
+
+    return tuple;
+}
+
 Arg* Ast::CreateArg(const location& loc, AstNode* nm, AstNode* def,
 		AstNode* type)
 {

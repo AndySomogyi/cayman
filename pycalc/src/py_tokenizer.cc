@@ -86,6 +86,7 @@ const char *_PyParser_TokenNames[] = {
     "DOUBLESLASH",
     "DOUBLESLASHEQUAL",
     "AT",
+	"ATEQUAL",
     "LARROW",
     "RARROW",
     "ELLIPSIS",
@@ -96,13 +97,7 @@ const char *_PyParser_TokenNames[] = {
 };
 
 
-/*
-OP = 51,
-LARROW = 52,
-RARROW = 53,
-ERRORTOKEN = 54,
-N_TOKENS = 55
-*/
+
 
 static char *
 PyOS_Readline(FILE *sys_stdin, FILE *sys_stdout, char *prompt)
@@ -1175,6 +1170,11 @@ PyToken_TwoChars(int c1, int c2)
         case '=':               return CIRCUMFLEXEQUAL;
         }
         break;
+    case '@':
+    	switch (c2) {
+    	case '=':               return ATEQUAL;
+    	}
+    	break;
     }
     return OP;
 }
@@ -1708,15 +1708,6 @@ tok_get(register struct tok_state *tok, char **p_start, char **p_end)
     {
         int c2 = tok_nextc(tok);
         int token = PyToken_TwoChars(c, c2);
-#ifndef PGEN
-        if (token == NOTEQUAL && c == '<') {
-            fprintf(stderr, "Error, %s, line %d: <> not supported in 3.x; use !=",
-                                   tok->filename, tok->lineno);
-
-
-            return ERRORTOKEN;
-        }
-#endif
         if (token != OP) {
             int c3 = tok_nextc(tok);
             int token3 = PyToken_ThreeChars(c, c2, c3);
