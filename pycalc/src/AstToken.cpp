@@ -8,7 +8,7 @@
 #include "AstToken.h"
 #include "py_parser.hh"
 
-#include "cxx11/unordered_map.h"
+#include <unordered_map>
 
 namespace py {
 
@@ -20,7 +20,8 @@ public:
 	AstTokenInitializer();
 };
 
-typedef cxx11_ns::unordered_map<int, AstToken*> IntTokenMap;
+
+typedef std::unordered_map<int, AstToken*> IntTokenMap;
 
 static IntTokenMap tokenIdPtrMap;
 

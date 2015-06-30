@@ -10,6 +10,7 @@ set(SRC
   Stmt.cpp
   AstPrinter.cpp
   AstToken.cpp
+  llvm_test1.cpp
   )
   
 set(HEADERS
@@ -31,6 +32,7 @@ set(HEADERS
   AstVisitor.h
   AstPrinter.h
   AstToken.h
+  llvm_test1.h
   )
 
 
@@ -39,3 +41,6 @@ add_library(pycalc ${SRC} ${HEADERS})
 # Make sure the compiler can find include files for our Hello library
 # when other libraries or executables link to Hello
 target_include_directories (pycalc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Link against LLVM libraries
+target_link_libraries(pycalc ${LLVM_LIBS})

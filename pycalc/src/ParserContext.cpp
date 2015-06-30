@@ -10,7 +10,7 @@
 #include "py_errcode.h"
 #include "py_token.h"
 #include <cstring>
-#include "cxx11/unordered_map.h"
+#include <unordered_map>
 
 
 namespace py
@@ -63,7 +63,7 @@ class NamedTokens
 {
 public:
 
-	typedef cxx11_ns::unordered_map<std::string, py_parser::token_type> Map;
+	typedef std::unordered_map<std::string, py_parser::token_type> Map;
 
 	NamedTokens()
 	{

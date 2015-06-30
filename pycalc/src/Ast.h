@@ -11,7 +11,7 @@
 #include "AstNode.h"
 #include "Expr.h"
 #include "Stmt.h"
-#include "cxx11/memory.h"
+#include <memory>
 
 namespace py
 {
@@ -260,7 +260,7 @@ private:
 
 };
 
-typedef cxx11_ns::shared_ptr<Ast> AstPtr;
+typedef std::shared_ptr<Ast> AstPtr;
 
 
 

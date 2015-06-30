@@ -2,12 +2,18 @@
 #include "Parser.h"
 #include <iostream>
 #include <string>
+#include "llvm_test1.h"
 
 using namespace py;
 using namespace std;
 
 int main(int argc, const char** argv)
 {
+    if (argc == 2 && string("k") == argv[1])
+    {
+        return llvm_test1_main(argc, argv);
+    }
+    
 	if (argc == 3)
 	{
         if (string("t") == argv[1])
@@ -42,11 +48,13 @@ int main(int argc, const char** argv)
             return 0;
             
         }
+        
+
     }
     
     
-    std::cout << "usage: pytest t | p filename" << std::endl;
-    std::cout << "t for tokenizing, p for parsing" << std::endl;
+    std::cout << "usage: pytest t | p filename | k" << std::endl;
+    std::cout << "t for tokenizing, p for parsing, k for LLVM Kaleidoscope test" << std::endl;
     return -1;
 
 }
