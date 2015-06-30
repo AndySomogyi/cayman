@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 2.5)
 unset(LLVMCONFIG_PATH CACHE)
 
 # the LLVMConfig.cmake from brew
-file(GLOB_RECURSE _LLVMCONFIG_FILES  FOLLOW_SYMLINKS TRUE "/usr/local/opt/*/LLVMConfig.cmake")
+file(GLOB_RECURSE _LLVMCONFIG_FILES  FOLLOW_SYMLINKS TRUE "/usr/local/opt/llvm/*/LLVMConfig.cmake")
 
 # TODO check for list length
 list(LENGTH _LLVMCONFIG_FILES _LLVMCONFIG_FILES_LEN)
@@ -69,17 +69,40 @@ message("LLVM_LIBS: ${LLVM_LIBS}")
 ##
 # need to enable C++ 11 mode for LLVM, MSVC >= 2012 is C++ 11 by default
 #
-#set_property(TARGET BisonTesting PROPERTY CXX_STANDARD 11)
+# 
 
-if(APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+message("compiler id: ${CMAKE_CXX_COMPILER_ID}")
+message("CMAKE_COMPILER_IS_GNUCXX: ${CMAKE_COMPILER_IS_GNUCXX}")
 
-    if(CMAKE_GENERATOR STREQUAL Xcode)
-        set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
-        set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
-        set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-    endif()
+# Compiler-specific C++11 activation.
+if (CMAKE_COMPILER_IS_GNUCXX)
+  message("Found gcc compiler, version : ${GXX_VERSION}")
+  if (NOT (GXX_VERSION VERSION_GREATER 4.7 OR GXX_VERSION VERSION_EQUAL 4.7))
+    message(FATAL_ERROR "${PROJECT_NAME} requires g++ 4.7 or greater.")
+  endif ()
+
+  # set gcc compiler flags
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+
+  # not sure how to get clang version from cmake
+  execute_process(COMMAND ${CMAKE_C_COMPILER} --version OUTPUT_VARIABLE CLANG_VERSION)
+  message("Found clang compiler, version: ${CLANG_VERSION}")
+  
+  # set clang compiler flags
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+else ()
+  message(FATAL_ERROR "Your C++ compiler does not support C++11.")
+endif ()
+
+
+if(CMAKE_GENERATOR STREQUAL Xcode)
+  message("Xcode build")
+  set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
+  set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+  set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
 endif()
+
 
 #set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_STANDARD_REQUIRED on)
