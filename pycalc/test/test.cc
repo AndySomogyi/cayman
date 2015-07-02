@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include "llvm_test1.h"
+#include "llvm_orc_eager.h"
 
 using namespace py;
 using namespace std;
@@ -11,7 +12,7 @@ int main(int argc, const char** argv)
 {
     if (argc == 2 && string("k") == argv[1])
     {
-        return llvm_test1_main(argc, argv);
+        return llvm_orc_eager(argc, argv);
     }
     
 	if (argc == 3)
