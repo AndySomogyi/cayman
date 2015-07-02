@@ -16,8 +16,10 @@ set(SRC
   llvm_orc_initial.cpp
   llvm_orc_fully_lazy.cpp
   )
-  
+
+
 set(HEADERS
+  ${CAYMAN_PUBLIC_HEADERS}
   Ast.h
   AstNode.h
   AstNodeFactory.h
@@ -41,6 +43,12 @@ set(HEADERS
 
 
 add_library(pycalc ${SRC} ${HEADERS})
+
+source_group("Public Header Files" FILES ${CAYMAN_PUBLIC_HEADERS})
+
+message("CAYMAN_PUBLIC_HEADERS: ${CAYMAN_PUBLIC_HEADERS}")
+
+
 
 # Make sure the compiler can find include files for our Hello library
 # when other libraries or executables link to Hello
