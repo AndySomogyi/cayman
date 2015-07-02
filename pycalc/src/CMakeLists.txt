@@ -11,7 +11,10 @@ set(SRC
   AstPrinter.cpp
   AstToken.cpp
   llvm_test1.cpp
-  llvm_orc_eager.cpp
+  llvm_orc_lazy_irgen.cpp
+  llvm_orc_lazy_codegen.cpp
+  llvm_orc_initial.cpp
+  llvm_orc_fully_lazy.cpp
   )
   
 set(HEADERS
@@ -34,7 +37,6 @@ set(HEADERS
   AstPrinter.h
   AstToken.h
   llvm_test1.h
-  llvm_orc_eager.h
   )
 
 
