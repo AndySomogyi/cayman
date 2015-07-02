@@ -76,6 +76,7 @@ message("CMAKE_COMPILER_IS_GNUCXX: ${CMAKE_COMPILER_IS_GNUCXX}")
 
 # Compiler-specific C++11 activation.
 if (CMAKE_COMPILER_IS_GNUCXX)
+  execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GXX_VERSION)
   message("Found gcc compiler, version : ${GXX_VERSION}")
   if (NOT (GXX_VERSION VERSION_GREATER 4.7 OR GXX_VERSION VERSION_EQUAL 4.7))
     message(FATAL_ERROR "${PROJECT_NAME} requires g++ 4.7 or greater.")
