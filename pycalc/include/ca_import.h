@@ -10,9 +10,8 @@
 extern "C" {
 #endif
 
-CaAPI_FUNC(void) _CaImportZip_Init(void);
 
-CaMODINIT_FUNC CaInit_imp(void);
+
 CaAPI_FUNC(long) CaImport_GetMagicNumber(void);
 CaAPI_FUNC(const char *) CaImport_GetMagicTag(void);
 CaAPI_FUNC(CaObject *) CaImport_ExecCodeModule(

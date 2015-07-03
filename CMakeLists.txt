@@ -88,6 +88,15 @@ else()
   message(SEND_ERROR "Need to specify a LLVM_DIR location")
 endif()
 
+# need a python library
+find_package(PythonLibs 2.6 REQUIRED)
+
+
+message("PYTHONLIBS_FOUND: ${PYTHONLIBS_FOUND}")      
+message("PYTHON_LIBRARIES: ${PYTHON_LIBRARIES}")      
+message("PYTHON_INCLUDE_DIRS: ${PYTHON_INCLUDE_DIRS}")
+
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 ##
 # need to enable C++ 11 mode for LLVM, MSVC >= 2012 is C++ 11 by default

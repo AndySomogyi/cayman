@@ -1,5 +1,6 @@
 set(SRC
     test.cc
+    ca_run.cc
     )
 
 add_executable(pycalc_test ${SRC})

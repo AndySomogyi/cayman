@@ -8,6 +8,9 @@
 #ifndef _INCLUDE_CA_IMPORT_H_
 #define _INCLUDE_CA_IMPORT_H_
 
+#include <stdint.h>
+#include <stddef.h>
+
 typedef size_t         Ca_ssize_t;
 
 

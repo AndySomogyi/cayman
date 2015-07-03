@@ -86,21 +86,10 @@ whose size is determined when the object is allocated.
 #define CaObject_VAR_HEAD      CaVarObject ob_base;
 #define Ca_INVALID_SIZE (Ca_ssize_t)-1
 
-/* Nothing is actually declared to be a CaObject, but every pointer to
- * a Cayman object can be cast to a CaObject*.  This is inheritance built
- * by hand.  Similarly every pointer to a variable-size Cayman object can,
- * in addition, be cast to CaVarObject*.
- */
-typedef struct _object {
-    _CaObject_HEAD_EXTRA
-    Ca_ssize_t ob_refcnt;
-    struct _typeobject *ob_type;
-} CaObject;
 
-typedef struct {
-    CaObject ob_base;
-    Ca_ssize_t ob_size; /* Number of items in variable part */
-} CaVarObject;
+struct CaObject;
+
+
 
 
 typedef struct _typeobject CaTypeObject; /* opaque */
@@ -113,15 +102,9 @@ CaAPI_FUNC(void) Ca_Dealloc(CaObject *);
 #define Ca_SIZE(ob)             (((CaVarObject*)(ob))->ob_size)
 
 
-#define Ca_INCREF(op) (                                 \
-    ((CaObject *)(op))->ob_refcnt++)
+#define Ca_INCREF(op)
 
-#define Ca_DECREF(op)                                   \
-    do {                                                \
-        CaObject *_py_decref_tmp = (CaObject *)(op);    \
-        if (--(_py_decref_tmp)->ob_refcnt <= 0)         \
-            Ca_Dealloc(_py_decref_tmp);                \
-    } while (0)
+#define Ca_DECREF(op)
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear
  * and tp_dealloc implementations.
@@ -213,6 +196,10 @@ CaAPI_FUNC(int) CaObject_GenericSetAttr(CaObject *,
 CaAPI_FUNC(int) CaObject_GenericSetDict(CaObject *, CaObject *, void *);
 CaAPI_FUNC(int) CaObject_IsTrue(CaObject *);
 CaAPI_FUNC(int) CaObject_Not(CaObject *);
+
+/**
+ * Check if an object can be called.
+ */
 CaAPI_FUNC(int) CaCallable_Check(CaObject *);
 
 

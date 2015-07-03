@@ -7,13 +7,7 @@
 extern "C" {
 #endif
 
-#ifdef PY_SSIZE_T_CLEAN
-#define CaObject_CallFunction _CaObject_CallFunction_SizeT
-#define CaObject_CallMethod _CaObject_CallMethod_SizeT
-#define _CaObject_CallMethodId _CaObject_CallMethodId_SizeT
-#endif
-
-/* Abstract Object Interface (many thanks to Jim Fulton) */
+/* Abstract Object Interface, copied from python, (many thanks to Jim Fulton) */
 
 /*
    PROPOSAL: A Generic Cayman Object Interface for Cayman C Modules
@@ -269,11 +263,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
      CaAPI_FUNC(CaObject *) CaObject_Call(CaObject *callable_object,
                                           CaObject *args, CaObject *kw);
 
-#ifndef Ca_LIMITED_API
-     CaAPI_FUNC(CaObject *) _Ca_CheckFunctionResult(CaObject *func,
-                                                    CaObject *result,
-                                                    const char *where);
-#endif
+
 
        /*
      Call a callable Cayman object, callable_object, with
@@ -309,35 +299,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
                                                 const char *method,
                                                 const char *format, ...);
 
-       /*
-     Call the method named m of object o with a variable number of
-     C arguments.  The C arguments are described by a mkvalue
-     format string.  The format may be NULL, indicating that no
-     arguments are provided. Returns the result of the call on
-     success, or NULL on failure.  This is the equivalent of the
-     Cayman expression: o.method(args).
-       */
 
-     CaAPI_FUNC(CaObject *) _CaObject_CallMethodId(CaObject *o,
-                                                   _Ca_Identifier *method,
-                                                   const char *format, ...);
-
-       /*
-         Like CaObject_CallMethod, but expect a _Ca_Identifier* as the
-         method name.
-       */
-
-     CaAPI_FUNC(CaObject *) _CaObject_CallFunction_SizeT(CaObject *callable,
-                                                         const char *format,
-                                                         ...);
-     CaAPI_FUNC(CaObject *) _CaObject_CallMethod_SizeT(CaObject *o,
-                                                       const char *name,
-                                                       const char *format,
-                                                       ...);
-     CaAPI_FUNC(CaObject *) _CaObject_CallMethodId_SizeT(CaObject *o,
-                                                       _Ca_Identifier *name,
-                                                       const char *format,
-                                                       ...);
 
      CaAPI_FUNC(CaObject *) CaObject_CallFunctionObjArgs(CaObject *callable,
                                                          ...);
@@ -353,9 +315,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
 
      CaAPI_FUNC(CaObject *) CaObject_CallMethodObjArgs(CaObject *o,
                                                        CaObject *method, ...);
-     CaAPI_FUNC(CaObject *) _CaObject_CallMethodIdObjArgs(CaObject *o,
-                                               struct _Ca_Identifier *method,
-                                               ...);
+
 
        /*
      Call the method named m of object o with a variable number of
@@ -416,10 +376,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
      CaAPI_FUNC(Ca_ssize_t) CaObject_Length(CaObject *o);
 #define CaObject_Length CaObject_Size
 
-#ifndef Ca_LIMITED_API
-     CaAPI_FUNC(int) _CaObject_HasLen(CaObject *o);
-     CaAPI_FUNC(Ca_ssize_t) CaObject_LengthHint(CaObject *o, Ca_ssize_t);
-#endif
 
        /*
      Guess the size of object o using len(o) or o.__length_hint__().
@@ -1002,23 +958,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
      Use __contains__ if possible, else _CaSequence_IterSearch().
        */
 
-#ifndef Ca_LIMITED_API
-#define PY_ITERSEARCH_COUNT    1
-#define PY_ITERSEARCH_INDEX    2
-#define PY_ITERSEARCH_CONTAINS 3
-     CaAPI_FUNC(Ca_ssize_t) _CaSequence_IterSearch(CaObject *seq,
-                                        CaObject *obj, int operation);
-#endif
-    /*
-      Iterate over seq.  Result depends on the operation:
-      PY_ITERSEARCH_COUNT:  return # of times obj appears in seq; -1 if
-        error.
-      PY_ITERSEARCH_INDEX:  return 0-based index of first occurrence of
-        obj in seq; set ValueError and return -1 if none found;
-        also return -1 on error.
-      PY_ITERSEARCH_CONTAINS:  return 1 if obj in seq, else 0; -1 on
-        error.
-    */
+
 
 /* For DLL-level backwards compatibility */
 #undef CaSequence_In
@@ -1174,23 +1114,6 @@ CaAPI_FUNC(int) CaObject_IsInstance(CaObject *object, CaObject *typeorclass);
 
 CaAPI_FUNC(int) CaObject_IsSubclass(CaObject *object, CaObject *typeorclass);
       /* issubclass(object, typeorclass) */
-
-
-#ifndef Ca_LIMITED_API
-CaAPI_FUNC(int) _CaObject_RealIsInstance(CaObject *inst, CaObject *cls);
-
-CaAPI_FUNC(int) _CaObject_RealIsSubclass(CaObject *derived, CaObject *cls);
-
-CaAPI_FUNC(char *const *) _CaSequence_BytesToCharpArray(CaObject* self);
-
-CaAPI_FUNC(void) _Ca_FreeCharPArray(char *const array[]);
-#endif
-
-/* For internal use by buffer API functions */
-CaAPI_FUNC(void) _Ca_add_one_to_index_F(int nd, Ca_ssize_t *index,
-                                        const Ca_ssize_t *shape);
-CaAPI_FUNC(void) _Ca_add_one_to_index_C(int nd, Ca_ssize_t *index,
-                                        const Ca_ssize_t *shape);
 
 
 #ifdef __cplusplus

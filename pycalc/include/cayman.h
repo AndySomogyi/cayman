@@ -17,6 +17,7 @@
 #include <ca_tupleobject.h>
 #include <ca_longobject.h>
 #include <ca_abstract.h>
+#include <ca_floatobject.h>
 
 
 

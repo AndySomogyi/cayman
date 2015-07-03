@@ -11,18 +11,25 @@
 #include <ca_port.h>
 
 
-/* Decode a null-terminated string using Ca_FileSystemDefaultEncoding
-   and the "surrogateescape" error handler.
+/**
+ * Return true if the object o is a string object or an instance of a subtype of the string type.
+ */
+CaAPI_FUNC(int) CaString_Check(CaObject *o);
 
-   If Ca_FileSystemDefaultEncoding is not set, fall back to the locale
-   encoding.
+/**
+ * Return value: New reference.
+ * Return a new string object with a copy of the string v as value on success, and NULL on failure.
+ * The parameter v must not be NULL; it will not be checked.
+ */
+CaAPI_FUNC(CaObject*) CaString_FromString(const char *v);
 
-   Use CaUnicode_DecodeFSDefaultAndSize() if the string length is known.
-*/
+/**
+ * Return value: New reference.
+ * Return a new string object with a copy of the string v as value and length len on success,
+ * and NULL on failure. If v is NULL, the contents of the string are uninitialized.
+ */
+CaAPI_FUNC(CaObject*) CaString_FromStringAndSize(const char *v, Ca_ssize_t len);
 
-CaAPI_FUNC(CaObject*) CaUnicode_DecodeFSDefault(
-    const char *s               /* encoded string */
-    );
 
 
 

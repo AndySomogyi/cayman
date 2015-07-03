@@ -7,9 +7,7 @@
 
 
 #include <cayman.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stddef.h>
+#include <stdlib.h>
 
 int ca_run(int argc, char *argv[])
 {
@@ -18,13 +16,13 @@ int ca_run(int argc, char *argv[])
     int i;
 
     if (argc < 3) {
-        fprintf(stderr,"Usage: call Cathonfile funcname [args]\n");
+        fprintf(stderr,"Usage: call cayman file funcname [args]\n");
         return 1;
     }
 
 
     Ca_Initialize();
-    pName = CaUnicode_DecodeFSDefault(argv[1]);
+    pName = CaString_FromString(argv[1]);
     /* Error checking of pName left out */
 
     pModule = CaImport_Import(pName);

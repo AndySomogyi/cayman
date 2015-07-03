@@ -30,9 +30,8 @@ returned item's reference count.
 CaAPI_DATA(CaTypeObject) CaTuple_Type;
 CaAPI_DATA(CaTypeObject) CaTupleIter_Type;
 
-#define CaTuple_Check(op) \
-                 CaType_FastSubclass(Ca_TYPE(op), Ca_TPFLAGS_TUPLE_SUBCLASS)
-#define CaTuple_CheckExact(op) (Ca_TYPE(op) == &CaTuple_Type)
+CaAPI_DATA(int) CaTuple_Check(CaObject*);
+CaAPI_DATA(int) CaTuple_CheckExact(CaObject*);
 
 CaAPI_FUNC(CaObject *) CaTuple_New(Ca_ssize_t size);
 CaAPI_FUNC(Ca_ssize_t) CaTuple_Size(CaObject *);
