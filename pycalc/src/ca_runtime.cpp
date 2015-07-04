@@ -44,22 +44,6 @@ void CaErr_PrintEx(int int1)
 {
 }
 
-int Ca_Main(int argc, char** argv)
-{
-}
-
-int CaRun_AnyFile(FILE* fp, const char* filename)
-{
-}
-
-int CaRun_AnyFileFlags(FILE* fp, const char* filename, CaCompilerFlags* flags)
-{
-}
-
-int CaRun_AnyFileEx(FILE* fp, const char* filename, int closeit)
-{
-}
-
 int CaRun_AnyFileExFlags(FILE* fp, const char* filename, int closeit,
 		CaCompilerFlags* flags)
 {
@@ -125,10 +109,10 @@ int CaRun_InteractiveOneFlags(FILE *fp, const char *filename, CaCompilerFlags *f
         else if (CaString_Check(w))
             ps2 = CaString_AsString(w);
     }
-    //arena = PyArena_New();
+    //arena = CaArena_New();
     //if (arena == NULL) {
-    //    Py_XDECREF(v);
-    //    Py_XDECREF(w);
+    //    Ca_XDECREF(v);
+    //    Ca_XDECREF(w);
     //    return -1;
     //}
     mod = CaParser_ASTFromFile(fp, filename,
@@ -137,9 +121,9 @@ int CaRun_InteractiveOneFlags(FILE *fp, const char *filename, CaCompilerFlags *f
     Ca_XDECREF(v);
     Ca_XDECREF(w);
     if (mod == NULL) {
-        PyArena_Free(arena);
+        CaArena_Free(arena);
         if (errcode == E_EOF) {
-            PyErr_Clear();
+            CaErr_Clear();
             return E_EOF;
         }
         CaErr_Print();
@@ -147,12 +131,12 @@ int CaRun_InteractiveOneFlags(FILE *fp, const char *filename, CaCompilerFlags *f
     }
     m = CaImport_AddModule("__main__");
     if (m == NULL) {
-        PyArena_Free(arena);
+        CaArena_Free(arena);
         return -1;
     }
     d = CaModule_GetDict(m);
     v = run_mod(mod, filename, d, d, flags, arena);
-    PyArena_Free(arena);
+    CaArena_Free(arena);
     if (v == NULL) {
         CaErr_Print();
         return -1;
@@ -169,8 +153,6 @@ int CaRun_InteractiveLoop(FILE *f, const char *p)
 {
     return CaRun_InteractiveLoopFlags(f, p, NULL);
 }
-
-
 
 int CaRun_InteractiveLoopFlags(FILE *fp, const char *filename, CaCompilerFlags *flags)
 {
@@ -214,65 +196,127 @@ int CaSys_SetObject(const char* name, CaObject* v)
 	return 0;
 }
 
-int CaRun_SimpleString(const char* command)
-{
-	return 0;
-}
-
 int CaRun_SimpleStringFlags(const char* command, CaCompilerFlags* flags)
 {
-	return 0;
-}
-
-int CaRun_SimpleFile(FILE* fp, const char* filename)
-{
-	return 0;
-}
-
-int CaRun_SimpleFileFlags(FILE* fp, const char* filename,
-		CaCompilerFlags* flags)
-{
-	return 0;
-}
-
-int CaRun_SimpleFileEx(FILE* fp, const char* filename, int closeit)
-{
+#if 0
+    PyObject *m, *d, *v;
+    m = PyImport_AddModule("__main__");
+    if (m == NULL)
+        return -1;
+    d = PyModule_GetDict(m);
+    v = PyRun_StringFlags(command, Py_file_input, d, d, flags);
+    if (v == NULL) {
+        PyErr_Print();
+        return -1;
+    }
+    Py_DECREF(v);
+    if (Py_FlushLine())
+        PyErr_Clear();
+    return 0;
+#endif
 	return 0;
 }
 
 int CaRun_SimpleFileExFlags(FILE* fp, const char* filename, int closeit,
 		CaCompilerFlags* flags)
 {
+#if 0
+    PyObject *m, *d, *v;
+    const char *ext;
+    int set_file_name = 0, len, ret = -1;
+
+    m = PyImport_AddModule("__main__");
+    if (m == NULL)
+        return -1;
+    Py_INCREF(m);
+    d = PyModule_GetDict(m);
+    if (PyDict_GetItemString(d, "__file__") == NULL) {
+        PyObject *f = PyString_FromString(filename);
+        if (f == NULL)
+            goto done;
+        if (PyDict_SetItemString(d, "__file__", f) < 0) {
+            Py_DECREF(f);
+            goto done;
+        }
+        set_file_name = 1;
+        Py_DECREF(f);
+    }
+    len = strlen(filename);
+    ext = filename + len - (len > 4 ? 4 : 0);
+    if (maybe_pyc_file(fp, filename, ext, closeit)) {
+        /* Try to run a pyc file. First, re-open in binary */
+        if (closeit)
+            fclose(fp);
+        if ((fp = fopen(filename, "rb")) == NULL) {
+            fprintf(stderr, "python: Can't reopen .pyc file\n");
+            goto done;
+        }
+        /* Turn on optimization if a .pyo file is given */
+        if (strcmp(ext, ".pyo") == 0)
+            Py_OptimizeFlag = 1;
+        v = run_pyc_file(fp, filename, d, d, flags);
+    } else {
+        v = PyRun_FileExFlags(fp, filename, Py_file_input, d, d,
+                              closeit, flags);
+    }
+    if (v == NULL) {
+        PyErr_Print();
+        goto done;
+    }
+    Py_DECREF(v);
+    if (Py_FlushLine())
+        PyErr_Clear();
+    ret = 0;
+  done:
+    if (set_file_name && PyDict_DelItemString(d, "__file__"))
+        PyErr_Clear();
+    Py_DECREF(m);
+    return ret;
+
+#endif
 	return 0;
 }
 
-CaObject* CaRun_String(const char* str, int start, CaObject* globals, CaObject* locals)
-{
-	return NULL;
-}
 
 CaObject* CaRun_StringFlags(const char* str, int start, CaObject* globals, CaObject* locals, CaCompilerFlags* flags)
 {
-	return NULL;
-}
+	/*
+	PyObject *ret = NULL;
+    mod_ty mod;
+    PyArena *arena = PyArena_New();
+    if (arena == NULL)
+        return NULL;
 
-CaObject* CaRun_File(FILE* fp, const char* filename, int start, CaObject* globals, CaObject* locals)
-{
-	return NULL;
-}
-
-CaObject* CaRun_FileEx(FILE* fp, const char* filename, int start, CaObject* globals, CaObject* locals, int closeit)
-{
-	return NULL;
-}
-
-CaObject* CaRun_FileFlags(FILE* fp, const char* filename, int start, CaObject* globals, CaObject* locals, CaCompilerFlags* flags)
-{
+    mod = PyParser_ASTFromString(str, "<string>", start, flags, arena);
+    if (mod != NULL)
+        ret = run_mod(mod, "<string>", globals, locals, flags, arena);
+    PyArena_Free(arena);
+    return ret;
+	 */
 	return NULL;
 }
 
 CaObject* CaRun_FileExFlags(FILE* fp, const char* filename, int start, CaObject* globals, CaObject* locals, int closeit, CaCompilerFlags* flags)
 {
+	/*
+	PyObject *ret;
+    mod_ty mod;
+    PyArena *arena = PyArena_New();
+    if (arena == NULL)
+        return NULL;
+
+    mod = PyParser_ASTFromFile(fp, filename, start, 0, 0,
+                               flags, NULL, arena);
+    if (closeit)
+        fclose(fp);
+    if (mod == NULL) {
+        PyArena_Free(arena);
+        return NULL;
+    }
+    ret = run_mod(mod, filename, globals, locals, flags, arena);
+    PyArena_Free(arena);
+    return ret;
+	 */
 	return NULL;
 }
 
@@ -285,5 +329,65 @@ CaAst* CaParser_ASTFromFile(FILE*, const char*, int int1, char*, char*, CaCompil
 {
 	return NULL;
 }
+
+int CaRun_AnyFile(FILE *fp, const char *name)
+{
+    return CaRun_AnyFileExFlags(fp, name, 0, NULL);
+}
+
+int CaRun_AnyFileEx(FILE *fp, const char *name, int closeit)
+{
+    return CaRun_AnyFileExFlags(fp, name, closeit, NULL);
+}
+
+int CaRun_AnyFileFlags(FILE *fp, const char *name, CaCompilerFlags *flags)
+{
+    return CaRun_AnyFileExFlags(fp, name, 0, flags);
+}
+
+CaObject* CaRun_File(FILE *fp, const char *p, int s, CaObject *g, CaObject *l)
+{
+    return CaRun_FileExFlags(fp, p, s, g, l, 0, NULL);
+}
+
+CaObject* CaRun_FileEx(FILE *fp, const char *p, int s, CaObject *g, CaObject *l, int c)
+{
+    return CaRun_FileExFlags(fp, p, s, g, l, c, NULL);
+}
+
+CaObject* CaRun_FileFlags(FILE *fp, const char *p, int s, CaObject *g, CaObject *l,
+                CaCompilerFlags *flags)
+{
+    return CaRun_FileExFlags(fp, p, s, g, l, 0, flags);
+}
+
+int CaRun_SimpleFile(FILE *f, const char *p)
+{
+    return CaRun_SimpleFileExFlags(f, p, 0, NULL);
+}
+
+int CaRun_SimpleFileEx(FILE *f, const char *p, int c)
+{
+    return CaRun_SimpleFileExFlags(f, p, c, NULL);
+}
+
+CaObject* CaRun_String(const char *str, int s, CaObject *g, CaObject *l)
+{
+    return CaRun_StringFlags(str, s, g, l, NULL);
+}
+
+int CaRun_SimpleString(const char *s)
+{
+    return CaRun_SimpleStringFlags(s, NULL);
+}
+
+int Ca_Main(int argc, const char **argv)
+{
+	CaCompilerFlags cf = {0};
+
+	int sts = CaRun_AnyFileFlags(stdin, "<stdin>", &cf) != 0;
+    return sts;
+}
+
 
 

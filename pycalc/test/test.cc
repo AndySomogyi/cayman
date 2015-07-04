@@ -3,15 +3,23 @@
 #include <iostream>
 #include <string>
 #include "llvm_test1.h"
+#include <cayman.h>
 
 using namespace py;
 using namespace std;
 
 int main(int argc, const char** argv)
 {
-    if (argc == 2 && string("k") == argv[1])
+    if (argc == 2)
     {
-        return llvm_orc_initial(argc, argv);
+        if (string("k") == argv[1])
+        {
+            return llvm_orc_initial(argc, argv);
+        }
+        else
+        {
+            return Ca_Main(argc, argv);
+        }
     }
     
 	if (argc == 3)

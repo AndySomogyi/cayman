@@ -18,6 +18,7 @@
 #include <ca_longobject.h>
 #include <ca_abstract.h>
 #include <ca_floatobject.h>
+#include <ca_type.h>
 
 
 

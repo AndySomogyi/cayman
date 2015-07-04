@@ -133,7 +133,7 @@ CaAPI_FUNC(int) Ca_FdIsInteractive(FILE *, const char *);
  * function will not return ``1``, but exit the process, as long as
  * ``Ca_InspectFlag`` is not set.
  */
-CaAPI_FUNC(int) Ca_Main(int argc, char **argv);
+CaAPI_FUNC(int) Ca_Main(int argc, const char **argv);
 
 /**
  * This is a simplified interface to :c:func:`CaRun_AnyFileExFlags` below, leaving
@@ -196,13 +196,6 @@ CaAPI_FUNC(int) CaRun_SimpleStringFlags(const char *command,
  leaving *closeit* set to ``0`` and *flags* set to *NULL*.
  */
 CaAPI_FUNC(int) CaRun_SimpleFile(FILE *fp, const char *filename);
-
-/**
- This is a simplified interface to :c:func:`CaRun_SimpleFileExFlags` below,
- leaving *closeit* set to ``0``.
- */
-CaAPI_FUNC(int) CaRun_SimpleFileFlags(FILE *fp, const char *filename,
-		CaCompilerFlags *flags);
 
 /**
  This is a simplified interface to :c:func:`CaRun_SimpleFileExFlags` below,

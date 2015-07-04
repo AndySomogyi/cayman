@@ -88,11 +88,7 @@ whose size is determined when the object is allocated.
 
 
 struct CaObject;
-
-
-
-
-typedef struct _typeobject CaTypeObject; /* opaque */
+struct CaTypeObject;
 
 
 CaAPI_FUNC(void) Ca_Dealloc(CaObject *);
@@ -197,10 +193,8 @@ CaAPI_FUNC(int) CaObject_GenericSetDict(CaObject *, CaObject *, void *);
 CaAPI_FUNC(int) CaObject_IsTrue(CaObject *);
 CaAPI_FUNC(int) CaObject_Not(CaObject *);
 
-/**
- * Check if an object can be called.
- */
-CaAPI_FUNC(int) CaCallable_Check(CaObject *);
+
+
 
 
 #ifdef __cplusplus

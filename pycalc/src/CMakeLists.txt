@@ -8,6 +8,7 @@ set(API_SRC
     ca_longobject.cpp
     ca_port.cpp
     ca_string.cpp
+    ca_type.cpp
     )
 
 set(SRC
