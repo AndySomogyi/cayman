@@ -1,4 +1,4 @@
-project(BisonTesting)
+project(Cayman)
 
 cmake_minimum_required(VERSION 2.5)
 
@@ -141,11 +141,10 @@ endif()
 #set(CMAKE_CXX_STANDARD_REQUIRED on)
 #add_definitions(-std=c++11 -stdlib=libc++)
 
+# add cayman public include dir to include path
+include_directories(include)
 
-#add_subdirectory(calc++)
-#add_subdirectory(flex-bison-cpp-example)
-#add_subdirectory(mfcalc)
-#add_subdirectory(rpcalc)
-#add_subdirectory(test1)
-#add_subdirectory(python)
-add_subdirectory(pycalc)
+add_subdirectory(include)
+add_subdirectory(src)
+add_subdirectory(test)
+
