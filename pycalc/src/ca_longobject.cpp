@@ -4,8 +4,7 @@
  *  Created on: Jul 2, 2015
  *      Author: andy
  */
-#include "ca_object.h"
-#include "ca_longobject.h"
+#include "cayman_private.h"
 
 CaObject * CaLong_FromLong(long longInt)
 {

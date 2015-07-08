@@ -5,7 +5,7 @@
  *      Author: andy
  */
 
-#include "cayman.h"
+#include "cayman_private.h"
 
 int CaString_Check(CaObject* o)
 {

@@ -17,6 +17,7 @@ set (_PUBLIC_HEADERS
   ca_string.h
   ca_tupleobject.h
   ca_floatobject.h
+  ca_number.h
   ca_type.h
   cayman.h
   )

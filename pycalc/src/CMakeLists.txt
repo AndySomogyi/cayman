@@ -34,6 +34,7 @@ set(SRC
 
 set(HEADERS
   ${CAYMAN_PUBLIC_HEADERS}
+  cayman_private.h
   Ast.h
   AstNode.h
   AstNodeFactory.h

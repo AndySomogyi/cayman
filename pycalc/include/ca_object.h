@@ -5,102 +5,34 @@
  *      Author: andy
  */
 
-#ifndef _INCLUDE_CA_OBJECT_H_
-#define _INCLUDE_CA_OBJECT_H_
+#ifndef _INCLUDED_CA_OBJECT_H_
+#define _INCLUDED_CA_OBJECT_H_
 
 #include <ca_port.h>
 
-
 #ifdef __cplusplus
-extern "C" {
+#include <cstdio>
+#else
+#include <stdio.h>
 #endif
 
-
-/* Object and type object interface */
-
-/*
-Objects are structures allocated on the heap.  Special rules apply to
-the use of objects to ensure they are properly garbage-collected.
-Objects are never allocated statically or on the stack; they must be
-accessed through special macros and functions only.  (Type objects are
-exceptions to the first rule; the standard types are represented by
-statically initialized type objects, although work on type/class unification
-for Cayman 2.2 made it possible to have heap-allocated type objects too).
-
-An object has a 'reference count' that is increased or decreased when a
-pointer to the object is copied or deleted; when the reference count
-reaches zero there are no references to the object left and it can be
-removed from the heap.
-
-An object has a 'type' that determines what it represents and what kind
-of data it contains.  An object's type is fixed when it is created.
-Types themselves are represented as objects; an object contains a
-pointer to the corresponding type object.  The type itself has a type
-pointer pointing to the object representing the type 'type', which
-contains a pointer to itself!).
-
-Objects do not float around in memory; once allocated an object keeps
-the same size and address.  Objects that must hold variable-size data
-can contain pointers to variable-size parts of the object.  Not all
-objects of the same type have the same size; but the size cannot change
-after allocation.  (These restrictions are made so a reference to an
-object can be simply a pointer -- moving an object would require
-updating all the pointers, and changing an object's size would require
-moving it if there was another object right next to it.)
-
-Objects are always accessed through pointers of the type 'CaObject *'.
-The type 'CaObject' is a structure that only contains the reference count
-and the type pointer.  The actual memory allocated for an object
-contains other data that can only be accessed after casting the pointer
-to a pointer to a longer structure type.  This longer type must start
-with the reference count and type fields; the macro CaObject_HEAD should be
-used for this (to accommodate for future changes).  The implementation
-of a particular object type can cast the object pointer to the proper
-type and back.
-
-A standard interface exists for objects that contain an array of items
-whose size is determined when the object is allocated.
-*/
-
-
-#define _CaObject_HEAD_EXTRA
-#define _CaObject_EXTRA_INIT
-
-
-/* CaObject_HEAD defines the initial segment of every CaObject. */
-#define CaObject_HEAD                   CaObject ob_base;
-
-#define CaObject_HEAD_INIT(type)        \
-    { _CaObject_EXTRA_INIT              \
-    1, type },
-
-#define CaVarObject_HEAD_INIT(type, size)       \
-    { CaObject_HEAD_INIT(type) size },
-
-/* CaObject_VAR_HEAD defines the initial segment of all variable-size
- * container objects.  These end with a declaration of an array with 1
- * element, but enough space is malloc'ed so that the array actually
- * has room for ob_size elements.  Note that ob_size is an element count,
- * not necessarily a byte count.
+/**
+ * Basic opaque Cayman object type.
  */
-#define CaObject_VAR_HEAD      CaVarObject ob_base;
-#define Ca_INVALID_SIZE (Ca_ssize_t)-1
+typedef struct _CaObject CaObject;
 
-
-struct CaObject;
-struct CaTypeObject;
-
-
-CaAPI_FUNC(void) Ca_Dealloc(CaObject *);
+/**
+ * Basic opaque Cayman type type.
+ */
+typedef struct _CaTypeObject CaTypeObject;
 
 #define Ca_REFCNT(ob)           (((CaObject*)(ob))->ob_refcnt)
 #define Ca_TYPE(ob)             (((CaObject*)(ob))->ob_type)
 #define Ca_SIZE(ob)             (((CaVarObject*)(ob))->ob_size)
 
+#define Ca_INCREF(o) { Ca_IncRef((CaObject*)(o)); }
 
-#define Ca_INCREF(op)
-
-#define Ca_DECREF(op)
+#define Ca_DECREF(o) { Ca_DecRef((CaObject*)(o)); }
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear
  * and tp_dealloc implementations.
@@ -160,50 +92,289 @@ CaAPI_FUNC(void) Ca_Dealloc(CaObject *);
             Ca_DECREF(_py_xdecref_tmp);               \
     } while (0)
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/**
+ * Print an object, o, on file, fp.  Returns -1 on
+ * error.  The flags argument is used to enable certain printing
+ * options. The only option currently supported is Ca_Print_RAW.
+ */
+CaAPI_FUNC(int) CaObject_Print(CaObject *o, FILE *fp, int flags);
+
+/**
+ * Returns 1 if o has the attribute attr_name, and 0 otherwise.
+ * This is equivalent to the Cayman expression:
+ * hasattr(o,attr_name).
+ *
+ * This function always succeeds.
+ */
+CaAPI_FUNC(int) CaObject_HasAttrString(CaObject *o, const char *attr_name);
+
+/**
+ * Retrieve an attributed named attr_name form object o.
+ * Returns the attribute value on success, or NULL on failure.
+ * This is the equivalent of the Cayman expression: o.attr_name.
+ */
+CaAPI_FUNC(CaObject)* CaObject_GetAttrString(CaObject *o,
+		const char *attr_name);
+
+/**
+ * Returns 1 if o has the attribute attr_name, and 0 otherwise.
+ * This is equivalent to the Cayman expression:
+ * hasattr(o,attr_name).
+ * This function always succeeds.
+ */
+CaAPI_FUNC(int) CaObject_HasAttr(CaObject *o, CaObject *attr_name);
+
+/**
+ * Retrieve an attributed named attr_name form object o.
+ * Returns the attribute value on success, or NULL on failure.
+ * This is the equivalent of the Cayman expression: o.attr_name.
+ */
+CaAPI_FUNC(CaObject)* CaObject_GetAttr(CaObject *o, CaObject *attr_name);
+
+/**
+ * Set the value of the attribute named attr_name, for object o,
+ * to the value, v. Returns -1 on failure.  This is
+ * the equivalent of the Cayman statement: o.attr_name=v.
+ */
+CaAPI_FUNC(int) CaObject_SetAttrString(CaObject *o, const char *attr_name,
+		CaObject *v);
+
+/**
+ * Set the value of the attribute named attr_name, for object o,
+ * to the value, v. Returns -1 on failure.  This is
+ * the equivalent of the Cayman statement: o.attr_name=v.
+ */
+CaAPI_FUNC(int) CaObject_SetAttr(CaObject *o, CaObject *attr_name, CaObject *v);
+
+/**
+ * Delete attribute named attr_name, for object o. Returns
+ * -1 on failure.  This is the equivalent of the Cayman
+ * statement: del o.attr_name.
+ */
+CaAPI_FUNC(int) CaObject_DelAttrString(CaObject *o, const char *attr_name);
+
+/**
+ * Delete attribute named attr_name, for object o. Returns -1
+ * on failure.  This is the equivalent of the Cayman
+ * statement: del o.attr_name.
+ */
+CaAPI_FUNC(int) CaObject_DelAttr(CaObject *o, CaObject *attr_name);
+
+/**
+ * Compute the string representation of object, o.  Returns the
+ * string representation on success, NULL on failure.  This is
+ * the equivalent of the Cayman expression: repr(o).
+ *
+ * Called by the repr() built-in function.
+ */
+CaAPI_FUNC(CaObject) *CaObject_Repr(CaObject *o);
+
+/**
+ * Compute the string representation of object, o.  Returns the
+ * string representation on success, NULL on failure.  This is
+ * the equivalent of the Cayman expression: str(o).)
+ *
+ * Called by the str() and print() built-in functions.
+ */
+CaAPI_FUNC(CaObject) *CaObject_Str(CaObject *o);
+
+/**
+ * Determine if the object, o, is callable.  Return 1 if the
+ * object is callable and 0 otherwise..
+ *
+ * This function always succeeds.
+ */
+CaAPI_FUNC(int) CaCallable_Check(CaObject *);
+
+/**
+ * Return the raw, callable address of the specified function.
+ * This is intended to be cast to a function pointer and called.
+ * This may involve code generation
+ *
+ * This is the key function is the Cayman runtime.
+ *
+ * Here, the callable object is specialized and JITed for the given
+ * argument types. I.e. the functions foo(int) and foo(double) are
+ * different, as the function was specialized for a different type
+ * in each case.
+ *
+ * For example, to get a callable function pointer to a function
+ * defined in a module, one would:
+ * @code
+ * // assuming one already has a module
+ * CoObject* module;
+ *
+ *
+ * @endcode
+ *
+ * @param callable: A callable CaObject. This may be either a named,
+ *                  a functor (an object with the __call__) method, or
+ *                  a method on a an object.
+ *
+ * @param argTypes: A sequence of CaTypeObjects packed into a tuple.
+ * @returns: the raw function pointer address of the underlying
+ *           native code object.
+ */
+CaAPI_FUNC(void*) CaCallable_GetFuctionAddress(CaObject *callable,
+		CaTypeObject *retType, CaObject *argTypes);
+
+/**
+ * Same as CaCallable_GetFuctionAddress, except the arguments types are
+ * given as variable number of C arguments.  The C arguments are provided
+ * as CaTypeObject * values, terminated by a NULL.
+ */
+CaAPI_FUNC(void*) CaCallable_GetFuctionAddressObjArgs(CaObject *callable,
+		CaTypeObject *retType, ...);
+
+/**
+ * Call a callable Cayman object, callable_object, with
+ * arguments and keywords arguments.  The 'args' argument can not be
+ * NULL, but the 'kw' argument can be NULL.
+ */
+CaAPI_FUNC(CaObject *) CaObject_Call(CaObject *callable_object,
+		CaObject *args, CaObject *kw);
+
+/**
+ * Call a callable Cayman object, callable_object, with
+ * arguments given by the tuple, args.  If no arguments are
+ * needed, then args may be NULL.  Returns the result of the
+ * call on success, or NULL on failure.  This is the equivalent
+ * of the Cayman expression: o(*args).
+ */
+CaAPI_FUNC(CaObject *) CaObject_CallObject(CaObject *callable_object,
+		CaObject *args);
+
+/**
+ * Call a callable Cayman object, callable_object, with a
+ * variable number of C arguments. The C arguments are described
+ * using a mkvalue-style format string. The format may be NULL,
+ * indicating that no arguments are provided.  Returns the
+ * result of the call on success, or NULL on failure.  This is
+ * the equivalent of the Cayman expression: o(*args).
+ */
+CaAPI_FUNC(CaObject *) CaObject_CallFunction(CaObject *callable_object,
+		const char *format, ...);
+
+CaAPI_FUNC(CaObject *) CaObject_CallMethod(CaObject *o,
+		const char *method,
+		const char *format, ...);
+
+/**
+ * Call a callable Cayman object, callable, with a
+ * variable number of C arguments.  The C arguments are provided
+ * as CaObject * values, terminated by a NULL.  Returns the
+ * result of the call on success, or NULL on failure.  This is
+ * the equivalent of the Cayman expression: o(*args).
+ */
+CaAPI_FUNC(CaObject *) CaObject_CallFunctionObjArgs(CaObject *callable,
+		...);
+
+/**
+ * Call the method named m of object o with a variable number of
+ * C arguments.  The C arguments are provided as CaObject *
+ * values, terminated by NULL.  Returns the result of the call
+ * on success, or NULL on failure.  This is the equivalent of
+ * the Cayman expression: o.method(args).
+ */
+CaAPI_FUNC(CaObject *) CaObject_CallMethodObjArgs(CaObject *o,
+		CaObject *m, ...);
+
+/**
+ *  Compute and return the hash, hash_value, of an object, o.  On
+ failure, return -1.  This is the equivalent of the Cayman
+ expression: hash(o).
+ */
+
+CaAPI_FUNC(long) CaObject_Hash(CaObject *o);
+
+/**
+ *  Returns 1 if the object, o, is considered to be true, 0 if o is
+ considered to be false and -1 on failure. This is equivalent to the
+ Cayman expression: not not o
+ */
+
+CaAPI_FUNC(int) CaObject_IsTrue(CaObject *o);
+
+/**
+ * Returns 0 if the object, o, is considered to be true, 1 if o is
+ considered to be false and -1 on failure. This is equivalent to the
+ Cayman expression: not o
+ */
+CaAPI_FUNC(int) CaObject_Not(CaObject *o);
+
+/**
+ * On success, returns a type object corresponding to the object
+ * type of object o. On failure, returns NULL.  This is
+ * equivalent to the Cayman expression: type(o).
+ */
+CaAPI_FUNC(CaObject *) CaObject_Type(CaObject *o);
+
+/**
+ * Return the size of object o.  If the object, o, provides
+ * both sequence and mapping protocols, the sequence size is
+ * returned. On error, -1 is returned.  This is the equivalent
+ * to the Cayman expression: len(o).
+ */
+CaAPI_FUNC(Ca_ssize_t) CaObject_Size(CaObject *o);
+
+/**
+ * Guess the size of object o using len(o) or o.__length_hint__().
+ * If neither of those return a non-negative value, then return the
+ * default value.  If one of the calls fails, this function returns -1.
+ */
+CaAPI_FUNC(Ca_ssize_t) CaObject_Length(CaObject *o);
+
+/**
+ * Return element of o corresponding to the object, key, or NULL
+ * on failure. This is the equivalent of the Cayman expression:
+ * o[key].
+ */
+CaAPI_FUNC(CaObject *) CaObject_GetItem(CaObject *o, CaObject *key);
+
+/**
+ * Map the object, key, to the value, v.  Returns
+ * -1 on failure.  This is the equivalent of the Cayman
+ * statement: o[key]=v.
+ */
+CaAPI_FUNC(int) CaObject_SetItem(CaObject *o, CaObject *key, CaObject *v);
+
+/**
+ * Remove the mapping for object, key, from the object *o.
+ Returns -1 on failure.  This is equivalent to
+ the Cayman statement: del o[key].
+ */
+
+CaAPI_FUNC(int) CaObject_DelItemString(CaObject *o, const char *key);
+
+/**
+ * Delete the mapping for key from *o.  Returns -1 on failure.
+ This is the equivalent of the Cayman statement: del o[key].
+ */
+
+CaAPI_FUNC(int) CaObject_DelItem(CaObject *o, CaObject *key);
 
 
+CaAPI_FUNC(int) CaObject_IsInstance(CaObject *object, CaObject *typeorclass);
+/* isinstance(object, typeorclass) */
+
+CaAPI_FUNC(int) CaObject_IsSubclass(CaObject *object, CaObject *typeorclass);
+/* issubclass(object, typeorclass) */
+
+CaAPI_FUNC(void) Ca_Dealloc(CaObject *);
+
+CaAPI_FUNC(uint32_t) Ca_IncRef(CaObject *o);
+
+CaAPI_FUNC(uint32_t) Ca_DecRef(CaObject *o);
 
 CaAPI_FUNC(CaObject *) CaObject_GetAttrString(CaObject *, const char *);
-
-
-/* Generic operations on objects */
-struct _Ca_Identifier;
-
-CaAPI_FUNC(CaObject *) CaObject_Repr(CaObject *);
-CaAPI_FUNC(CaObject *) CaObject_Str(CaObject *);
-CaAPI_FUNC(CaObject *) CaObject_ASCII(CaObject *);
-CaAPI_FUNC(CaObject *) CaObject_Bytes(CaObject *);
-CaAPI_FUNC(CaObject *) CaObject_RichCompare(CaObject *, CaObject *, int);
-CaAPI_FUNC(int) CaObject_RichCompareBool(CaObject *, CaObject *, int);
-CaAPI_FUNC(CaObject *) CaObject_GetAttrString(CaObject *, const char *);
-CaAPI_FUNC(int) CaObject_SetAttrString(CaObject *, const char *, CaObject *);
-CaAPI_FUNC(int) CaObject_HasAttrString(CaObject *, const char *);
-CaAPI_FUNC(CaObject *) CaObject_GetAttr(CaObject *, CaObject *);
-CaAPI_FUNC(int) CaObject_SetAttr(CaObject *, CaObject *, CaObject *);
-CaAPI_FUNC(int) CaObject_HasAttr(CaObject *, CaObject *);
-CaAPI_FUNC(int) _CaObject_IsAbstract(CaObject *);
-CaAPI_FUNC(CaObject *) _CaObject_GetAttrId(CaObject *, struct _Ca_Identifier *);
-CaAPI_FUNC(int) _CaObject_SetAttrId(CaObject *, struct _Ca_Identifier *, CaObject *);
-CaAPI_FUNC(int) _CaObject_HasAttrId(CaObject *, struct _Ca_Identifier *);
-CaAPI_FUNC(CaObject *) CaObject_SelfIter(CaObject *);
-CaAPI_FUNC(CaObject *) CaObject_GenericGetAttr(CaObject *, CaObject *);
-CaAPI_FUNC(int) CaObject_GenericSetAttr(CaObject *,
-                                              CaObject *, CaObject *);
-CaAPI_FUNC(int) CaObject_GenericSetDict(CaObject *, CaObject *, void *);
-CaAPI_FUNC(int) CaObject_IsTrue(CaObject *);
-CaAPI_FUNC(int) CaObject_Not(CaObject *);
-
-
-
-
 
 #ifdef __cplusplus
 }
 #endif
 
-
-
-
-
-
-#endif /* PYCALC_INCLUDE_CA_OBJECT_H_ */
+#endif /* _INCLUDED_CA_OBJECT_H_ */

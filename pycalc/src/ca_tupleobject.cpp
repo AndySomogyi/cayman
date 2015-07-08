@@ -4,7 +4,7 @@
  *  Created on: Jul 2, 2015
  *      Author: andy
  */
-#include "cayman.h"
+#include "cayman_private.h"
 
 int CaTuple_Check(CaObject*)
 {

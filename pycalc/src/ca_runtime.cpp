@@ -5,10 +5,11 @@
  *      Author: andy
  */
 
-#include "cayman.h"
+
 #include <unistd.h>
 #include <Python.h>
 
+#include "cayman_private.h"
 #include "py_errcode.h"
 
 int Ca_InteractiveFlag = 0;

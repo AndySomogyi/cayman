@@ -4,7 +4,7 @@
  *  Created on: Jul 4, 2015
  *      Author: andy
  */
-#include "cayman.h"
+#include "cayman_private.h"
 
 int CaType_Check(CaObject* o)
 {

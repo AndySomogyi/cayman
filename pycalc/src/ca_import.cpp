@@ -5,54 +5,64 @@
  *      Author: andy
  */
 
-#include "ca_object.h"
-#include "ca_import.h"
+#include "cayman_private.h"
 
 
-
-CaObject* CaImport_ExecCodeModule(const char* name, /* UTF-8 encoded string */
-		CaObject* co)
-{
-	return NULL;
-}
-
-CaObject* CaImport_ExecCodeModuleEx(const char* name, /* UTF-8 encoded string */
-		CaObject* co, const char* pathname)
-{
-	return NULL;
-}
-
-CaObject* CaImport_ExecCodeModuleWithPathnames(const char* name, /* UTF-8 encoded string */
-		CaObject* co, const char* pathname, /* decoded from the filesystem encoding */
-		const char* cpathname)
-{
-	return NULL;
-}
-
-CaObject* CaImport_ExecCodeModuleObject(CaObject* name, CaObject* co, CaObject* pathname, CaObject* cpathname)
-{
-	return NULL;
-}
-
-CaObject* CaImport_AddModuleObject(CaObject* name)
-{
-	return NULL;
-}
-
-CaObject* CaImport_AddModule(const char* name)
-{
-	return NULL;
-}
+extern "C" {
 
 CaObject* CaImport_ImportModule(const char* name)
 {
-	return NULL;
+	return 0;
+}
+
+CaObject* CaImport_ImportModuleNoBlock(const char* name)
+{
+	return 0;
+}
+
+CaObject* CaImport_ImportModuleEx(char* name, CaObject* globals, CaObject* locals, CaObject* fromlist)
+{
+	return 0;
+}
+
+CaObject* CaImport_ImportModuleLevel(char* name, CaObject* globals, CaObject* locals, CaObject* fromlist, int level)
+{
+	return 0;
 }
 
 CaObject* CaImport_Import(CaObject* name)
 {
-	return NULL;
+	return 0;
 }
 
+CaObject* CaImport_ReloadModule(CaObject* m)
+{
+	return 0;
+}
 
+CaObject* CaImport_AddModule(const char* name)
+{
+	return 0;
+}
 
+CaObject* CaImport_ExecCodeModule(char* name, CaObject* co)
+{
+	return 0;
+}
+
+CaObject* CaImport_ExecCodeModuleEx(char* name, CaObject* co, char* pathname)
+{
+	return 0;
+}
+
+long CaImport_GetMagicNumber()
+{
+	return 0;
+}
+
+CaObject* CaImport_GetModuleDict()
+{
+	return 0;
+}
+
+}
