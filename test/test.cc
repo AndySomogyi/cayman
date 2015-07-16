@@ -4,6 +4,7 @@
 #include <string>
 #include "llvm_test1.h"
 #include <cayman.h>
+#include "cayman_test.h"
 
 using namespace py;
 using namespace std;
@@ -60,7 +61,10 @@ int main(int argc, const char** argv)
             return 0;
             
         }
-
+        else if(string("t1") == argv[1])
+        {
+        	return ca_test1(argc, argv);
+        }
     }
     
     

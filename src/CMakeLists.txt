@@ -66,7 +66,7 @@ set(HEADERS
   )
 
 
-add_library(pycalc ${SRC} ${HEADERS})
+add_library(cayman ${SRC} ${HEADERS})
 
 source_group("Public Header Files" FILES ${CAYMAN_PUBLIC_HEADERS})
 
@@ -76,9 +76,9 @@ message("CAYMAN_PUBLIC_HEADERS: ${CAYMAN_PUBLIC_HEADERS}")
 
 # Make sure the compiler can find include files for our Hello library
 # when other libraries or executables link to Hello
-target_include_directories (pycalc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories (cayman PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Link against LLVM libraries
-target_link_libraries(pycalc ${LLVM_LIBS})
+target_link_libraries(cayman ${LLVM_LIBS})
 
-target_link_libraries(pycalc ${PYTHON_LIBRARIES})
+target_link_libraries(cayman ${PYTHON_LIBRARIES})

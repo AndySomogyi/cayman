@@ -4,7 +4,11 @@ set(SRC
     ca_test1.cpp
     )
 
-add_executable(pycalc_test ${SRC})
+set(HEADERS
+    cayman_test.h
+    )
 
-target_link_libraries (pycalc_test LINK_PUBLIC pycalc)
+add_executable(cayman_test ${SRC} ${HEADERS})
+
+target_link_libraries (cayman_test LINK_PUBLIC cayman)
 
