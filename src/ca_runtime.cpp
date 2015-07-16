@@ -25,6 +25,7 @@ CaObject* CaErr_Occurred(void)
 
 void Ca_Initialize(void)
 {
+    Ca_InitializeEx(0);
 }
 
 void Ca_InitializeEx(int int1)
@@ -35,7 +36,6 @@ void Ca_InitializeEx(int int1)
 	llvm::InitializeNativeTargetAsmParser();
 
 	JITContext::Initialize();
-
 }
 
 void Ca_Finalize(void)

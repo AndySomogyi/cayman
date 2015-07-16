@@ -33,6 +33,7 @@ void* CaCallable_GetFuctionAddressObjArgs(CaObject* obj,
 		CaTypeObject* retType, ...)
 {
 	va_list ap;
+    
 
 	CaTypeObject *type;
 
@@ -44,13 +45,16 @@ void* CaCallable_GetFuctionAddressObjArgs(CaObject* obj,
 		return nullptr;
 	}
 
+    va_start(ap, retType);
+    int arg = 0;
 
-	for (type = va_arg(ap, CaTypeObject*); type != nullptr;
-			type = va_arg(ap, CaTypeObject*))
+	while ((type = va_arg(ap, CaTypeObject*)) != nullptr)
 	{
+        std::cout << "arg:" << arg++ << ", type: " << type->type << std::endl;
 		args.push_back(type);
-		std::cout << type->type << std::endl;
 	}
+    
+    va_end(ap);
 
 	return callable->GetFuctionAddress(retType, args);
 }

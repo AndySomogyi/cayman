@@ -31,7 +31,9 @@ int ca_test1(int argc, const char** argv)
 	CaObject *module = CaImport_ImportModule(argv[2]);
 
 	if (module == NULL) {
-
+        
+        cout << "error, no module" << std::endl;
+        return 0;
 	}
 
 
@@ -51,7 +53,12 @@ int ca_test1(int argc, const char** argv)
 
 	// get the address of the function pointer
 	FuncPtr pfunc = (FuncPtr)CaCallable_GetFuctionAddressObjArgs(func, dblType,
-			dblType, NULL);
+			dblType, dblType, NULL);
+    
+    if (pfunc == nullptr) {
+        cout << "error, function NULL" << std::endl;
+        return 0;
+    }
 
 	// call the func
 	double result = pfunc(1.0, 2.0);
