@@ -26,12 +26,13 @@ CaObject* CaImport_ImportModule(const char* name)
 
 		 py::AstPtr ast = parser.Parse();
 
-		 py::Module *tmp = dynamic_cast<py::Module*>(ast.get());
-		 if(tmp != nullptr)
-		 {
-		     ast.release();
+		 py::Ast *p = ast.get();
 
-		     CaModule *mod = new CaModule(name, fname, std::unique_ptr<py::Module>(tmp));
+		 p->Print(std::cout);
+
+		 if(ast->module != nullptr)
+		 {
+		     CaModule *mod = new CaModule(name, fname, std::unique_ptr<py::Module>(ast->module));
 
 		     return mod;
 		 }

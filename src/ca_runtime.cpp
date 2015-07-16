@@ -13,6 +13,8 @@
 #include "cayman_llvm.h"
 #include "py_errcode.h"
 
+#include "JITContext.h"
+
 int Ca_InteractiveFlag = 0;
 
 
@@ -32,10 +34,13 @@ void Ca_InitializeEx(int int1)
 	llvm::InitializeNativeTargetAsmPrinter();
 	llvm::InitializeNativeTargetAsmParser();
 
+	JITContext::Initialize();
+
 }
 
 void Ca_Finalize(void)
 {
+	JITContext::Finalize();
 }
 
 int Ca_IsInitialized(void)

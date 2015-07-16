@@ -18,9 +18,9 @@
 /// PUBLIC API SECTION
 extern "C" {
 
-int CaCallable_Check(CaObject*)
+int CaCallable_Check(CaObject* obj)
 {
-	return 0;
+	return dyn_cast<CaCallable>(obj) != nullptr;
 }
 
 void* CaCallable_GetFuctionAddress(CaObject* callable, CaTypeObject* retType,

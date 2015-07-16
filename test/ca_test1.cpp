@@ -20,7 +20,7 @@ static void usage() {
 
 int ca_test1(int argc, const char** argv)
 {
-	if (argc <= 3) {
+	if (argc < 3) {
 		usage();
 		return -1;
 	}
@@ -28,7 +28,7 @@ int ca_test1(int argc, const char** argv)
     Ca_Initialize();
 
 
-	CaObject *module = CaImport_ImportModule(argv[1]);
+	CaObject *module = CaImport_ImportModule(argv[2]);
 
 	if (module == NULL) {
 
