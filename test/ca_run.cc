@@ -45,7 +45,7 @@ int ca_run(int argc, char *argv[])
                 /* pValue reference stolen here: */
                 CaTuple_SetItem(pArgs, i, pValue);
             }
-            pValue = CaObject_CallObject(pFunc, pArgs);
+            pValue = CaCallable_CallObject(pFunc, pArgs);
             Ca_DECREF(pArgs);
             if (pValue != NULL) {
                 printf("Result of call: %ld\n", CaLong_AsLong(pValue));

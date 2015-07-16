@@ -9,6 +9,7 @@ set(API_SRC
     ca_port.cpp
     ca_string.cpp
     ca_type.cpp
+    ca_callable.cpp
     )
 
 set(SRC
@@ -23,6 +24,10 @@ set(SRC
   Stmt.cpp
   AstPrinter.cpp
   AstToken.cpp
+  CaModule.cpp
+  CaTypeObject.cpp
+  CaCallable.cpp
+  JITContext.cpp
   llvm_test1.cpp
   llvm_orc_lazy_irgen.cpp
   llvm_orc_lazy_codegen.cpp
@@ -50,6 +55,10 @@ set(HEADERS
   py_tokenizer.h
   Expr.h
   Stmt.h
+  CaModule.h
+  CaTypeObject.h
+  CaCallable.h
+  JITContext.h
   AstVisitor.h
   AstPrinter.h
   AstToken.h

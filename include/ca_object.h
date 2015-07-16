@@ -19,12 +19,12 @@
 /**
  * Basic opaque Cayman object type.
  */
-typedef struct _CaObject CaObject;
+typedef struct CaObject CaObject;
 
 /**
  * Basic opaque Cayman type type.
  */
-typedef struct _CaTypeObject CaTypeObject;
+typedef struct CaTypeObject CaTypeObject;
 
 #define Ca_REFCNT(ob)           (((CaObject*)(ob))->ob_refcnt)
 #define Ca_TYPE(ob)             (((CaObject*)(ob))->ob_type)
@@ -184,95 +184,14 @@ CaAPI_FUNC(CaObject) *CaObject_Repr(CaObject *o);
 CaAPI_FUNC(CaObject) *CaObject_Str(CaObject *o);
 
 /**
- * Determine if the object, o, is callable.  Return 1 if the
- * object is callable and 0 otherwise..
- *
- * This function always succeeds.
+ * Call the method named m of object o with a variable number of
+ * C arguments. Returns the result of the call
+ * on success, or NULL on failure.  This is the equivalent of
+ * the Cayman expression: o.method(args).
  */
-CaAPI_FUNC(int) CaCallable_Check(CaObject *);
-
-/**
- * Return the raw, callable address of the specified function.
- * This is intended to be cast to a function pointer and called.
- * This may involve code generation
- *
- * This is the key function is the Cayman runtime.
- *
- * Here, the callable object is specialized and JITed for the given
- * argument types. I.e. the functions foo(int) and foo(double) are
- * different, as the function was specialized for a different type
- * in each case.
- *
- * For example, to get a callable function pointer to a function
- * defined in a module, one would:
- * @code
- * // assuming one already has a module
- * CoObject* module;
- *
- *
- * @endcode
- *
- * @param callable: A callable CaObject. This may be either a named,
- *                  a functor (an object with the __call__) method, or
- *                  a method on a an object.
- *
- * @param argTypes: A sequence of CaTypeObjects packed into a tuple.
- * @returns: the raw function pointer address of the underlying
- *           native code object.
- */
-CaAPI_FUNC(void*) CaCallable_GetFuctionAddress(CaObject *callable,
-		CaTypeObject *retType, CaObject *argTypes);
-
-/**
- * Same as CaCallable_GetFuctionAddress, except the arguments types are
- * given as variable number of C arguments.  The C arguments are provided
- * as CaTypeObject * values, terminated by a NULL.
- */
-CaAPI_FUNC(void*) CaCallable_GetFuctionAddressObjArgs(CaObject *callable,
-		CaTypeObject *retType, ...);
-
-/**
- * Call a callable Cayman object, callable_object, with
- * arguments and keywords arguments.  The 'args' argument can not be
- * NULL, but the 'kw' argument can be NULL.
- */
-CaAPI_FUNC(CaObject *) CaObject_Call(CaObject *callable_object,
-		CaObject *args, CaObject *kw);
-
-/**
- * Call a callable Cayman object, callable_object, with
- * arguments given by the tuple, args.  If no arguments are
- * needed, then args may be NULL.  Returns the result of the
- * call on success, or NULL on failure.  This is the equivalent
- * of the Cayman expression: o(*args).
- */
-CaAPI_FUNC(CaObject *) CaObject_CallObject(CaObject *callable_object,
-		CaObject *args);
-
-/**
- * Call a callable Cayman object, callable_object, with a
- * variable number of C arguments. The C arguments are described
- * using a mkvalue-style format string. The format may be NULL,
- * indicating that no arguments are provided.  Returns the
- * result of the call on success, or NULL on failure.  This is
- * the equivalent of the Cayman expression: o(*args).
- */
-CaAPI_FUNC(CaObject *) CaObject_CallFunction(CaObject *callable_object,
-		const char *format, ...);
-
 CaAPI_FUNC(CaObject *) CaObject_CallMethod(CaObject *o,
 		const char *method,
 		const char *format, ...);
-
-/**
- * Call a callable Cayman object, callable, with a
- * variable number of C arguments.  The C arguments are provided
- * as CaObject * values, terminated by a NULL.  Returns the
- * result of the call on success, or NULL on failure.  This is
- * the equivalent of the Cayman expression: o(*args).
- */
-CaAPI_FUNC(CaObject *) CaObject_CallFunctionObjArgs(CaObject *callable,
-		...);
 
 /**
  * Call the method named m of object o with a variable number of
@@ -282,7 +201,7 @@ CaAPI_FUNC(CaObject *) CaObject_CallFunctionObjArgs(CaObject *callable,
  * the Cayman expression: o.method(args).
  */
 CaAPI_FUNC(CaObject *) CaObject_CallMethodObjArgs(CaObject *o,
-		CaObject *m, ...);
+		CaObject *method, ...);
 
 /**
  *  Compute and return the hash, hash_value, of an object, o.  On
@@ -372,6 +291,7 @@ CaAPI_FUNC(uint32_t) Ca_IncRef(CaObject *o);
 CaAPI_FUNC(uint32_t) Ca_DecRef(CaObject *o);
 
 CaAPI_FUNC(CaObject *) CaObject_GetAttrString(CaObject *, const char *);
+
 
 #ifdef __cplusplus
 }

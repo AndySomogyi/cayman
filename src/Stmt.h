@@ -9,7 +9,10 @@
 #define _INCLUDED_STATEMENT_H_
 
 #include "AstNode.h"
+#include "cayman_llvm.h"
 #include <vector>
+
+class IRGenContext;
 
 namespace py
 {
@@ -219,6 +222,10 @@ public:
      * The type of the return value
      */
     AstNode *returns;
+
+    llvm::Function *IRGen(IRGenContext &c) const;
+
+    llvm::Function *PrototypeIRGen(IRGenContext &c) const;
 };
 
 class ClassDef: public Stmt

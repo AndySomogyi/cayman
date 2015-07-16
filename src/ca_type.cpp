@@ -5,6 +5,7 @@
  *      Author: andy
  */
 #include "cayman_private.h"
+#include "CaTypeObject.h"
 
 int CaType_Check(CaObject* o)
 {
@@ -45,9 +46,9 @@ CaObject* CaType_GenericNew(CaTypeObject* type, CaObject* args, CaObject* kwds)
 	return NULL;
 }
 
-CaTypeObject* CaType_FromPrimitive(int primitive, int primitiveModifier)
+CaTypeObject* CaType_FromPrimitive(uint32_t primitive, uint32_t primitiveModifier)
 {
-	return NULL;
+	return new CaTypeObject(primitive, primitiveModifier);
 }
 
 

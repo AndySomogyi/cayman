@@ -6,66 +6,40 @@
  */
 
 #include "cayman_private.h"
+#include "CaTypeObject.h"
+#include <stdarg.h>
+#include <iostream>
 
 
 
 extern "C" {
 
-int CaCallable_Check(CaObject*)
-{
-	return 0;
-}
+
 
 void Ca_Dealloc(CaObject*)
 {
 }
 
-CaObject * CaObject_GetAttrString(CaObject*, const char*)
+CaObject * CaObject_GetAttrString(CaObject* o, const char* str)
 {
-	return NULL;
+	return o->GetAttrString(str);
 }
 
-CaObject * CaObject_Call(CaObject* callable_object, CaObject* args, CaObject* kw)
-{
-	return NULL;
-}
 
-CaObject * CaObject_CallObject(CaObject* callable_object, CaObject* args)
-{
-	return NULL;
-}
-
-CaObject * CaObject_CallFunction(CaObject* callable_object, const char* format, ...)
-{
-	return NULL;
-}
 
 CaObject * CaObject_CallMethod(CaObject* o, const char* method, const char* format, ...)
 {
 	return NULL;
 }
 
-CaObject * CaObject_CallFunctionObjArgs(CaObject* callable, ...)
-{
-	return NULL;
-}
+
 
 CaObject * CaObject_CallMethodObjArgs(CaObject* o, CaObject* method, ...)
 {
 	return NULL;
 }
 
-void* CaCallable_GetFuctionAddress(CaObject* callable, CaTypeObject* retType,
-		CaObject* argTypes)
-{
-	return 0;
-}
 
-void* CaCallable_GetFuctionAddressObjArgs(CaObject* callable,
-		CaTypeObject* retType, ...)
-{
-	return 0;
-}
 
 CaObject* CaObject_Type(CaObject* o)
 {

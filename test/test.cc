@@ -16,6 +16,10 @@ int main(int argc, const char** argv)
         {
             return llvm_orc_initial(argc, argv);
         }
+        else if (string("ki") == argv[1])
+        {
+            return  llvm_orc_lazy_irgen(argc, argv);
+        }
         else
         {
             return Ca_Main(argc, argv);

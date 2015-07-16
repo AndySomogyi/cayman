@@ -47,7 +47,7 @@ void Parser::SetDebugStream(std::ostream& o)
 AstPtr Parser::Parse()
 {
 	ctx->parser.parse();
-	return ctx->ast;
+	return std::move(ctx->ast);
 }
 
 void Parser::Tokenize()

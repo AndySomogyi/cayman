@@ -7,11 +7,31 @@
 
 #include <cayman.h>
 
+#include <iostream>
+
+using namespace std;
+
+static void usage() {
+	cout << "usage: ca_test module_name func_name [arg0 arg1 arg...]" << std::endl;
+}
 
 
 int ca_test1(int argc, const char** argv)
 {
-	CaObject *module;
+	if (argc <= 3) {
+		usage();
+		return -1;
+	}
+
+    Ca_Initialize();
+
+
+	CaObject *module = CaImport_ImportModule(argv[1]);
+
+	if (module == NULL) {
+
+	}
+
 
 	// get the function object
 	CaObject *func = CaObject_GetAttrString(module, "SomeFunctionName");

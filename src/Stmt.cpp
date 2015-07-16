@@ -13,6 +13,10 @@
 #include "ParserContext.h"
 #include "AstToken.h"
 
+
+#include "cayman_llvm.h"
+#include "AstCodegen.h"
+
 namespace py
 {
 
@@ -96,6 +100,59 @@ FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
 int FunctionDef::Accept(AstVisitor* v)
 {
 	return v->Visit(this);
+}
+
+llvm::Function* FunctionDef::IRGen(IRGenContext& c) const
+{
+	return nullptr;
+}
+
+
+using llvm::Type;
+using llvm::FunctionType;
+using llvm::Function;
+
+
+
+llvm::Function* FunctionDef::PrototypeIRGen(IRGenContext& c) const
+{
+	// Make the function type:  double(double,double) etc.
+	std::vector<Type*> Doubles(args.size(),
+			Type::getDoubleTy(c.getLLVMContext()));
+
+	FunctionType *FT = FunctionType::get(Type::getDoubleTy(c.getLLVMContext()),
+			Doubles, false);
+	Function *F = Function::Create(FT, Function::ExternalLinkage, name,
+			&c.getModule());
+
+	// If F conflicted, there was already something named 'FnName'.  If it has a
+	// body, don't allow redefinition or reextern.
+	if (F->getName() != name)
+	{
+		// Delete the one we just made and get the existing one.
+		F->eraseFromParent();
+		F = c.getModule().getFunction(name);
+
+		// If F already has a body, reject this.
+		if (!F->empty()) {
+			ErrorP<Function>("redefinition of function");
+			return nullptr;
+		}
+
+		// If F took a different number of args, reject.
+		if (F->arg_size() != args.size()) {
+			ErrorP<Function>("redefinition of function with different # args");
+			return nullptr;
+		}
+	}
+
+	// Set names for all arguments.
+	unsigned Idx = 0;
+	for (Function::arg_iterator AI = F->arg_begin(); Idx != args.size();
+			++AI, ++Idx)
+		AI->setName(args[Idx]->id);
+
+	return F;
 }
 
 void TmpArguments::ArgsFromTuple(AstNode* node, Args& args)

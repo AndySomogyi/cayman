@@ -10,6 +10,7 @@
 #include <Python.h>
 
 #include "cayman_private.h"
+#include "cayman_llvm.h"
 #include "py_errcode.h"
 
 int Ca_InteractiveFlag = 0;
@@ -26,6 +27,11 @@ void Ca_Initialize(void)
 
 void Ca_InitializeEx(int int1)
 {
+	// initialize LLVM runtime
+	llvm::InitializeNativeTarget();
+	llvm::InitializeNativeTargetAsmPrinter();
+	llvm::InitializeNativeTargetAsmParser();
+
 }
 
 void Ca_Finalize(void)

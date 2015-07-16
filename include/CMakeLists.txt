@@ -19,6 +19,7 @@ set (_PUBLIC_HEADERS
   ca_floatobject.h
   ca_number.h
   ca_type.h
+  ca_callable.h
   cayman.h
   )
 

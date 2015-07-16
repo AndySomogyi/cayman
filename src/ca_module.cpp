@@ -4,14 +4,15 @@
  *  Created on: Jul 6, 2015
  *      Author: andy
  */
-
+#include "cayman_private.h"
+#include "CaModule.h"
 
 
 extern "C" {
 
 int CaModule_Check(CaObject* p)
 {
-	return 0;
+	return dyn_cast<CaModule>(p) != nullptr;
 }
 
 int CaModule_CheckExact(CaObject* p)

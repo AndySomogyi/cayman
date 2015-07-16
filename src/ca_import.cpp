@@ -6,12 +6,40 @@
  */
 
 #include "cayman_private.h"
+#include "CaModule.h"
+#include "Parser.h"
+#include <string>
 
+using std::string;
 
-extern "C" {
+using namespace std;
+
+extern "C"
+{
 
 CaObject* CaImport_ImportModule(const char* name)
 {
+	try {
+		 string fname = string(name) + ".py";
+
+		 py::Parser parser(fname);
+
+		 py::AstPtr ast = parser.Parse();
+
+		 py::Module *tmp = dynamic_cast<py::Module*>(ast.get());
+		 if(tmp != nullptr)
+		 {
+		     ast.release();
+
+		     CaModule *mod = new CaModule(name, fname, std::unique_ptr<py::Module>(tmp));
+
+		     return mod;
+		 }
+
+	} catch (...)
+	{
+		cout << "error";
+	}
 	return 0;
 }
 
@@ -20,12 +48,14 @@ CaObject* CaImport_ImportModuleNoBlock(const char* name)
 	return 0;
 }
 
-CaObject* CaImport_ImportModuleEx(char* name, CaObject* globals, CaObject* locals, CaObject* fromlist)
+CaObject* CaImport_ImportModuleEx(char* name, CaObject* globals,
+		CaObject* locals, CaObject* fromlist)
 {
 	return 0;
 }
 
-CaObject* CaImport_ImportModuleLevel(char* name, CaObject* globals, CaObject* locals, CaObject* fromlist, int level)
+CaObject* CaImport_ImportModuleLevel(char* name, CaObject* globals,
+		CaObject* locals, CaObject* fromlist, int level)
 {
 	return 0;
 }

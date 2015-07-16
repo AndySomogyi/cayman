@@ -260,7 +260,7 @@ private:
 
 };
 
-typedef std::shared_ptr<Ast> AstPtr;
+typedef std::unique_ptr<Ast> AstPtr;
 
 
 

@@ -45,6 +45,8 @@ calls to the stub will go straight to the body, not through the JIT.
 using namespace llvm;
 using namespace llvm::orc;
 
+namespace fully_lazy {
+
 //===----------------------------------------------------------------------===//
 // Lexer
 //===----------------------------------------------------------------------===//
@@ -1408,30 +1410,11 @@ static void MainLoop() {
   }
 }
 
-//===----------------------------------------------------------------------===//
-// "Library" functions that can be "extern'd" from user code.
-//===----------------------------------------------------------------------===//
-
-/// putchard - putchar that takes a double and returns 0.
-extern "C" 
-double putchard(double X) {
-  putchar((char)X);
-  return 0;
 }
 
-/// printd - printf that takes a double prints it as "%f\n", returning 0.
-extern "C" 
-double printd(double X) {
-  printf("%f", X);
-  return 0;
-}
 
-extern "C" 
-double printlf() {
-  printf("\n");
-  return 0;
-}
 
+using namespace fully_lazy;
 //===----------------------------------------------------------------------===//
 // Main driver code.
 //===----------------------------------------------------------------------===//
