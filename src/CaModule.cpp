@@ -20,9 +20,23 @@ CaModule::CaModule(const std::string& _name, const std::string& _fname,
 		CaObject(TY_MODULE), name(_name), fname(_fname),
 		ast(std::move(_ast))
 {
+	AddDefinitionsToContext();
 }
 
+
+
 CaObject* CaModule::GetAttrString(const char* str)
+{
+	for(auto i = ast->body.begin(), end = ast->body.end(); i != end; ++i) {
+		FunctionDef* func = dynamic_cast<FunctionDef*>(*i);
+		if(func && func->name.compare(str) == 0) {
+			return new CaCallable(func);
+		}
+	}
+	return nullptr;
+}
+
+void CaModule::AddDefinitionsToContext()
 {
 	for(auto i = ast->body.begin(), end = ast->body.end(); i != end; ++i) {
 		FunctionDef* func = dynamic_cast<FunctionDef*>(*i);
