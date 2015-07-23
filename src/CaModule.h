@@ -26,6 +26,11 @@
  * which is essentially a namespace with a set of functions, variables and
  * class definitions. When it is first loaded, all of the definitions
  * need to be added to the JITContext, but only the definitions.
+ *
+ * When a new CaModule is created, all of the function definitions (prototypes)
+ * are accessable by the JITContext.
+ * At that point, these definitions are available, and when requested,
+ * full function definitions may be JITed as requested.
  */
 class CaModule: public CaObject
 {
@@ -49,13 +54,33 @@ public:
 		return o->GetType() == TY_MODULE;
 	}
 
+	// name of module
 	std::string name;
+
+	// filename of module
 	std::string fname;
 
 	/**
 	 * TODO remove these virtuals with static methods
 	 */
 	virtual CaObject *GetAttrString(const char* str);
+
+	/**
+	 * A prototype only defines a function signature and symbol name.
+	 * It does not specify the location (address) of the function.
+	 *
+	 * Address resolulution is handled later by the lambda resolver in the
+	 * JITContext, which actually maps symbols names to address at runtime.
+	 */
+	const PrototypeAST* GetPrototypeAST(const std::string &name) const;
+
+	/**
+	 * A function ast define both a function defintion and a body.
+	 *
+	 * The CaModule only stores uncompiled ASTs, IR generatation and
+	 * object code generation is handled by the JIT Context.
+	 */
+	const FunctionAST* GetFunctionAST(const std::string &name) const;
 
 private:
 

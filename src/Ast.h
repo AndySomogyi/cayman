@@ -13,6 +13,10 @@
 #include "Stmt.h"
 #include <memory>
 
+typedef py::FunctionDef FunctionAST;
+
+typedef py::FunctionDef PrototypeAST;
+
 namespace py
 {
 

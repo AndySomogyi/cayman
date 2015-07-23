@@ -13,6 +13,7 @@
 
 typedef std::vector<CaTypeObject*> CaTypeObjectVec;
 
+
 class CaCallable : public CaObject
 {
 public:
@@ -24,6 +25,8 @@ public:
 	void *pfunc;
 
 	void *GetFuctionAddress(CaTypeObject* retType, const CaTypeObjectVec& args);
+
+
 
 	static bool classof(const CaObject *o)
 	{

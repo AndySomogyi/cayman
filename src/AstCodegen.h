@@ -11,6 +11,7 @@
 #include "cayman_llvm.h"
 #include "JITContext.h"
 #include "Ast.h"
+#include "AstVisitor.h"
 
 #include <memory>
 #include <map>
@@ -80,11 +81,26 @@ T* ErrorP(const std::string &Str) {
 
 namespace py {
 
-class AstCodegen: private AstVisitor
+class AstCodegen: public IRGenContext, private AstVisitor
 {
 public:
-	AstCodegen();
+	AstCodegen(JITContext &jctx);
+
 	virtual ~AstCodegen();
+
+	/**
+	 * Generate a prototype defined in the currently being built module,
+	 * create if necessary.
+	 */
+	llvm::Function *FunctionProto(const py::FunctionDef *func);
+
+
+	/**
+	 * Generate the full IR for a function definition, including func body.
+	 */
+	llvm::Function *Function(const py::FunctionDef *func);
+
+private:
 
 	virtual int Visit(Name*);
 	virtual int Visit(Num*);
@@ -133,9 +149,6 @@ public:
     virtual int Visit(NameConstant*);
     virtual int Visit(Subscript*);
     virtual int Visit(List*);
-
-private:
-    JITContext &jctx = JITContext::Get();
 };
 
 }

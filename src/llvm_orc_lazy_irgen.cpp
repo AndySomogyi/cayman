@@ -718,6 +718,14 @@ public:
 	LLVMContext& getLLVMContext() const { return Context; }
 	TargetMachine& getTarget() { return *TM; }
 	void addPrototypeAST(std::unique_ptr<PrototypeAST> P);
+
+	/**
+	 * A prototype only defines a function signature and symbol name.
+	 * It does not specify the location (address) of the function.
+	 *
+	 * Address resolulution is handled later by the lambda resolver which
+	 * actually maps symbols names to address at runtime.
+	 */
 	PrototypeAST* getPrototypeAST(const std::string &Name);
 private:
 	typedef std::map<std::string, std::unique_ptr<PrototypeAST>> PrototypeMap;
@@ -1307,6 +1315,8 @@ private:
 	 *
 	 * If a function definition (AST) is found, it is removed from the list,
 	 * and IR is generated for it, and the IR is then added as a new module.
+	 *
+	 * Generates both IR from a function definition, and object code.
 	 */
 	RuntimeDyld::SymbolInfo searchFunctionASTs(const std::string &Name) {
 		auto DefI = FunctionDefs.find(Name);
@@ -1320,6 +1330,8 @@ private:
 		// IRGen the AST, add it to the JIT, and return the address for it.
 		auto H = addModule(IRGen(Session, *FnAST));
 		auto Sym = findSymbolIn(H, Name);
+
+		// JITSymbol::getAddress performs the object code generation.
 		return RuntimeDyld::SymbolInfo(Sym.getAddress(), Sym.getFlags());
 	}
 

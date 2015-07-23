@@ -17,6 +17,13 @@ void* CaCallable::GetFuctionAddress(CaTypeObject* retType,
 
 	JITContext &ctx = JITContext::Get();
 
+	// Get the address of the JIT'd function in memory.
+	auto symbol = ctx.FindUnmangledSymbol(func->name);
 
-	return nullptr;
+	// Cast it to the right type (takes no arguments, returns a double) so we
+	// can call it as a native function.
+	pfunc = (void*)symbol.getAddress();
+
+
+	return pfunc;
 }

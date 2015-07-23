@@ -7,7 +7,9 @@
 
 #include "JITContext.h"
 #include "AstCodegen.h"
+#include "CaModule.h"
 #include "assert.h"
+
 
 JITContext *JITContext::jitCtx = nullptr;
 
@@ -52,21 +54,28 @@ FunctionAST *JITContext::GetFunctionAST(const std::string& nm)
 
 llvm::RuntimeDyld::SymbolInfo JITContext::CompileFunction(const std::string& nm)
 {
-	auto fi = functions.find(nm);
-	if (fi == functions.end())
-		return nullptr;
+	const FunctionAST *func = nullptr;
+	for(auto i = caModules.begin(); i != caModules.end(); ++i)
+	{
+		func = i->second->GetFunctionAST(nm);
+		if(func)
+		{
+			// IRGen the AST, add it to the JIT, and return the address for it.
+			auto h = addModule(ModuleWithFunction(*func));
+			auto sym = findSymbolIn(h, nm);
 
-	assert(!fi->second.jitSymbol);
-
-	// IRGen the AST, add it to the JIT, and return the address for it.
-	auto h = addModule(IRGen(*fi->second.functionDef.get()));
-	auto sym = findSymbolIn(h, nm);
-
-	// the sym.getAddress will actully invoke the JIT compilation.
-	return llvm::RuntimeDyld::SymbolInfo(sym.getAddress(), sym.getFlags());
+			// the sym.getAddress will actully invoke the JIT compilation.
+			return llvm::RuntimeDyld::SymbolInfo(sym.getAddress(), sym.getFlags());
+		}
+		else
+		{
+			continue;
+		}
+	}
+	return nullptr;
 }
 
-std::unique_ptr<llvm::Module> JITContext::IRGen(const FunctionAST& f)
+std::unique_ptr<llvm::Module> JITContext::ModuleWithFunction(const FunctionAST& f)
 {
 	IRGenContext irCtx(*this);
 
@@ -101,4 +110,8 @@ JITContext::ModuleHandleT JITContext::addModule(std::unique_ptr<llvm::Module> M)
 	return LazyEmitLayer.addModuleSet(singletonSet(std::move(M)),
 			llvm::make_unique<llvm::SectionMemoryManager>(),
 			std::move(Resolver));
+}
+
+void JITContext::AddCaModule(const CaModule* m)
+{
 }

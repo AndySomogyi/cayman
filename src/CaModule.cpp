@@ -36,13 +36,18 @@ CaObject* CaModule::GetAttrString(const char* str)
 	return nullptr;
 }
 
+const PrototypeAST* CaModule::GetPrototypeAST(const std::string& name) const
+{
+}
+
+const FunctionAST* CaModule::GetFunctionAST(const std::string& name) const
+{
+}
+
 void CaModule::AddDefinitionsToContext()
 {
 	for(auto i = ast->body.begin(), end = ast->body.end(); i != end; ++i) {
 		FunctionDef* func = dynamic_cast<FunctionDef*>(*i);
-		if(func && func->name.compare(str) == 0) {
-			return new CaCallable(func);
-		}
+
 	}
-	return nullptr;
 }

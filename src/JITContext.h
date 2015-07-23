@@ -12,8 +12,11 @@
 #include "Ast.h"
 #include <sstream>
 #include <assert.h>
+#include <unordered_map>
 
 using llvm::orc::JITSymbol;
+
+class CaModule;
 
 template <typename T>
 static std::vector<T> singletonSet(T t) {
@@ -22,9 +25,7 @@ static std::vector<T> singletonSet(T t) {
 	return Vec;
 }
 
-typedef py::FunctionDef FunctionAST;
 
-typedef py::FunctionDef PrototypeAST;
 
 typedef std::unique_ptr<FunctionAST> FunctionAstPtr;
 
@@ -131,14 +132,8 @@ public:
 		return MangledName;
 	}
 
-	/**
-	 * Adds a function definitions, but does not generate IR
-	 */
-	void addFunctionAST(std::unique_ptr<FunctionAST> FnAST)
-	{
-		std::cerr << "Adding AST: " << FnAST->name << "\n";
-		functionDefs[mangle(FnAST->name)] = std::move(FnAST);
-	}
+	void AddCaModule(const CaModule* m);
+
 
 	/**
 	 * Adds an LLVM module to the lazy emit orc layer.
@@ -163,7 +158,7 @@ public:
 		return LazyEmitLayer.findSymbolIn(H, Name, true);
 	}
 
-	JITSymbol findUnmangledSymbol(const std::string &Name)
+	JITSymbol FindUnmangledSymbol(const std::string &Name)
 	{
 		return findSymbol(mangle(Name));
 	}
@@ -191,16 +186,14 @@ private:
 	LazyEmitLayerT LazyEmitLayer;
 
 	/**
-	 * List of complete function defintions (includes body).
 	 *
-	 * No IR has been generated for these?
 	 */
-	std::map<std::string, std::unique_ptr<FunctionAST>> functionDefs;
+	std::unordered_map<std::string, CaModule*> caModules;
 
 	/**
 	 * Creates an new LLVM module populated with the single given function.
 	 */
-	std::unique_ptr<llvm::Module> IRGen(const FunctionAST &f) ;
+	std::unique_ptr<llvm::Module> ModuleWithFunction(const FunctionAST &f) ;
 
 
 	std::map<std::string, FunctionInfo> functions;
