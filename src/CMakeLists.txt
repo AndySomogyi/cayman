@@ -20,6 +20,7 @@ set(SRC
   Ast.cpp
   AstNode.cpp
   AstNodeFactory.cpp
+  AstCodegen.cpp
   Expr.cpp
   Stmt.cpp
   AstPrinter.cpp
@@ -43,6 +44,7 @@ set(HEADERS
   Ast.h
   AstNode.h
   AstNodeFactory.h
+  AstCodegen.h
   ParserContext.h
   position.hh
   py_parser.hh

@@ -26,7 +26,8 @@ public:
 	IRGenContext(JITContext &jctx) :
 		jctx(jctx), module(
 		    new llvm::Module(jctx.generateUniqueName("jit_module_"),
-				jctx.getLLVMContext())), builder(jctx.getLLVMContext())
+				jctx.getLLVMContext())), builder(jctx.getLLVMContext()),
+				llvmCtx(jctx.getLLVMContext())
 	{
 		module->setDataLayout(*jctx.getTarget().getDataLayout());
 	}
@@ -53,18 +54,16 @@ public:
 		return jctx.getLLVMContext();
 	}
 
-	/**
-	 * Get a prototype defined in the currently being built module,
-	 * create if necessary.
-	 */
-	llvm::Function* GetPrototype(const std::string &name);
+
 
 	std::map<std::string, llvm::AllocaInst*> namedValues;
 
-private:
+protected:
 	JITContext &jctx;
 	std::unique_ptr<llvm::Module> module;
 	llvm::IRBuilder<> builder;
+
+	llvm::LLVMContext &llvmCtx;
 };
 
 template <typename T>
@@ -86,19 +85,19 @@ class AstCodegen: public IRGenContext, private AstVisitor
 public:
 	AstCodegen(JITContext &jctx);
 
+
 	virtual ~AstCodegen();
 
 	/**
-	 * Generate a prototype defined in the currently being built module,
-	 * create if necessary.
+	 * Emit a prototype defined in the currently being built llvm module.
 	 */
-	llvm::Function *FunctionProto(const py::FunctionDef *func);
+	llvm::Function *FunctionProto(const py::FunctionDef &func);
 
 
 	/**
-	 * Generate the full IR for a function definition, including func body.
+	 * Emit the full IR for a function definition, including func body.
 	 */
-	llvm::Function *Function(const py::FunctionDef *func);
+	llvm::Function *Function(const py::FunctionDef &func);
 
 private:
 
@@ -149,6 +148,30 @@ private:
     virtual int Visit(NameConstant*);
     virtual int Visit(Subscript*);
     virtual int Visit(List*);
+
+
+    /// CreateArgumentAllocas - Create an alloca for each argument and register the
+    /// argument in the symbol table so that references to it will succeed.
+    void CreateArgumentAllocas(const py::FunctionDef& funcAst, llvm::Function *f);
+
+    /// CreateEntryBlockAlloca - Create an alloca instruction in the entry block of
+    /// the function.  This is used for mutable variables etc.
+    llvm::AllocaInst *CreateEntryBlockAlloca(llvm::Function *TheFunction,
+    		const std::string &VarName);
+
+
+    /**
+     * iterate through a sequence of nodes untill a return statement is found,
+     * all statements after a return are ignored.
+     */
+    llvm::Value* CreateBody(const py::AstNodes& body);
+
+    llvm::Value *_result;
+
+    /**
+     * Wrapper for calling Accept --- Visit and grabing the resulting llvm value
+     */
+    llvm::Value *Create(AstNode *node);
 };
 
 }

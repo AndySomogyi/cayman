@@ -1321,6 +1321,15 @@ double printlf() {
 //===----------------------------------------------------------------------===//
 
 int llvm_orc_initial(int argc, const char** argv) {
+
+  std::cout << " llvm_orc_initial(" << argc;
+  for(int i = 0; i < argc; ++i) {
+	std::cout << ", ";
+	std::cout << argv[i];
+  }
+  std::cout << ")" << std::endl;
+
+
   InitializeNativeTarget();
   InitializeNativeTargetAsmPrinter();
   InitializeNativeTargetAsmParser();

@@ -26,6 +26,7 @@ fly.
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm/IR/ValueSymbolTable.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
 #include <cctype>
@@ -1313,6 +1314,8 @@ private:
 	 * This method searches the FunctionDefs map for a definition of 'Name'. If it
 	 * finds one it generates a stub for it and returns the address of the stub.
 	 *
+	 * Name is the mangled name of the function.
+	 *
 	 * If a function definition (AST) is found, it is removed from the list,
 	 * and IR is generated for it, and the IR is then added as a new module.
 	 *
@@ -1347,6 +1350,8 @@ private:
 	// address mappings.
 	LazyEmitLayerT LazyEmitLayer;
 
+
+	// Function def ASTs are indexed by thier mangled name.
 	std::map<std::string, std::unique_ptr<FunctionAST>> FunctionDefs;
 };
 
@@ -1386,7 +1391,23 @@ static void HandleTopLevelExpression(SessionContext &S, KaleidoscopeJIT &J) {
 #ifndef MINIMAL_STDERR_OUTPUT
 			std::cerr << "Expression function:\n";
 			ExprFunc->dump();
+
+			Module& mod = C.getM();
+
+			ValueSymbolTable& symbols = mod.getValueSymbolTable();
+
+
+			for(ValueSymbolTable::iterator i = symbols.begin(); i != symbols.end(); ++i) {
+                std::string sym = i->first();
+				std::cout << "symbol: " << sym << std::endl;
+			}
+
+
+
+
 #endif
+
+
 			// Add the CodeGen'd module to the JIT. Keep a handle to it: We can remove
 			// this module as soon as we've executed Function ExprFunc.
 			auto H = J.addModule(C.takeM());
@@ -1440,6 +1461,17 @@ static void MainLoop() {
 using namespace lazy_irgen;
 
 int llvm_orc_lazy_irgen(int argv, const char** argc) {
+
+
+	std::cout << " llvm_orc_lazy_irgen(" << argv;
+	for(int i = 0; i < argv; ++i) {
+		std::cout << ", ";
+		std::cout << argc[i];
+	}
+	std::cout << ")" << std::endl;
+
+
+
 	InitializeNativeTarget();
 	InitializeNativeTargetAsmPrinter();
 	InitializeNativeTargetAsmParser();

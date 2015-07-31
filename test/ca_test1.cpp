@@ -8,6 +8,8 @@
 #include "cayman_test.h"
 #include <cayman.h>
 
+#include "JITContext.h"
+
 
 #include <iostream>
 
@@ -20,12 +22,36 @@ static void usage() {
 
 int ca_test1(int argc, const char** argv)
 {
+    Ca_Initialize();
+    
+    JITContext &ctx = JITContext::Get();
+    
+    
+    const char* names[] = {
+        "test",
+        "_test",
+        "__test",
+        "test.test",
+        "_test.test",
+        "1test",
+        "test test",
+        "test%test"
+    };
+    
+    for(int i = 0; i < sizeof(names)/sizeof(char*); ++i) {
+        std::cout << names[i] << ", " << ctx.mangle(names[i]) << std::endl;
+    }
+    
+    
 	if (argc < 3) {
 		usage();
 		return -1;
 	}
 
-    Ca_Initialize();
+
+
+
+
 
 
 	CaObject *module = CaImport_ImportModule(argv[2]);

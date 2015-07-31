@@ -50,6 +50,11 @@ struct FunctionInfo
 /**
  * Manage the state of the current JIT runtime, this includes
  * all of the currently defined method definitions.
+ *
+ * Notes:
+ *
+ * Currently all functions are compiled into separate object code
+ * modules, so need external linkage.
  */
 class JITContext
 {
@@ -116,21 +121,11 @@ private:
 public:
 	typedef llvm::orc::ObjectLinkingLayer<> ObjLayerT;
 	typedef llvm::orc::IRCompileLayer<ObjLayerT> CompileLayerT;
-	typedef llvm::orc::LazyEmittingLayer<CompileLayerT> LazyEmitLayerT;
-	typedef LazyEmitLayerT::ModuleSetHandleT ModuleHandleT;
+	typedef CompileLayerT::ModuleSetHandleT ModuleHandleT;
 
 
 
-	std::string mangle(const std::string &name)
-	{
-		std::string MangledName;
-		{
-			llvm::raw_string_ostream MangledNameStream(MangledName);
-			llvm::Mangler::getNameWithPrefix(MangledNameStream, name,
-					*getTarget().getDataLayout());
-		}
-		return MangledName;
-	}
+	std::string mangle(const std::string &name);
 
 	void AddCaModule(const CaModule* m);
 
@@ -143,28 +138,17 @@ public:
 	 */
 	ModuleHandleT addModule(std::unique_ptr<llvm::Module> M);
 
-	void removeModule(ModuleHandleT H)
-	{
-		LazyEmitLayer.removeModuleSet(H);
-	}
+	void removeModule(ModuleHandleT H);
 
-	JITSymbol findSymbol(const std::string &Name)
-	{
-		return LazyEmitLayer.findSymbol(Name, true);
-	}
+	JITSymbol findMangledSymbol(const std::string &name);
 
-	JITSymbol findSymbolIn(ModuleHandleT H, const std::string &Name)
-	{
-		return LazyEmitLayer.findSymbolIn(H, Name, true);
-	}
-
-	JITSymbol FindUnmangledSymbol(const std::string &Name)
-	{
-		return findSymbol(mangle(Name));
-	}
+	JITSymbol findSymbol(const std::string &name);
 
 
-	FunctionAST *GetFunctionAST(const std::string &nm);
+	/**
+	 * Searches the current set of camodules for a definition ast.
+	 */
+	FunctionAST *getFunctionAST(const std::string &nm) const;
 
 private:
 
@@ -177,13 +161,17 @@ private:
 	 * symbol resolver. The symbol resolver will check to see if there is already
 	 * an existing compiled method, if not, it will call this method to
 	 * compile and save the object code.
+	 *
+	 * This method first searches for the function definition ast via
+	 * GetFunctionAST, then generates IR, then creates a new llvm module
+	 * containing only this func def.
 	 */
 	llvm::RuntimeDyld::SymbolInfo CompileFunction(const std::string &nm);
 
 
 	ObjLayerT ObjectLayer;
 	CompileLayerT CompileLayer;
-	LazyEmitLayerT LazyEmitLayer;
+
 
 	/**
 	 *
@@ -193,7 +181,7 @@ private:
 	/**
 	 * Creates an new LLVM module populated with the single given function.
 	 */
-	std::unique_ptr<llvm::Module> ModuleWithFunction(const FunctionAST &f) ;
+	std::unique_ptr<llvm::Module> CreateModuleWithFunction(const FunctionAST &f) ;
 
 
 	std::map<std::string, FunctionInfo> functions;

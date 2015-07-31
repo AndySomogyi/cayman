@@ -13,6 +13,10 @@
 
 JITContext *JITContext::jitCtx = nullptr;
 
+using namespace llvm;
+using namespace llvm::orc;
+
+
 int JITContext::Initialize()
 {
 	assert(jitCtx == nullptr);
@@ -43,13 +47,14 @@ PrototypeAST* JITContext::getPrototypeAST(const std::string& nm)
 JITContext::JITContext() :
     ctx(llvm::getGlobalContext()),
 	tm(llvm::EngineBuilder().selectTarget()),
-	CompileLayer(ObjectLayer, llvm::orc::SimpleCompiler(this->getTarget())),
-	      LazyEmitLayer(CompileLayer)
+	CompileLayer(ObjectLayer, llvm::orc::SimpleCompiler(this->getTarget()))
 {
+
 }
 
-FunctionAST *JITContext::GetFunctionAST(const std::string& nm)
+FunctionAST *JITContext::getFunctionAST(const std::string& nm) const
 {
+    return nullptr;
 }
 
 llvm::RuntimeDyld::SymbolInfo JITContext::CompileFunction(const std::string& nm)
@@ -61,8 +66,8 @@ llvm::RuntimeDyld::SymbolInfo JITContext::CompileFunction(const std::string& nm)
 		if(func)
 		{
 			// IRGen the AST, add it to the JIT, and return the address for it.
-			auto h = addModule(ModuleWithFunction(*func));
-			auto sym = findSymbolIn(h, nm);
+			auto h = addModule(CreateModuleWithFunction(*func));
+			auto sym = CompileLayer.findSymbolIn(h, nm, true);
 
 			// the sym.getAddress will actully invoke the JIT compilation.
 			return llvm::RuntimeDyld::SymbolInfo(sym.getAddress(), sym.getFlags());
@@ -75,43 +80,95 @@ llvm::RuntimeDyld::SymbolInfo JITContext::CompileFunction(const std::string& nm)
 	return nullptr;
 }
 
-std::unique_ptr<llvm::Module> JITContext::ModuleWithFunction(const FunctionAST& f)
+void JITContext::removeModule(ModuleHandleT H)
 {
-	IRGenContext irCtx(*this);
+	CompileLayer.removeModuleSet(H);
+}
 
-	auto lf = f.IRGen(irCtx);
+JITSymbol JITContext::findMangledSymbol(const std::string& name)
+{
+	if (auto sym = CompileLayer.findSymbol(name, true))
+	{
+		return sym;
+	}
+
+	if (auto *func = getFunctionAST(name))
+	{
+		// IRGen the AST, add it to the JIT, and return the address for it.
+		auto h = addModule(CreateModuleWithFunction(*func));
+		auto sym = CompileLayer.findSymbolIn(h, name, true);
+
+		assert(sym);
+
+		return sym;
+	}
+
+	// TODO report error
+	return nullptr;
+}
+
+std::unique_ptr<llvm::Module> JITContext::CreateModuleWithFunction(const FunctionAST& f)
+{
+	AstCodegen cg(*this);
+
+	auto lf = cg.Function(f);
 	if (!lf)
 		return nullptr;
 #ifndef MINIMAL_STDERR_OUTPUT
 	fprintf(stderr, "Read function definition:");
 	lf->dump();
 #endif
-	return irCtx.TakeModule();
+	return cg.TakeModule();
 }
 
 JITContext::ModuleHandleT JITContext::addModule(std::unique_ptr<llvm::Module> M)
 {
-	// We need a memory manager to allocate memory and resolve symbols for this
-	// new module. Create one that resolves symbols by looking back into the
-	// JIT.
-	auto Resolver = llvm::orc::createLambdaResolver(
-			[&](const std::string &Name) {
-		// First try to find 'Name' within the JIT.
-		if (auto Symbol = findSymbol(Name))
-			return llvm::RuntimeDyld::SymbolInfo(Symbol.getAddress(),
-					Symbol.getFlags());
-
-		// If we don't already have a definition of 'Name' then search
-		// the ASTs.
-		return CompileFunction(Name);
-	},
-	[](const std::string &S) { return nullptr; } );
-
-	return LazyEmitLayer.addModuleSet(singletonSet(std::move(M)),
-			llvm::make_unique<llvm::SectionMemoryManager>(),
-			std::move(Resolver));
+    // We need a memory manager to allocate memory and resolve symbols for this
+    // new module. Create one that resolves symbols by looking back into the
+    // JIT.
+    auto Resolver = createLambdaResolver(
+                      [&](const std::string &Name) {
+                        if (auto sym = findMangledSymbol(Name))
+                          return RuntimeDyld::SymbolInfo(sym.getAddress(),
+                                                         sym.getFlags());
+                        return RuntimeDyld::SymbolInfo(nullptr);
+                      },
+                      [](const std::string &S) { return nullptr; }
+                    );
+    return CompileLayer.addModuleSet(singletonSet(std::move(M)),
+                                     make_unique<SectionMemoryManager>(),
+                                     std::move(Resolver));
 }
 
 void JITContext::AddCaModule(const CaModule* m)
 {
+	AstCodegen cg(*this);
+
+	for(py::AstNode *node : m->ast->body)
+	{
+		if (py::FunctionDef *func = dynamic_cast<py::FunctionDef*>(node))
+		{
+			cg.Function(*func);
+		}
+	}
+
+	addModule(cg.TakeModule());
 }
+
+JITSymbol JITContext::findSymbol(const std::string& Name)
+{
+	return findMangledSymbol(mangle(Name));
+}
+
+std::string JITContext::mangle(const std::string &name)
+{
+    std::string MangledName;
+    {
+      llvm::raw_string_ostream MangledNameStream(MangledName);
+      llvm::Mangler::getNameWithPrefix(MangledNameStream, name,
+    		  *getTarget().getDataLayout());
+    }
+    return MangledName;
+}
+
+
