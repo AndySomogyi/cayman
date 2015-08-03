@@ -37,7 +37,7 @@ class CaModule: public CaObject
 public:
 
 	CaModule(const std::string& _name, const std::string& _fname = "") :
-		CaObject(TY_MODULE), name(_name), fname(_fname) {};
+		CaObject(CA_MODULE), name(_name), fname(_fname) {};
 
 	CaModule(const std::string& _name, const std::string& _fname,
 		std::unique_ptr<py::Module> _ast);
@@ -51,7 +51,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->GetType() == TY_MODULE;
+		return o->GetType() == CA_MODULE;
 	}
 
 	// name of module

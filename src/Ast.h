@@ -28,8 +28,6 @@ public:
 
     Module *module;
 
-    virtual int Accept(class AstVisitor *v);
-
     virtual void Print(std::ostream &os);
 
     /**

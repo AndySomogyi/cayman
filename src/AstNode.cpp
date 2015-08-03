@@ -6,7 +6,6 @@
  */
 
 #include "AstNode.h"
-#include "AstVisitor.h"
 #include "py_parser.hh"
 
 
@@ -38,7 +37,7 @@ AstNodeSeq* AstNodeSeq::Add(const location& loc, AstNode* seq, AstNode* node)
 
 Name::Name(class Ast* ast, const location& loc, const char* begin,
            const char* end) :
-    AstNode(ast, loc, ATOMIC), id(begin, end), ctx(UnknownCtx)
+    AstNode(AST_NAME, ast, loc, ATOMIC), id(begin, end), ctx(UnknownCtx)
 {
     // TODO verify non-dotted name
     ids.push_back(id);
@@ -46,7 +45,7 @@ Name::Name(class Ast* ast, const location& loc, const char* begin,
 
 Num::Num(class Ast* ast, const location& loc, const char* begin,
          const char* end) :
-    AstNode(ast, loc, ATOMIC)
+    AstNode(AST_NUM, ast, loc, ATOMIC)
 {
 	type = Double;
 
@@ -59,7 +58,7 @@ Num::Num(class Ast* ast, const location& loc, const char* begin,
     
 Str::Str(class Ast* ast, const location& loc, const char* begin,
          const char* end) :
-    AstNode(ast, loc, ATOMIC), s(begin, end)
+    AstNode(AST_STR, ast, loc, ATOMIC), s(begin, end)
 {
 }
 
@@ -67,13 +66,6 @@ void Str::Print(std::ostream& os) const
 {
 	os << "Str(loc=" << loc << ")";
 }
-
-int Str::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-
     
 static void MakeId(const std::vector<std::string> &ids, std::string &id)
 {
@@ -103,35 +95,6 @@ void Name::PrependName(AstNode *name)
 {
     assert(0);
 }
-
-int Name::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Num::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-
-
-int Module::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Tuple::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Starred::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-
 
 
 } /* namespace py */

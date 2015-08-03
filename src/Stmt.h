@@ -20,15 +20,17 @@ namespace py
 class Stmt: public AstNode
 {
 public:
-	Stmt(class Ast* _ast, const location &_loc) :
-			AstNode(_ast, _loc)
+	Stmt(AstNodeType _type, class Ast* _ast, const location &_loc) :
+    AstNode(_type, _ast, _loc)
 	{
 	}
 	;
-	virtual ~Stmt()
-	{
+	virtual ~Stmt() {};
+
+	static bool classof(const AstNode *node) {
+		return node->type >= AST_STMT;
 	}
-	;
+
 };
 
 class Assign: public Stmt
@@ -44,7 +46,7 @@ public:
 
 	Assign(class Ast *_ast, const location &_loc, const AstNodes &_targets,
 			AstNode *_value) :
-			Stmt(_ast, _loc), targets(_targets), value(_value)
+			Stmt(AST_ASSIGN, _ast, _loc), targets(_targets), value(_value)
 	{
 	}
 	;
@@ -63,8 +65,9 @@ public:
 	 */
 	void AddValue(AstNode *_value);
 
-	virtual int Accept(class AstVisitor*);
-
+	static bool classof(const AstNode *node) {
+		return node->type == AST_ASSIGN;
+	}
 };
 
 /**
@@ -96,8 +99,9 @@ public:
 	void SetTarget(AstNode *target);
 	void SetValue(AstNode *value);
 
-	virtual int Accept(class AstVisitor*);
-
+	static bool classof(const AstNode *node) {
+		return node->type == AST_AUGASSIGN;
+	}
 };
 
 
@@ -106,7 +110,7 @@ class Arg: public AstNode
 public:
 	Arg(class Ast* ast, const location& loc, const std::string& id,
 			AstNode *_def = NULL, AstNode *_type = NULL) :
-			AstNode(ast, loc), id(id), def(_def), type(_type)
+			AstNode(AST_ARG, ast, loc), id(id), def(_def), typeExpr(_type)
 	{
 	}
 	;
@@ -116,11 +120,15 @@ public:
 	}
 	;
 
-	virtual int Accept(AstVisitor *v);
+
 
 	std::string id;
 	AstNode *def;
-	AstNode *type;
+	AstNode *typeExpr;
+
+	static bool classof(const AstNode *node) {
+		return node->type == AST_ARG;
+	}
 };
 
 /**
@@ -168,7 +176,7 @@ class TmpArguments: public Arguments, public AstNode
 public:
 
 	TmpArguments(class Ast *ast, const location& loc) :
-			Arguments(), AstNode(ast, loc)
+			Arguments(), AstNode(AST_TMPARGUMENTS, ast, loc)
 	{
 	}
 	;
@@ -188,11 +196,10 @@ public:
 
 	static void ArgsFromTuple(AstNode *node, Args& args);
 
-	virtual int Accept(AstVisitor *)
-	{
-		assert(0);
-		return 0;
+	static bool classof(const AstNode *node) {
+		return node->type == AST_TMPARGUMENTS;
 	}
+
 };
 
 class FunctionDef: public Arguments, public Stmt
@@ -204,8 +211,6 @@ public:
 			AstNode *returns, AstNode *suite);
 
 	virtual ~FunctionDef() {};
-
-	virtual int Accept(AstVisitor *);
     
     /**
      * Adds a list of decorators from a tuple
@@ -223,9 +228,9 @@ public:
      */
     AstNode *returns;
 
-    llvm::Function *IRGen(IRGenContext &c) const;
-
-    llvm::Function *PrototypeIRGen(IRGenContext &c) const;
+	static bool classof(const AstNode *node) {
+		return node->type == AST_FUNCTIONDEF;
+	}
 };
 
 class ClassDef: public Stmt
@@ -279,8 +284,6 @@ public:
      */
     AstNodes decorators;
 
-	virtual int Accept(class AstVisitor*);
-
     /**
      * Adds a list of decorators from a tuple
      */
@@ -300,6 +303,10 @@ public:
 	 * pulls the required bits out of the arglist
 	 */
 	void ParseArglist(AstNode *arglist);
+
+	static bool classof(const AstNode *node) {
+		return node->type == AST_CLASSDEF;
+	}
 };
 
 
@@ -310,7 +317,7 @@ class KeywordArg : public AstNode
 {
 public:
 	KeywordArg(class Ast* ast, const location &loc, const std::string& _arg, AstNode *_value) :
-		AstNode(ast, loc), arg(_arg), value(_value) {};
+		AstNode(AST_KEYWORDARG, ast, loc), arg(_arg), value(_value) {};
 
 	virtual ~KeywordArg() {};
 
@@ -318,7 +325,9 @@ public:
 
 	AstNode *value;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_KEYWORDARG;
+	}
 };
 
 typedef std::vector<KeywordArg*> KeywordArgs;
@@ -338,8 +347,6 @@ public:
 			AstNode *_orelse = NULL);
 
 	virtual ~For() {};
-
-	virtual int Accept(AstVisitor *);
 
 	/**
 	 * The variable(s) that the loop assigns to, may be either a
@@ -371,6 +378,10 @@ public:
 	void SetBody(AstNode *_body);
 
 	void SetOrElse(AstNode *_orelse);
+
+	static bool classof(const AstNode *node) {
+		return node->type == AST_FOR;
+	}
 };
 
 
@@ -396,9 +407,9 @@ public:
 
 	If *GetTerminalElif();
 
-	virtual int Accept(class AstVisitor*);
-
-
+	static bool classof(const AstNode *node) {
+		return node->type == AST_IF;
+	}
 };
 
 
@@ -428,7 +439,10 @@ public:
 	 */
 	void AddTargets(AstNode *node);
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_DELETE;
+	}
+
 };
 
 
@@ -436,46 +450,55 @@ class Return: public Stmt
 {
 public:
 
-	Return(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), value(_expr) {};
+	Return(class Ast *ast, const location &loc, AstNode *_expr) :
+		Stmt(AST_RETURN, ast, loc), value(_expr) {};
 
 	virtual ~Return() {};
 
 	AstNode *value;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_RETURN;
+	}
 };
 
 class Pass: public Stmt
 {
 public:
 
-	Pass(class Ast *ast, const location &loc) : Stmt(ast, loc) {};
+	Pass(class Ast *ast, const location &loc) : Stmt(AST_PASS, ast, loc) {};
 
 	virtual ~Pass() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_PASS;
+	}
 };
 
 class Break: public Stmt
 {
 public:
 
-	Break(class Ast *ast, const location &loc) : Stmt(ast, loc) {};
+	Break(class Ast *ast, const location &loc) : Stmt(AST_BREAK, ast, loc) {};
 
 	virtual ~Break() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_BREAK;
+	}
 };
 
 class Continue: public Stmt
 {
 public:
 
-	Continue(class Ast *ast, const location &loc) : Stmt(ast, loc) {};
+	Continue(class Ast *ast, const location &loc) : Stmt(AST_CONTINUE, ast, loc) {};
 
 	virtual ~Continue() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_CONTINUE;
+	}
 };
 
 class While: public Stmt
@@ -510,7 +533,10 @@ public:
 
 	void SetOrElse(AstNode *_orelse);
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_WHILE;
+	}
+
 };
 
 
@@ -524,14 +550,17 @@ public:
 	 * and a single target (what is being assigned to)
 	 */
 	Raise(class Ast *ast, const location &loc, AstNode *_exc, AstNode *_cause) :
-    Stmt(ast, loc), exc(_exc), cause(_cause) {};
+		Stmt(AST_RAISE, ast, loc), exc(_exc), cause(_cause) {};
 
 	virtual ~Raise() {};
 
 	AstNode *exc;
     AstNode *cause;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_RAISE;
+	}
+
 };
 
 
@@ -543,13 +572,16 @@ public:
 	 * create a basic assignment statement with only a single value (what is being assigned),
 	 * and a single target (what is being assigned to)
 	 */
-	Try(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(ast, loc), expr(_expr) {};
+	Try(class Ast *ast, const location &loc, AstNode *_expr) : Stmt(AST_TRY, ast, loc), expr(_expr) {};
 
 	virtual ~Try() {};
 
 	AstNode *expr;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_TRY;
+	}
+
 };
 
 
@@ -565,7 +597,9 @@ public:
 
 	AstNode *msg;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_ASSERT;
+	}
 };
 
 /**
@@ -597,7 +631,11 @@ public:
 
 	Aliases names;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_IMPORT;
+	}
+
+
 };
 
 class ImportFrom: public Stmt
@@ -622,7 +660,11 @@ public:
 
 	void SetNames(AstNode*);
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_IMPORTFROM;
+	}
+
+
 };
 
 /**
@@ -647,7 +689,11 @@ public:
 	/**
 	 * not part of grammar, can not be visited.
 	 */
-	virtual int Accept(class AstVisitor*) { assert(0); return 0; }
+
+	static bool classof(const AstNode *node) {
+		return node->type == AST_ALIASNODE;
+	}
+
 };
 
 
@@ -660,7 +706,11 @@ public:
 
 	Identifiers names;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_GLOBAL;
+	}
+
+
 };
 
 class NonLocal: public Stmt
@@ -672,7 +722,9 @@ public:
 
 	Identifiers names;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_NONLOCAL;
+	}
 };
 
 

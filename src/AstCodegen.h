@@ -80,7 +80,7 @@ T* ErrorP(const std::string &Str) {
 
 namespace py {
 
-class AstCodegen: public IRGenContext, private AstVisitor
+class AstCodegen: public IRGenContext, private AstVisitor<AstCodegen, llvm::Value*>
 {
 public:
 	AstCodegen(JITContext &jctx);
@@ -91,63 +91,65 @@ public:
 	/**
 	 * Emit a prototype defined in the currently being built llvm module.
 	 */
-	llvm::Function *FunctionProto(const py::FunctionDef &func);
+	llvm::Function *emitFunctionProto(const py::FunctionDef &func);
 
 
 	/**
 	 * Emit the full IR for a function definition, including func body.
 	 */
-	llvm::Function *Function(const py::FunctionDef &func);
+	llvm::Function *emitFunction(const py::FunctionDef &func);
 
 private:
 
-	virtual int Visit(Name*);
-	virtual int Visit(Num*);
-	virtual int Visit(Str*);
-	virtual int Visit(Module*);
-	virtual int Visit(Assign*);
-	virtual int Visit(BinOp*);
-	virtual int Visit(Tuple*);
-	virtual int Visit(Ast*);
-	virtual int Visit(Arg*);
-	virtual int Visit(FunctionDef*);
-	virtual int Visit(KeywordArg*);
-	virtual int Visit(Call*);
-	virtual int Visit(Starred*);
-	virtual int Visit(For*);
-	virtual int Visit(If*);
-	virtual int Visit(Attribute*);
-	virtual int Visit(IfExpr*);
-	virtual int Visit(UnaryOp*);
-	virtual int Visit(AugAssign*);
-	virtual int Visit(Compare*);
-	virtual int Visit(Delete*);
-    virtual int Visit(Return*);
-    virtual int Visit(Pass*);
-    virtual int Visit(Break*);
-    virtual int Visit(Continue*);
-    virtual int Visit(While*);
-    virtual int Visit(Raise*);
-    virtual int Visit(Try*);
-    virtual int Visit(Assert*);
-    virtual int Visit(Import*);
-    virtual int Visit(ImportFrom*);
-    virtual int Visit(Global*);
-    virtual int Visit(NonLocal*);
-    virtual int Visit(ClassDef*);
-    virtual int Visit(Lambda*);
-    virtual int Visit(Dict*);
-    virtual int Visit(Set*);
-    virtual int Visit(ListComp*);
-    virtual int Visit(SetComp*);
-    virtual int Visit(DictComp*);
-    virtual int Visit(GeneratorExpr*);
-    virtual int Visit(Yield*);
-    virtual int Visit(YieldFrom*);
-    virtual int Visit(Bytes*);
-    virtual int Visit(NameConstant*);
-    virtual int Visit(Subscript*);
-    virtual int Visit(List*);
+
+
+	llvm::Value* visit(Name*);
+	llvm::Value* visit(Num*);
+	llvm::Value* visit(Str*);
+	llvm::Value* visit(Module*);
+	llvm::Value* visit(Assign*);
+	llvm::Value* visit(BinOp*);
+	llvm::Value* visit(Tuple*);
+	llvm::Value* visit(Ast*);
+	llvm::Value* visit(Arg*);
+	llvm::Value* visit(FunctionDef*);
+	llvm::Value* visit(KeywordArg*);
+	llvm::Value* visit(Call*);
+	llvm::Value* visit(Starred*);
+	llvm::Value* visit(For*);
+	llvm::Value* visit(If*);
+	llvm::Value* visit(Attribute*);
+	llvm::Value* visit(IfExpr*);
+	llvm::Value* visit(UnaryOp*);
+	llvm::Value* visit(AugAssign*);
+	llvm::Value* visit(Compare*);
+	llvm::Value* visit(Delete*);
+    llvm::Value* visit(Return*);
+    llvm::Value* visit(Pass*);
+    llvm::Value* visit(Break*);
+    llvm::Value* visit(Continue*);
+    llvm::Value* visit(While*);
+    llvm::Value* visit(Raise*);
+    llvm::Value* visit(Try*);
+    llvm::Value* visit(Assert*);
+    llvm::Value* visit(Import*);
+    llvm::Value* visit(ImportFrom*);
+    llvm::Value* visit(Global*);
+    llvm::Value* visit(NonLocal*);
+    llvm::Value* visit(ClassDef*);
+    llvm::Value* visit(Lambda*);
+    llvm::Value* visit(Dict*);
+    llvm::Value* visit(Set*);
+    llvm::Value* visit(ListComp*);
+    llvm::Value* visit(SetComp*);
+    llvm::Value* visit(DictComp*);
+    llvm::Value* visit(GeneratorExpr*);
+    llvm::Value* visit(Yield*);
+    llvm::Value* visit(YieldFrom*);
+    llvm::Value* visit(Bytes*);
+    llvm::Value* visit(NameConstant*);
+    llvm::Value* visit(Subscript*);
+    llvm::Value* visit(List*);
 
 
     /// CreateArgumentAllocas - Create an alloca for each argument and register the
@@ -166,12 +168,12 @@ private:
      */
     llvm::Value* CreateBody(const py::AstNodes& body);
 
-    llvm::Value *_result;
 
-    /**
-     * Wrapper for calling Accept --- Visit and grabing the resulting llvm value
-     */
-    llvm::Value *Create(AstNode *node);
+    llvm::Value *create(AstNode *node);
+
+	// mark the template class as friend so it can call the
+	// private visitor methods.
+	friend AstVisitor<AstCodegen, llvm::Value*>;
 };
 
 }

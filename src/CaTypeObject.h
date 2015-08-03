@@ -14,14 +14,14 @@
 struct CaTypeObject: CaObject
 {
 	CaTypeObject(uint32_t primitive, uint32_t primitiveModifier) :
-			CaObject(TY_TYPEOBJECT), primitiveType(primitive),
+			CaObject(CA_TYPEOBJECT), primitiveType(primitive),
 			primitiveTypeModifier(primitiveModifier)
 	{
 	}
 
 	static bool classof(const CaObject *o)
 	{
-		return o->GetType() == TY_TYPEOBJECT;
+		return o->GetType() == CA_TYPEOBJECT;
 	}
 
 	uint32_t primitiveType;

@@ -11,11 +11,11 @@
 namespace py
 {
 
-int AstPrinter::Visit(AugAssign* aug)
+int AstPrinter::visit(AugAssign* aug)
 {
 	os << "AugAssign(target=";
 
-	aug->target->Accept(this);
+	dispatch(aug->target);
 
 	os << ", op=";
 
@@ -62,7 +62,7 @@ int AstPrinter::Visit(AugAssign* aug)
 
 	os << ", value=";
 
-	aug->value->Accept(this);
+	dispatch(aug->value);
 
 	os << ")";
 
@@ -72,20 +72,20 @@ int AstPrinter::Visit(AugAssign* aug)
 
 }
 
-int AstPrinter::Visit(Pass*)
+int AstPrinter::visit(Pass*)
 {
 	os << "Pass()";
 	return 0;
 }
 
 
-int AstPrinter::Visit(Break*)
+int AstPrinter::visit(Break*)
 {
 	os << "Break()";
 	return 0;
 }
 
-int AstPrinter::Visit(Continue*)
+int AstPrinter::visit(Continue*)
 {
 	os << "Continue()";
 	return 0;
@@ -97,7 +97,7 @@ void AstPrinter::PrintNodes(AstNodes& nodes)
     for(AstNodes::const_iterator i = nodes.begin();
         i != nodes.end(); ++i)
     {
-        (*i)->Accept(this);
+        dispatch((*i));
         
         if (i + 1 < nodes.end()) {
             os << ",";
@@ -120,32 +120,32 @@ AstPrinter::~AstPrinter()
 	// TODO Auto-generated destructor stub
 }
 
-int AstPrinter::Visit(Name* nm)
+int AstPrinter::visit(Name* nm)
 {
 	os << "Name(" << nm->id << ")";
 	return 0;
 }
 
-int AstPrinter::Visit(Num* num)
+int AstPrinter::visit(Num* num)
 {
 	os << "Num(" << num->doubleValue << ")";
 	return 0;
 }
 
-int AstPrinter::Visit(Str* s)
+int AstPrinter::visit(Str* s)
 {
 	os << "Str(s=\"" << s->s << "\")";
 	return 0;
 }
 
-int AstPrinter::Visit(Module* m)
+int AstPrinter::visit(Module* m)
 {
 	os << "Module(body=[" << std::endl;
 
 	for (AstNodes::const_iterator i = m->body.begin();
 			i != m->body.end(); ++i)
 	{
-		(*i)->Accept(this);
+		dispatch((*i));
         
         if (i + 1 < m->body.end()) {
             os << ",";
@@ -160,32 +160,32 @@ int AstPrinter::Visit(Module* m)
 	return 0;
 }
 
-int AstPrinter::Visit(Assign* a)
+int AstPrinter::visit(Assign* a)
 {
 	os << "Assign(targets=[" << std::endl;
 
 	for(AstNodes::const_iterator i = a->targets.begin();
 			i != a->targets.end(); ++i)
 	{
-		(*i)->Accept(this);
+		dispatch((*i));
 	}
 
 	os << "], value=";
 
-	os << a->value->Accept(this);
+	dispatch(a->value);
 
-	os << "]";
+	os << ")";
 
 	return 0;
 }
 
-int AstPrinter::Visit(IfExpr *i)
+int AstPrinter::visit(IfExpr *i)
 {
 	os << "IfExpr()";
 	return 0;
 }
 
-int AstPrinter::Visit(BinOp* b)
+int AstPrinter::visit(BinOp* b)
 {
 	os << "BinOp(op=";
 	switch(b->op) {
@@ -266,15 +266,15 @@ int AstPrinter::Visit(BinOp* b)
 	}
 
 	os << ", left=";
-	b->left->Accept(this);
+	dispatch(b->left);
 	os << ", right=";
-	b->right->Accept(this);
+	dispatch(b->right);
 	os << ")";
 
 	return 0;
 }
 
-int AstPrinter::Visit(Tuple* t)
+int AstPrinter::visit(Tuple* t)
 {
     os << "Tuple(items=[";
     
@@ -284,7 +284,7 @@ int AstPrinter::Visit(Tuple* t)
         for (AstNodes::const_iterator i = t->items.begin();
              i != t->items.end(); ++i)
         {
-            (*i)->Accept(this);
+            dispatch((*i));
             if (i + 1 < t->items.end()) {
             	os << ", ";
             }
@@ -297,10 +297,10 @@ int AstPrinter::Visit(Tuple* t)
 }
 
 
-int AstPrinter::Visit(Ast* ast)
+int AstPrinter::visit(Ast* ast)
 {
     if (ast->module) {
-        return ast->module->Accept(this);
+        return dispatch(ast->module);
     }
     else {
         os << "Error, no module" << std::endl;
@@ -308,10 +308,10 @@ int AstPrinter::Visit(Ast* ast)
     }
 }
 
-int AstPrinter::Visit(Attribute* attr)
+int AstPrinter::visit(Attribute* attr)
 {
 	os << "Attribute(value=" << std::endl;
-    attr->value->Accept(this);
+    dispatch(attr->value);
     os << "," << std::endl;
     
     os << "attr=" << attr->attr << "," << std::endl;
@@ -322,19 +322,19 @@ int AstPrinter::Visit(Attribute* attr)
 	return 0;
 }
 
-int AstPrinter::Visit(Arg* arg)
+int AstPrinter::visit(Arg* arg)
 {
     os << "Arg(id=" << arg->id << ", defaults=";
     
     if (arg->def) {
-        arg->def->Accept(this);
+        dispatch(arg->def);
     } else {
         os << "Null";
     }
     
     os << ", type=";
-    if (arg->type) {
-        arg->type->Accept(this);
+    if (arg->typeExpr) {
+        dispatch(arg->typeExpr);
     } else {
         os << "Null";
     }
@@ -344,12 +344,12 @@ int AstPrinter::Visit(Arg* arg)
     return 0;
 }
 
-int AstPrinter::Visit(FunctionDef* func)
+int AstPrinter::visit(FunctionDef* func)
 {
     os << "FunctionDef(id=" << func->name << ", args=[" << std::endl;
     
     for (Args::const_iterator i = func->args.begin(); i != func->args.end(); ++i) {
-        (*i)->Accept(this);
+        dispatch((*i));
         
         if (i + 1 < func->args.end()) {
             os << ",";
@@ -362,7 +362,7 @@ int AstPrinter::Visit(FunctionDef* func)
     
     os << "kwOnlyArgs=[" << std::endl;
     for (Args::const_iterator i = func->kwOnlyArgs.begin(); i != func->kwOnlyArgs.end(); ++i) {
-        (*i)->Accept(this);
+        dispatch((*i));
         
         if (i + 1 < func->args.end()) {
             os << ",";
@@ -376,7 +376,7 @@ int AstPrinter::Visit(FunctionDef* func)
     os << "vararg=";
     
     if (func->vararg) {
-        func->vararg->Accept(this);
+        dispatch(func->vararg);
     }
     else {
         os << "Null";
@@ -387,7 +387,7 @@ int AstPrinter::Visit(FunctionDef* func)
     os << "kwarg=";
     
     if (func->kwarg) {
-        func->kwarg->Accept(this);
+        dispatch(func->kwarg);
     }
     else {
         os << "Null";
@@ -397,7 +397,7 @@ int AstPrinter::Visit(FunctionDef* func)
     
     for (AstNodes::const_iterator i = func->body.begin(); i < func->body.end(); ++i)
     {
-        (*i)->Accept(this);
+        dispatch((*i));
         
         if (i + 1 < func->body.end()) {
             os << ",";
@@ -411,7 +411,7 @@ int AstPrinter::Visit(FunctionDef* func)
     os << ", returns=";
     
     if (func->returns) {
-        func->returns->Accept(this);
+        dispatch(func->returns);
     } else {
         os << "NULL";
     }
@@ -424,29 +424,29 @@ int AstPrinter::Visit(FunctionDef* func)
     return 0;
 }
 
-int AstPrinter::Visit(KeywordArg* k)
+int AstPrinter::visit(KeywordArg* k)
 {
 	os << "KeywordArg(arg=" << k->arg <<
 			", value=";
 
-	k->value->Accept(this);
+	dispatch(k->value);
 
 	os << ")";
 
 	return 0;
 }
 
-int AstPrinter::Visit(Call* c)
+int AstPrinter::visit(Call* c)
 {
 	os << "Call(func=";
 
-	c->func->Accept(this);
+	dispatch(c->func);
 
 	os << "," << std::endl << "args=[";
 
 
 	for (AstNodes::const_iterator i = c->args.begin(); i != c->args.end(); ++i) {
-		(*i)->Accept(this);
+		dispatch((*i));
 
 		if(i + 1 < c->args.end()) {
 			os << ",";
@@ -459,7 +459,7 @@ int AstPrinter::Visit(Call* c)
 
 
 	for (KeywordArgs::const_iterator i = c->kwArgs.begin(); i != c->kwArgs.end(); ++i) {
-		(*i)->Accept(this);
+		dispatch((*i));
 
 		if(i + 1 < c->kwArgs.end()) {
 			os << ",";
@@ -474,7 +474,7 @@ int AstPrinter::Visit(Call* c)
 	os << "starargs=";
 
 	if(c->starArg) {
-		c->starArg->Accept(this);
+		dispatch(c->starArg);
 	} else {
 		os << "Null";
 	}
@@ -482,7 +482,7 @@ int AstPrinter::Visit(Call* c)
 	os << ", kwarg=";
 
 	if (c->kwArg) {
-		c->kwArg->Accept(this);
+		dispatch(c->kwArg);
 	} else {
 		os << "Null";
 	}
@@ -493,12 +493,12 @@ int AstPrinter::Visit(Call* c)
 	return 0;
 }
 
-int AstPrinter::Visit(Starred* s)
+int AstPrinter::visit(Starred* s)
 {
 	os << "Starred(value=";
 
 	if (s->value) {
-		s->value->Accept(this);
+		dispatch(s->value);
 	} else {
 		os << "Null";
 	}
@@ -509,22 +509,22 @@ int AstPrinter::Visit(Starred* s)
 
 }
 
-int AstPrinter::Visit(For *f)
+int AstPrinter::visit(For *f)
 {
 	os << "For(" << std::endl;
 	os << "target=";
 
-	f->target->Accept(this);
+	dispatch(f->target);
 
 	os << ", " << std::endl << "iter=";
 
-	f->iter->Accept(this);
+	dispatch(f->iter);
 
 	os << ", " << std::endl << "body=[" << std::endl;
 
 
 	for (AstNodes::const_iterator i = f->body.begin(); i != f->body.end(); ++i) {
-		(*i)->Accept(this);
+		dispatch((*i));
 
 		if(i + 1 < f->body.end()) {
 			os << ",";
@@ -540,7 +540,7 @@ int AstPrinter::Visit(For *f)
 
 
 	for (AstNodes::const_iterator i = f->orelse.begin(); i != f->orelse.end(); ++i) {
-		(*i)->Accept(this);
+		dispatch((*i));
 
 		if(i + 1 < f->orelse.end()) {
 			os << ",";
@@ -559,12 +559,12 @@ int AstPrinter::Visit(For *f)
 	return 0;
 }
 
-int AstPrinter::Visit(If* i)
+int AstPrinter::visit(If* i)
 {
     os << "If(" << std::endl;
     
     os << "test=";
-    i->test->Accept(this);
+    dispatch(i->test);
     os << std::endl;
     
     os << "body=";
@@ -579,7 +579,7 @@ int AstPrinter::Visit(If* i)
 	return 0;
 }
 
-int AstPrinter::Visit(UnaryOp* op)
+int AstPrinter::visit(UnaryOp* op)
 {
 	os << "UnaryOp(op=";
     switch (op->op) {
@@ -598,7 +598,7 @@ int AstPrinter::Visit(UnaryOp* op)
         default:
             assert(0);
     }
-    op->operand->Accept(this);
+    dispatch(op->operand);
     os << ")";
 	return 0;
 }
@@ -607,13 +607,13 @@ int AstPrinter::Visit(UnaryOp* op)
 /**
  * // comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
  */
-int AstPrinter::Visit(Compare* cmp)
+int AstPrinter::visit(Compare* cmp)
 {
 	os << "Compare(operands=[" << std::endl;
 
     for (AstNodes::const_iterator i = cmp->operands.begin(); i != cmp->operands.end(); ++i)
     {
-        (*i)->Accept(this);
+        dispatch((*i));
         if (i + 1 < cmp->operands.end())
         {
             os << ",";
@@ -674,7 +674,7 @@ int AstPrinter::Visit(Compare* cmp)
 	return 0;
 }
 
-int AstPrinter::Visit(Delete* d)
+int AstPrinter::visit(Delete* d)
 {
     os << "Delete(targets=";
     PrintNodes(d->targets);
@@ -682,12 +682,12 @@ int AstPrinter::Visit(Delete* d)
     return 0;
 }
 
-int AstPrinter::Visit(Return *r)
+int AstPrinter::visit(Return *r)
 {
     os << "Return(value=";
     
     if (r->value) {
-        r->value->Accept(this);
+        dispatch(r->value);
     } else {
         os << "NULL";
     }
@@ -696,18 +696,18 @@ int AstPrinter::Visit(Return *r)
     return 0;
 }
 
-int AstPrinter::Visit(While* f)
+int AstPrinter::visit(While* f)
 {
     os << "While(" << std::endl;
     os << "test=";
     
-    f->test->Accept(this);
+    dispatch(f->test);
     
     os << ", " << std::endl << "body=[" << std::endl;
     
     
     for (AstNodes::const_iterator i = f->body.begin(); i != f->body.end(); ++i) {
-        (*i)->Accept(this);
+        dispatch((*i));
         
         if(i + 1 < f->body.end()) {
             os << ",";
@@ -723,7 +723,7 @@ int AstPrinter::Visit(While* f)
     
     
     for (AstNodes::const_iterator i = f->orelse.begin(); i != f->orelse.end(); ++i) {
-        (*i)->Accept(this);
+        dispatch((*i));
         
         if(i + 1 < f->orelse.end()) {
             os << ",";
@@ -742,17 +742,17 @@ int AstPrinter::Visit(While* f)
     return 0;
 }
 
-int AstPrinter::Visit(Raise* raise)
+int AstPrinter::visit(Raise* raise)
 {
     os << "Raise(exc=";
     if (raise->exc) {
-        raise->exc->Accept(this);
+        dispatch(raise->exc);
     } else {
         os << "NULL";
     }
     os << ", cause=";
     if (raise->cause) {
-        raise->cause->Accept(this);
+        dispatch(raise->cause);
     } else {
         os << "NULL";
     }
@@ -760,24 +760,24 @@ int AstPrinter::Visit(Raise* raise)
     return 0;
 }
 
-int AstPrinter::Visit(Try*)
+int AstPrinter::visit(Try*)
 {
     os << "Try()";
     return 0;
 }
 
-int AstPrinter::Visit(Assert *a)
+int AstPrinter::visit(Assert *a)
 {
     os << "Assert(test=";
     if (a->test) {
-        a->test->Accept(this);
+        dispatch(a->test);
     } else {
         os << "NULL";
     }
     
     os << ", msg=";
     if (a->msg) {
-        a->msg->Accept(this);
+        dispatch(a->msg);
     } else {
         os << "NULL";
     }
@@ -786,7 +786,12 @@ int AstPrinter::Visit(Assert *a)
     
     return 0;
 }
-    
+
+void AstPrinter::print(AstNode* node)
+{
+	dispatch(node);
+}
+
 void AstPrinter::PrintAliases(Aliases& names)
 {
     os << "names=[" << std::endl;
@@ -800,7 +805,7 @@ void AstPrinter::PrintAliases(Aliases& names)
     os << "]";
 }
 
-int AstPrinter::Visit(Import* imp)
+int AstPrinter::visit(Import* imp)
 {
     os << "Import(";
     PrintAliases(imp->names);
@@ -808,7 +813,7 @@ int AstPrinter::Visit(Import* imp)
     return 0;
 }
 
-int AstPrinter::Visit(ImportFrom* imp)
+int AstPrinter::visit(ImportFrom* imp)
 {
     os << "ImportFrom(module=\"" << imp->module << "\", ";
     PrintAliases(imp->names);
@@ -817,7 +822,7 @@ int AstPrinter::Visit(ImportFrom* imp)
     return 0;
 }
 
-int AstPrinter::Visit(Global *g)
+int AstPrinter::visit(Global *g)
 {
     os << "Global(names=[" << std::endl;
     
@@ -834,7 +839,7 @@ int AstPrinter::Visit(Global *g)
     return 0;
 }
 
-int AstPrinter::Visit(NonLocal *n)
+int AstPrinter::visit(NonLocal *n)
 {
     os << "NonLocal(names=[" << std::endl;
     
@@ -851,60 +856,60 @@ int AstPrinter::Visit(NonLocal *n)
     return 0;
 }
 
-int AstPrinter::Visit(ClassDef*)
+int AstPrinter::visit(ClassDef*)
 {
     os << "ClassDef()";
     return 0;
 }
 
-int AstPrinter::Visit(Lambda*)
+int AstPrinter::visit(Lambda*)
 {
     os << "Lambda()";
     return 0;
 }
 
-int AstPrinter::Visit(Dict*)
+int AstPrinter::visit(Dict*)
 {
     os << "Dict()";
     return 0;
 }
 
-int AstPrinter::Visit(Set*)
+int AstPrinter::visit(Set*)
 {
     os << "Set()";
     return 0;
 }
 
-int AstPrinter::Visit(ListComp*)
+int AstPrinter::visit(ListComp*)
 {
     os << "ListComp()";
     return 0;
 }
 
-int AstPrinter::Visit(SetComp*)
+int AstPrinter::visit(SetComp*)
 {
     os << "SetComp()";
     return 0;
 }
 
-int AstPrinter::Visit(DictComp*)
+int AstPrinter::visit(DictComp*)
 {
     os << "DictComp()";
     return 0;
 }
 
-int AstPrinter::Visit(GeneratorExpr*)
+int AstPrinter::visit(GeneratorExpr*)
 {
     os << "GeneratorExpr()";
     return 0;
 }
 
-int AstPrinter::Visit(Yield* y)
+int AstPrinter::visit(Yield* y)
 {
     os << "Yield(value=";
     
     if (y->value) {
-        y->value->Accept(this);
+        dispatch(y->value);
     } else {
         os << "NULL";
     }
@@ -915,12 +920,12 @@ int AstPrinter::Visit(Yield* y)
     return 0;
 }
 
-int AstPrinter::Visit(YieldFrom* y)
+int AstPrinter::visit(YieldFrom* y)
 {
     os << "YieldFrom(value=";
     
     if (y->value) {
-        y->value->Accept(this);
+        dispatch(y->value);
     } else {
         os << "NULL";
     }
@@ -931,13 +936,13 @@ int AstPrinter::Visit(YieldFrom* y)
     return 0;
 }
 
-int AstPrinter::Visit(Bytes*)
+int AstPrinter::visit(Bytes*)
 {
     os << "Bytes()";
     return 0;
 }
 
-int AstPrinter::Visit(NameConstant* c)
+int AstPrinter::visit(NameConstant* c)
 {
     os << "NameConstant(value=";
 
@@ -957,13 +962,13 @@ int AstPrinter::Visit(NameConstant* c)
     return 0;
 }
 
-int AstPrinter::Visit(Subscript*)
+int AstPrinter::visit(Subscript*)
 {
     os << "Subscript()";
     return 0;
 }
 
-int AstPrinter::Visit(List*)
+int AstPrinter::visit(List*)
 {
     os << "List()";
     return 0;

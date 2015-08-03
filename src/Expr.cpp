@@ -6,7 +6,7 @@
  */
 
 #include "Expr.h"
-#include "AstVisitor.h"
+
 #include "py_parser.hh"
 
 namespace py
@@ -17,14 +17,8 @@ Expr::~Expr()
 	AstNode *p = 0;
 }
 
-int BinOp::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-
 Call::Call(Ast* ast, const location& loc, AstNode* _argsTuple) :
-		Expr(ast, loc), func(NULL), starArg(NULL), kwArg(NULL)
+		Expr(AST_CALL, ast, loc), func(NULL), starArg(NULL), kwArg(NULL)
 {
 	if (!_argsTuple) {
 		return;
@@ -91,16 +85,9 @@ ExprSeq* Call::GetTerminalExpr()
 	return base != NULL ? base->GetTerminalExpr() : this;
 }
 
-int Call::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-
-
 Attribute::Attribute(class Ast* _ast, const location& _loc, ExprContext _ctx,
 		AstNode* _value, AstNode* _attr) :
-		Expr(_ast, _loc), ctx(_ctx), value(NULL)
+		Expr(AST_ATTRIBUTE, _ast, _loc), ctx(_ctx), value(NULL)
 {
 	SetValue(_value);
 	SetAttr(_attr);
@@ -133,15 +120,10 @@ ExprSeq* Attribute::GetTerminalExpr()
 	return base != NULL ? base->GetTerminalExpr() : this;
 }
 
-int Attribute::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
 
 IfExpr::IfExpr(class Ast* _ast, const location& _loc, AstNode* _test,
 		AstNode* _body, AstNode* _orelse) :
-		Expr(_ast, _loc), test(NULL), body(NULL), orelse(NULL)
+		Expr(AST_IFEXPR, _ast, _loc), test(NULL), body(NULL), orelse(NULL)
 {
 	SetTest(_test);
 	SetBody(_body);
@@ -160,14 +142,10 @@ void IfExpr::SetOrElse(AstNode* _orelse)
 {
 }
 
-int IfExpr::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 UnaryOp::UnaryOp(class Ast* _ast, const location& _loc, OperatorType _op,
 		AstNode* _operand) :
-    Expr(_ast, _loc), op(EndOp), operand(NULL)
+    Expr(AST_UNARYOP, _ast, _loc), op(EndOp), operand(NULL)
 {
 	SetOp(_op);
 	SetOperand(_operand);
@@ -183,11 +161,6 @@ void UnaryOp::SetOperand(AstNode* _operand)
 	operand = _operand;
 }
 
-int UnaryOp::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
 static void CompareValidOperator(OperatorType op)
 {
 
@@ -199,7 +172,7 @@ static void CompareValidOperand(AstNode *operand)
 }
 
 Compare::Compare(class Ast* _ast, const location& _loc, AstNode* lhs,
-		OperatorType op, AstNode* rhs) : Expr(_ast, _loc)
+		OperatorType op, AstNode* rhs) : Expr(AST_COMPARE, _ast, _loc)
 {
 	CompareValidOperand(lhs);
 	operands.push_back(lhs);
@@ -215,18 +188,8 @@ void Compare::Append(OperatorType op, AstNode* operand)
 	operands.push_back(operand);
 }
 
-int Compare::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Lambda::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
 Dict::Dict(class Ast* ast, const location& loc, AstNode* key, AstNode* value) :
-		Expr(ast, loc)
+		Expr(AST_DICT, ast, loc)
 {
 	AddKeyValue(key, value);
 }
@@ -239,58 +202,6 @@ void Dict::AddKeyValue(AstNode* key, AstNode* value)
 	}
 }
 
-
-
-int Dict::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int Set::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int ListComp::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int SetComp::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int DictComp::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int GeneratorExpr::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int Yield::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int YieldFrom::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int Bytes::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int NameConstant::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
 void Subscript::SetBaseExpr(AstNode* base)
 {
 }
@@ -298,16 +209,6 @@ void Subscript::SetBaseExpr(AstNode* base)
 ExprSeq* Subscript::GetTerminalExpr()
 {
 	return this;
-}
-
-int Subscript::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int List::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
 }
 
 } /* namespace py */

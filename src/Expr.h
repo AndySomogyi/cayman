@@ -16,7 +16,7 @@ namespace py
 class Expr : public Stmt
 {
 public:
-	Expr(class Ast* _ast, const location &_loc) : Stmt(_ast, _loc) {};
+	Expr(AstNodeType _type, class Ast* _ast, const location &_loc) : Stmt(_type, _ast, _loc) {};
 	virtual ~Expr();
 };
 
@@ -37,23 +37,22 @@ class BinOp : public Expr
 public:
 	BinOp(class Ast* _ast, const location& _loc,  OperatorType _op, AstNode* _left,
 			AstNode* _right) :
-			Expr(_ast, _loc), op(_op), left(_left), right(_right)
+			Expr(AST_BINOP, _ast, _loc), op(_op), left(_left), right(_right)
 	{
 	}
 	;
 
-	virtual ~BinOp()
-	{
-	}
-	;
+	virtual ~BinOp(){};
 
 	OperatorType op;
 
 	AstNode *left;
 	AstNode *right;
 
+	static bool classof(const AstNode *node) {
+		return node->type == AST_BINOP;
+	}
 
-	virtual int Accept(class AstVisitor*);
 };
 
 
@@ -160,7 +159,9 @@ public:
 
 	virtual ExprSeq *GetTerminalExpr();
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_CALL;
+	}
 };
 
 
@@ -202,7 +203,9 @@ public:
 
 	virtual ExprSeq *GetTerminalExpr();
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_ATTRIBUTE;
+	}
 };
 
 
@@ -229,7 +232,11 @@ public:
 	void SetBody(AstNode *_body);
 	void SetOrElse(AstNode *_orelse);
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_IFEXPR;
+	}
+
+
 };
 
 /**
@@ -254,7 +261,10 @@ public:
 	void SetOp(OperatorType op);
 	void SetOperand(AstNode *operand);
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_UNARYOP;
+	}
+
 };
 
 
@@ -292,19 +302,27 @@ public:
      */
     void Append(OperatorType op, AstNode *operand);
     
+	static bool classof(const AstNode *node) {
+		return node->type == AST_COMPARE;
+	}
 
-	virtual int Accept(class AstVisitor*);
+
+
 };
 
 
 class Lambda : public Expr
 {
 public:
-	Lambda(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	Lambda(class Ast* ast, const location& loc) : Expr(AST_LAMBDA, ast, loc) {};
 
 	virtual ~Lambda() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_LAMBDA;
+	}
+
+
 };
 
 class Dict : public Expr
@@ -319,94 +337,124 @@ public:
 
 	void AddKeyValue(AstNode *key, AstNode *value);
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_DICT;
+	}
+
+
 };
 
 class Set : public Expr
 {
 public:
-	Set(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	Set(class Ast* ast, const location& loc) : Expr(AST_SET, ast, loc) {};
 
 	virtual ~Set() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_SET;
+	}
+
+
 };
 
 class ListComp : public Expr
 {
 public:
-	ListComp(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	ListComp(class Ast* ast, const location& loc) : Expr(AST_LISTCOMP, ast, loc) {};
 
 	virtual ~ListComp() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_LISTCOMP;
+	}
+
+
 };
 
 class SetComp : public Expr
 {
 public:
-	SetComp(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	SetComp(class Ast* ast, const location& loc) : Expr(AST_SETCOMP, ast, loc) {};
 
 	virtual ~SetComp() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_SETCOMP;
+	}
+
+
 };
 
 class DictComp : public Expr
 {
 public:
-	DictComp(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	DictComp(class Ast* ast, const location& loc) : Expr(AST_DICTCOMP, ast, loc) {};
 
 	virtual ~DictComp() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_DICTCOMP;
+	}
+
+
 };
 
 class GeneratorExpr : public Expr
 {
 public:
-	GeneratorExpr(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	GeneratorExpr(class Ast* ast, const location& loc) : Expr(AST_GENERATOREXPR, ast, loc) {};
 
 	virtual ~GeneratorExpr() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_GENERATOREXPR;
+	}
+
+
 };
 
 class Yield : public Expr
 {
 public:
 	Yield(class Ast* ast, const location& loc, AstNode *_value) :
-        Expr(ast, loc), value(_value) {};
+        Expr(AST_YIELD, ast, loc), value(_value) {};
 
 	virtual ~Yield() {};
     
     AstNode *value;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_YIELD;
+	}
 };
 
 class YieldFrom : public Expr
 {
 public:
 	YieldFrom(class Ast* ast, const location& loc, AstNode *_value) :
-        Expr(ast, loc), value(_value) {};
+        Expr(AST_YIELDFROM, ast, loc), value(_value) {};
 
 	virtual ~YieldFrom() {};
     
     AstNode *value;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_YIELDFROM;
+	}
 };
 
 
 class Bytes : public Expr
 {
 public:
-	Bytes(class Ast* ast, const location& loc) : Expr(ast, loc) {};
+	Bytes(class Ast* ast, const location& loc) : Expr(AST_BYTES, ast, loc) {};
 
 	virtual ~Bytes() {};
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_BYTES;
+	}
 };
 
 class NameConstant : public Expr
@@ -418,19 +466,24 @@ public:
 	};
 
 	NameConstant(class Ast* ast, const location& loc,
-			NameConstantType _type) : Expr(ast, loc), value(_type) {};
+			NameConstantType _type) : Expr(AST_NAMECONSTANT, ast, loc), value(_type) {};
 
 	virtual ~NameConstant() {};
 
-	virtual int Accept(class AstVisitor*);
+
 
 	NameConstantType value;
+
+	static bool classof(const AstNode *node) {
+		return node->type == AST_NAMECONSTANT;
+	}
 };
 
 class Subscript : public Expr, public ExprSeq
 {
 public:
-	Subscript(class Ast* ast, const location& loc, AstNode *subscript) : Expr(ast, loc) {};
+	Subscript(class Ast* ast, const location& loc, AstNode *subscript) :
+		Expr(AST_SUBSCRIPT, ast, loc) {};
 
 	virtual ~Subscript() {};
 
@@ -448,17 +501,21 @@ public:
 	 */
 	virtual ExprSeq *GetTerminalExpr();
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_SUBSCRIPT;
+	}
+
+
 };
 
 class List : public Expr
 {
 public:
 	List(class Ast* ast, const location &loc, const AstNodes &items, ExprContext ctx) :
-		Expr(ast, loc), items(items), ctx(ctx) {};
+		Expr(AST_LIST, ast, loc), items(items), ctx(ctx) {};
 
 	List(class Ast* _ast, const location &_loc, ExprContext ctx) :
-		Expr(ast, loc), ctx(ctx) {};
+		Expr(AST_LIST, ast, loc), ctx(ctx) {};
 
 	virtual ~List() {};
 
@@ -466,7 +523,9 @@ public:
 
 	ExprContext ctx;
 
-	virtual int Accept(class AstVisitor*);
+	static bool classof(const AstNode *node) {
+		return node->type == AST_LIST;
+	}
 };
 
 

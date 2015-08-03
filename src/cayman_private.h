@@ -26,26 +26,36 @@ using llvm::dyn_cast;
 
 #include <Python.h>
 
+
+/**
+ * All Cayman types that can be cast via dyn_cast need to have an id
+ * in this list
+ */
+
+enum CaType
+{
+	CA_OBJECT,
+	CA_TYPEOBJECT,
+	CA_MODULE,
+	CA_CALLABLE,
+
+
+
+};
+
+
 struct CaObject : _object
 {
-	enum TypeId {
-		TY_TYPEOBJECT,
-		TY_MODULE,
-		TY_CALLABLE
-	};
+	const CaType type;
 
-
-
-	const TypeId type;
-
-	CaObject(TypeId _type) : type(_type)
+	CaObject(CaType _type) : type(_type)
 	{
 		ob_refcnt = 0; ob_type = nullptr;
 	}
 
 	virtual ~CaObject() {};
 
-	TypeId GetType() const {return type;}
+	CaType GetType() const {return type;}
 
 	/**
 	 * TODO remove these virtuals with static methods

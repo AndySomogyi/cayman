@@ -206,7 +206,7 @@ AstNode* AstToken::GetAstNodeForOperatorType(OperatorType operatorType)
 
 AstToken::AstToken(const char* _tokenName, const char* _tokenValue,
 		int _tokenNum, OperatorType _operatorType) :
-		AstNode(NULL, location()), name(_tokenName), value(_tokenValue),
+		AstNode(AST_TOKEN, NULL, location()), name(_tokenName), value(_tokenValue),
 		id(_tokenNum), operatorType(_operatorType)
 {
 }

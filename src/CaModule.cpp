@@ -17,7 +17,7 @@ using py::AstNode;
 
 CaModule::CaModule(const std::string& _name, const std::string& _fname,
 		std::unique_ptr<py::Module> _ast) :
-		CaObject(TY_MODULE), name(_name), fname(_fname),
+		CaObject(CA_MODULE), name(_name), fname(_fname),
 		ast(std::move(_ast))
 {
 	AddDefinitionsToContext();

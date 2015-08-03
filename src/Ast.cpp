@@ -7,7 +7,6 @@
 
 
 #include "Ast.h"
-#include "AstVisitor.h"
 #include "AstPrinter.h"
 #include "AstToken.h"
 #include "py_parser.hh"
@@ -16,7 +15,7 @@
 namespace py
 {
 
-Ast::Ast() : AstNode(this, location())
+Ast::Ast() : AstNode(AST_AST, this, location())
 {
 	// TODO Auto-generated constructor stub
 
@@ -27,16 +26,12 @@ Ast::~Ast()
 
 }
 
-int Ast::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 void Ast::Print(std::ostream& os)
 {
 	AstPrinter printer(os);
 
-	printer.Visit(this);
+	printer.print(this);
 }
 
 Module *Ast::CreateModule(const location &loc, const AstNodes &body)

@@ -10,6 +10,7 @@ set(API_SRC
     ca_string.cpp
     ca_type.cpp
     ca_callable.cpp
+    ca_function.cpp
     )
 
 set(SRC
@@ -21,6 +22,7 @@ set(SRC
   AstNode.cpp
   AstNodeFactory.cpp
   AstCodegen.cpp
+  AstInterpreter.cpp
   Expr.cpp
   Stmt.cpp
   AstPrinter.cpp
@@ -28,6 +30,7 @@ set(SRC
   CaModule.cpp
   CaTypeObject.cpp
   CaCallable.cpp
+  CaFunction.cpp
   JITContext.cpp
   llvm_test1.cpp
   llvm_orc_lazy_irgen.cpp
@@ -45,6 +48,7 @@ set(HEADERS
   AstNode.h
   AstNodeFactory.h
   AstCodegen.h
+  AstInterpreter.h
   ParserContext.h
   position.hh
   py_parser.hh
@@ -60,6 +64,7 @@ set(HEADERS
   CaModule.h
   CaTypeObject.h
   CaCallable.h
+  CaFunction.h
   JITContext.h
   AstVisitor.h
   AstPrinter.h

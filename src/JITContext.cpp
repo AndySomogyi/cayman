@@ -111,7 +111,7 @@ std::unique_ptr<llvm::Module> JITContext::CreateModuleWithFunction(const Functio
 {
 	AstCodegen cg(*this);
 
-	auto lf = cg.Function(f);
+	auto lf = cg.emitFunction(f);
 	if (!lf)
 		return nullptr;
 #ifndef MINIMAL_STDERR_OUTPUT
@@ -148,7 +148,7 @@ void JITContext::AddCaModule(const CaModule* m)
 	{
 		if (py::FunctionDef *func = dynamic_cast<py::FunctionDef*>(node))
 		{
-			cg.Function(*func);
+			cg.emitFunction(*func);
 		}
 	}
 

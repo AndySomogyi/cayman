@@ -24,6 +24,7 @@
 #include <ca_floatobject.h>
 #include <ca_type.h>
 #include <ca_callable.h>
+#include <ca_function.h>
 
 
 

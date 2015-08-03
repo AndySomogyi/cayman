@@ -18,7 +18,7 @@ class CaCallable : public CaObject
 {
 public:
 	CaCallable(py::FunctionDef* _func) :
-		CaObject(TY_CALLABLE), func(_func), pfunc(nullptr) {};
+		CaObject(CA_CALLABLE), func(_func), pfunc(nullptr) {};
 
 	py::FunctionDef *func;
 
@@ -30,7 +30,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->GetType() == TY_CALLABLE;
+		return o->GetType() == CA_CALLABLE;
 	}
 };
 

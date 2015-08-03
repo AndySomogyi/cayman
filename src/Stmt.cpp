@@ -8,7 +8,6 @@
 #include "Stmt.h"
 #include "Expr.h"
 #include "py_parser.hh"
-#include "AstVisitor.h"
 #include "Stmt.h"
 #include "ParserContext.h"
 #include "AstToken.h"
@@ -22,7 +21,7 @@ namespace py
 
 Assign::Assign(class Ast* _ast, const location& _loc, AstNode* target,
 		AstNode* _value) :
-		Stmt(_ast, _loc), value(_value)
+		Stmt(AST_ASSIGN, _ast, _loc), value(_value)
 {
 	targets.push_back(target);
 
@@ -34,10 +33,6 @@ void Assign::AddValue(AstNode* _value)
 	value = _value;
 }
 
-int Assign::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 void TmpArguments::SetKwOnlyArgs(AstNode* node)
 {
@@ -61,14 +56,10 @@ void TmpArguments::SetKwArg(AstNode* node)
 	assert(kwarg);
 }
 
-int Arg::Accept(AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
 		AstNode *r, AstNode* s) :
-		Stmt(ast, loc)
+		Stmt(AST_FUNCTIONDEF, ast, loc)
 {
 	Tuple *suite = dynamic_cast<Tuple*>(s);
 
@@ -97,63 +88,6 @@ FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
     returns = r;
 }
 
-int FunctionDef::Accept(AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-llvm::Function* FunctionDef::IRGen(IRGenContext& c) const
-{
-	return nullptr;
-}
-
-
-using llvm::Type;
-using llvm::FunctionType;
-using llvm::Function;
-
-
-
-llvm::Function* FunctionDef::PrototypeIRGen(IRGenContext& c) const
-{
-	// Make the function type:  double(double,double) etc.
-	std::vector<Type*> Doubles(args.size(),
-			Type::getDoubleTy(c.getLLVMContext()));
-
-	FunctionType *FT = FunctionType::get(Type::getDoubleTy(c.getLLVMContext()),
-			Doubles, false);
-	Function *F = Function::Create(FT, Function::ExternalLinkage, name,
-			&c.getModule());
-
-	// If F conflicted, there was already something named 'FnName'.  If it has a
-	// body, don't allow redefinition or reextern.
-	if (F->getName() != name)
-	{
-		// Delete the one we just made and get the existing one.
-		F->eraseFromParent();
-		F = c.getModule().getFunction(name);
-
-		// If F already has a body, reject this.
-		if (!F->empty()) {
-			ErrorP<Function>("redefinition of function");
-			return nullptr;
-		}
-
-		// If F took a different number of args, reject.
-		if (F->arg_size() != args.size()) {
-			ErrorP<Function>("redefinition of function with different # args");
-			return nullptr;
-		}
-	}
-
-	// Set names for all arguments.
-	unsigned Idx = 0;
-	for (Function::arg_iterator AI = F->arg_begin(); Idx != args.size();
-			++AI, ++Idx)
-		AI->setName(args[Idx]->id);
-
-	return F;
-}
 
 void TmpArguments::ArgsFromTuple(AstNode* node, Args& args)
 {
@@ -186,15 +120,11 @@ void TmpArguments::ArgsFromTuple(AstNode* node, Args& args)
 	}
 }
 
-int KeywordArg::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 
 For::For(Ast* ast, const location& loc, AstNode* _target, AstNode* _iter,
 	AstNode* _body, AstNode* _orelse) :
-	Stmt(ast, loc), target(NULL), iter(NULL)
+	Stmt(AST_FOR, ast, loc), target(NULL), iter(NULL)
 {
 	if (_target) SetTarget(_target);
 	if (_iter) SetIter(_iter);
@@ -202,10 +132,6 @@ For::For(Ast* ast, const location& loc, AstNode* _target, AstNode* _iter,
 	if (_orelse) SetOrElse(_orelse);
 }
 
-int For::Accept(AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 void For::SetTarget(AstNode* _target)
 {
@@ -235,7 +161,7 @@ void For::SetOrElse(AstNode* _orelse)
 
 If::If(class Ast* _ast, const location& _loc,  AstNode *_test,
 		AstNode *_body, AstNode *_orelse):
-		Stmt(_ast, _loc), test(NULL)
+		Stmt(AST_IF, _ast, _loc), test(NULL)
 {
 	SetTest(_test);
 	SetBody(_body);
@@ -294,14 +220,10 @@ If* If::GetTerminalElif()
 	return this;
 }
 
-int If::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 AugAssign::AugAssign(class Ast* _ast, const location& _loc, AstNode* _target,
 		OperatorType _op, AstNode* _value) :
-		Stmt(_ast, _loc), target(NULL), op(EndOp), value(NULL)
+		Stmt(AST_AUGASSIGN, _ast, _loc), target(NULL), op(EndOp), value(NULL)
 {
 	SetTarget(_target);
 	SetOp(_op);
@@ -323,10 +245,6 @@ void AugAssign::SetValue(AstNode* _value)
 	value = _value;
 }
 
-int AugAssign::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 void FunctionDef::AddDecorators(AstNode* dec)
 {
@@ -341,7 +259,7 @@ void FunctionDef::AddDecorators(AstNode* dec)
 
 
 Delete::Delete(class Ast* ast, const location& loc, AstNode* _targets) :
-		Stmt(ast, loc)
+		Stmt(AST_DELETE, ast, loc)
 {
 	AddTargets(_targets);
 }
@@ -357,16 +275,12 @@ void Delete::AddTargets(AstNode* node)
 	}
 }
 
-int Delete::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 
 
 ImportFrom::ImportFrom(class Ast* ast, const location& loc, AstNode* _module,
 		AstNode* _names, int level) :
-	Stmt(ast, loc), level(level)
+	Stmt(AST_IMPORTFROM, ast, loc), level(level)
 {
 	SetModule(_module);
 	SetNames(_names);
@@ -407,7 +321,7 @@ void ImportFrom::SetNames(AstNode *n)
 }
 
 AliasNodes::AliasNodes(class Ast* ast, const location& loc, AstNode* nm, AstNode* asnm) :
-		AstNode(ast, loc)
+		AstNode(AST_ALIASNODE, ast, loc)
 {
 	AddAlias(nm, asnm);
 }
@@ -430,7 +344,7 @@ void AliasNodes::AddAlias(AstNode* name, AstNode* asname)
 }
 
 Global::Global(class Ast* ast, const location& loc, AstNode* _names) :
-    Stmt(ast, loc)
+    Stmt(AST_GLOBAL, ast, loc)
 {
 	Tuple *tuple = dynamic_cast<Tuple*>(_names);
 
@@ -450,7 +364,7 @@ Global::Global(class Ast* ast, const location& loc, AstNode* _names) :
 }
 
 NonLocal::NonLocal(class Ast* ast, const location& loc, AstNode* _names) :
-    Stmt(ast, loc)
+    Stmt(AST_NONLOCAL, ast, loc)
 {
 	Tuple *tuple = dynamic_cast<Tuple*>(_names);
 
@@ -470,14 +384,10 @@ NonLocal::NonLocal(class Ast* ast, const location& loc, AstNode* _names) :
 }
 
 
-int Return::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 While::While(class Ast* ast, const location& loc, AstNode* _test, AstNode* _body,
 		AstNode* _orelse) :
-    Stmt(ast, loc), test(NULL)
+    Stmt(AST_WHILE, ast, loc), test(NULL)
 {
 	SetTest(_test);
 	SetBody(_body);
@@ -515,36 +425,18 @@ void While::SetOrElse(AstNode* _orelse)
 	}
 }
 
-int While::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Raise::Accept(class AstVisitor* v)
-{
-    return v->Visit(this);
-}
-
-int Try::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 Assert::Assert(class Ast* ast, const location& loc, AstNode* _test,
 		AstNode* _msg) :
-    Stmt(ast, loc)
+    Stmt(AST_ASSERT, ast, loc)
 {
 	test = _test;
 	msg = _msg;
 }
 
-int Assert::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 Import::Import(class Ast* ast, const location& loc, AstNode* nm) :
-    Stmt(ast, loc)
+    Stmt(AST_IMPORT, ast, loc)
 {
 	if (nm) {
 		AliasNodes *nodes = dynamic_cast<AliasNodes*>(nm);
@@ -553,29 +445,10 @@ Import::Import(class Ast* ast, const location& loc, AstNode* nm) :
 	}
 }
 
-int Import::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int ImportFrom::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Global::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int NonLocal::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 ClassDef::ClassDef(class Ast* ast, const location& loc, AstNode* nm,
 		AstNode* arglist, AstNode* suite) :
-    Stmt(ast, loc), starargs(NULL), kwargs(NULL)
+    Stmt(AST_CLASSDEF, ast, loc), starargs(NULL), kwargs(NULL)
 {
 	SetName(nm);
 	SetBody(suite);
@@ -611,25 +484,6 @@ void ClassDef::ParseArglist(AstNode* arglist)
 {
 }
 
-int ClassDef::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Pass::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Break::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
-
-int Continue::Accept(class AstVisitor* v)
-{
-	return v->Visit(this);
-}
 
 
 

@@ -28,18 +28,82 @@ typedef std::string Identifier;
 
 typedef std::vector<Identifier> Identifiers;
 
+enum AstNodeType {
+	AST_ALIASNODE,
+    AST_ARG,
+    AST_AST,
+	AST_NODE,
+    AST_NODESEQ,
+    AST_TOKEN,
+    AST_DBLSTARRED,
+    AST_KEYWORDARG,
+    AST_MODULE,
+    AST_NAME,
+    AST_NUM,
+    AST_STARRED,
+    AST_STR,
+    AST_TMPARGUMENTS,
+    AST_TUPLE,
+
+    // All AstStmt derived nodes must follow AST_STMT for llvm RTTI to work correctly.
+    AST_STMT,
+    AST_ASSERT,
+    AST_ASSIGN,
+    AST_AUGASSIGN,
+    AST_BREAK,
+    AST_CLASSDEF,
+    AST_CONTINUE,
+    AST_DELETE,
+    AST_FOR,
+    AST_FUNCTIONDEF,
+    AST_GLOBAL,
+    AST_IF,
+    AST_IMPORT,
+    AST_IMPORTFROM,
+    AST_NONLOCAL,
+    AST_PASS,
+    AST_RAISE,
+    AST_RETURN,
+    AST_TRY,
+    AST_WHILE,
+
+    // All AstExpr derived nodes must follow AST_EXPR for llvm RTTI
+    AST_EXPR,
+    AST_ATTRIBUTE,
+    AST_BINOP,
+    AST_BYTES,
+    AST_CALL,
+    AST_COMPARE,
+    AST_DICT,
+    AST_DICTCOMP,
+    AST_GENERATOREXPR,
+    AST_IFEXPR,
+    AST_LAMBDA,
+    AST_LIST,
+    AST_LISTCOMP,
+    AST_NAMECONSTANT,
+    AST_SET,
+    AST_SETCOMP,
+    AST_SUBSCRIPT,
+    AST_UNARYOP,
+    AST_YIELD,
+    AST_YIELDFROM
+};
+
 class AstNode
 {
 public:
-	AstNode(class Ast* _ast, const location &_loc) : loc(_loc), ast(_ast), flags(0) {};
+    const AstNodeType type;
+    
 
-	AstNode() : ast(0), flags(0) {};
+	AstNode(AstNodeType _type, class Ast* _ast, const location &_loc) :
+		type(_type), loc(_loc), ast(_ast), flags(0) {};
+
+	AstNode() : type(AST_NODE), ast(0), flags(0) {};
 
 	virtual ~AstNode() {};
 
 	virtual void Print(std::ostream&) const {};
-
-	virtual int Accept(class AstVisitor*) {return 0;};
 
 	// region of source code where this syntax item was defined,
 	// currently use the bison provided location (it works), but
@@ -66,12 +130,12 @@ public:
     
     protected:
 
-	AstNode(class Ast* _ast, const location &_loc, uint32_t _flags) :
-		loc(_loc), ast(_ast), flags(_flags) {};
+	AstNode(AstNodeType _type, class Ast* _ast, const location &_loc, uint32_t _flags) :
+		type(_type), loc(_loc), ast(_ast), flags(_flags) {};
 
 	enum FlagFields
 	{
-		ATOMIC = 1
+		ATOMIC = 1,
 	};
 
 	/**
@@ -94,7 +158,7 @@ typedef std::vector<AstNode*> AstNodes;
 class AstNodeSeq : public AstNode
 {
 public:
-	AstNodeSeq(const location& loc) : AstNode(NULL, loc) {};
+	AstNodeSeq(const location& loc) : AstNode(AST_NODESEQ, NULL, loc) {};
 	virtual ~AstNodeSeq() {};
 
 	AstNodes seq;
@@ -106,11 +170,6 @@ public:
 	 */
 	static AstNodeSeq *Add(const location& loc, AstNode *seq, AstNode *node);
 
-	virtual int Accept(class AstVisitor*)
-	{
-		assert("AstNodeSeq is not visitable" && 0);
-		return 0;
-	}
 };
 
 enum ExprContext { Load=1, Store=2, Del=3, AugLoad=4, AugStore=5,
@@ -120,18 +179,16 @@ class Tuple : public AstNode
 {
 public:
 	Tuple(class Ast* ast, const location &loc, const AstNodes &items, ExprContext ctx) :
-		AstNode(ast, loc, ATOMIC), items(items), ctx(ctx) {};
+		AstNode(AST_TUPLE, ast, loc, ATOMIC), items(items), ctx(ctx) {};
 
 	Tuple(class Ast* _ast, const location &_loc, ExprContext ctx) :
-		AstNode(ast, loc), ctx(ctx) {};
+		AstNode(AST_TUPLE, ast, loc), ctx(ctx) {};
 
 	virtual ~Tuple() {};
 
 	AstNodes items;
 
 	ExprContext ctx;
-
-	virtual int Accept(class AstVisitor*);
 };
 
 /**
@@ -159,8 +216,6 @@ public:
     void AppendName(AstNode *name);
     
     void PrependName(AstNode *name);
-
-	virtual int Accept(class AstVisitor*);
     
 private:
     /**
@@ -198,7 +253,6 @@ public:
 
 	virtual ~Num() {};
 
-	virtual int Accept(class AstVisitor*);
 };
 
 
@@ -207,8 +261,6 @@ class Str : public AstNode
 public:
 	Str(class Ast *ast, const location &loc, const char* begin, const char* end);
 	virtual ~Str() {};
-
-	virtual int Accept(class AstVisitor*);
 
 	virtual void Print(std::ostream&) const;
 
@@ -220,14 +272,10 @@ class Module : public AstNode
 {
 public:
 	Module(class Ast *ast, const location& loc, const AstNodes &body) :
-		AstNode(ast, loc), body(body) {};
+		AstNode(AST_MODULE, ast, loc), body(body) {};
 	virtual ~Module() {};
 
 	AstNodes body;
-
-	virtual int Accept(class AstVisitor*);
-
-
 };
 
 /**
@@ -237,15 +285,13 @@ class Starred : public AstNode
 {
 public:
 	Starred(class Ast* ast, const location &loc, AstNode *_value, ExprContext ctx = UnknownCtx) :
-		AstNode(ast, loc), value(_value), ctx(ctx) {};
+		AstNode(AST_STARRED, ast, loc), value(_value), ctx(ctx) {};
 
 	virtual ~Starred() {};
 
 	AstNode *value;
 
 	ExprContext ctx;
-
-	virtual int Accept(class AstVisitor*);
 };
 
 /**
@@ -261,13 +307,11 @@ class DblStarred : public AstNode
 {
 public:
 	DblStarred(class Ast* ast, const location &loc, AstNode *_value) :
-		AstNode(ast, loc), value(_value) {};
+		AstNode(AST_DBLSTARRED, ast, loc), value(_value) {};
 
 	virtual ~DblStarred() {};
 
 	AstNode *value;
-
-	virtual int Accept(class AstVisitor*) { return 0;}
 };
 
 // typedef enum _unaryop { Invert=1, Not=2, UAdd=3, USub=4 }

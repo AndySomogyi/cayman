@@ -11,14 +11,11 @@
 using namespace llvm;
 
 
-// wrapper to make using the visitor a bit cleaner
-#define Return(__ret) _result = __ret; return 0
-
 py::AstCodegen::~AstCodegen()
 {
 }
 
-int py::AstCodegen::Visit(Name* name)
+llvm::Value *py::AstCodegen::visit(Name* name)
 {
 	// Look this variable up in the function.
 	Value *V = namedValues[name->id];
@@ -26,219 +23,216 @@ int py::AstCodegen::Visit(Name* name)
 	if (V == 0)
 	{
 		//return ErrorP<Value>("Unknown variable name '" + Name + "'");
-		return -1;
+		return nullptr;
 	}
 
 	// Load the value.
-	Return(getBuilder().CreateLoad(V, name->id.c_str()));
+	return getBuilder().CreateLoad(V, name->id.c_str());
 }
 
-int py::AstCodegen::Visit(Num*)
+llvm::Value *py::AstCodegen::visit(Num*)
 {
 }
 
-int py::AstCodegen::Visit(Str*)
+llvm::Value *py::AstCodegen::visit(Str*)
 {
 }
 
-int py::AstCodegen::Visit(Module*)
+llvm::Value *py::AstCodegen::visit(Module*)
 {
 }
 
-int py::AstCodegen::Visit(Assign*)
+llvm::Value *py::AstCodegen::visit(Assign*)
 {
 }
 
-int py::AstCodegen::Visit(BinOp* op)
+llvm::Value *py::AstCodegen::visit(BinOp* op)
 {
-	op->left->Accept(this);
-
-
-	Value *L = Create(op->left);
-	Value *R = Create(op->right);
+	Value *L = create(op->left);
+	Value *R = create(op->right);
 	if (!L || !R)
 	{
-		return -1;
+		return nullptr;
 	}
 
 	switch (op->op) {
-	case py::OperatorType::Add: Return(getBuilder().CreateFAdd(L, R, "addtmp"));
-	case py::OperatorType::Sub: Return(getBuilder().CreateFSub(L, R, "subtmp"));
-	case py::OperatorType::Mult: Return(getBuilder().CreateFMul(L, R, "multmp"));
-	case py::OperatorType::Div: Return(getBuilder().CreateFDiv(L, R, "divtmp"));
+	case py::OperatorType::Add: return getBuilder().CreateFAdd(L, R, "addtmp");
+	case py::OperatorType::Sub: return getBuilder().CreateFSub(L, R, "subtmp");
+	case py::OperatorType::Mult: return getBuilder().CreateFMul(L, R, "multmp");
+	case py::OperatorType::Div: return getBuilder().CreateFDiv(L, R, "divtmp");
 	case py::OperatorType::Lt:
 		L = getBuilder().CreateFCmpULT(L, R, "cmptmp");
 		// Convert bool 0/1 to double 0.0 or 1.0
-		Return(getBuilder().CreateUIToFP(L, Type::getDoubleTy(llvmCtx),"booltmp"));
+		return getBuilder().CreateUIToFP(L, Type::getDoubleTy(llvmCtx),"booltmp");
 
 	default: break;
 	}
 
 
-	return -1;
+	return nullptr;
 }
 
-int py::AstCodegen::Visit(Tuple*)
+llvm::Value *py::AstCodegen::visit(Tuple*)
 {
 }
 
-int py::AstCodegen::Visit(Ast*)
+llvm::Value *py::AstCodegen::visit(Ast*)
 {
 }
 
-int py::AstCodegen::Visit(Arg*)
+llvm::Value *py::AstCodegen::visit(Arg*)
 {
 }
 
-int py::AstCodegen::Visit(FunctionDef*)
+llvm::Value *py::AstCodegen::visit(FunctionDef*)
 {
 }
 
-int py::AstCodegen::Visit(KeywordArg*)
+llvm::Value *py::AstCodegen::visit(KeywordArg*)
 {
 }
 
-int py::AstCodegen::Visit(Call*)
+llvm::Value *py::AstCodegen::visit(Call*)
 {
 }
 
-int py::AstCodegen::Visit(Starred*)
+llvm::Value *py::AstCodegen::visit(Starred*)
 {
 }
 
-int py::AstCodegen::Visit(For*)
+llvm::Value *py::AstCodegen::visit(For*)
 {
 }
 
-int py::AstCodegen::Visit(If*)
+llvm::Value *py::AstCodegen::visit(If*)
 {
 }
 
-int py::AstCodegen::Visit(Attribute*)
+llvm::Value *py::AstCodegen::visit(Attribute*)
 {
 }
 
-int py::AstCodegen::Visit(IfExpr*)
+llvm::Value *py::AstCodegen::visit(IfExpr*)
 {
 }
 
-int py::AstCodegen::Visit(UnaryOp*)
+llvm::Value *py::AstCodegen::visit(UnaryOp*)
 {
 }
 
-int py::AstCodegen::Visit(AugAssign*)
+llvm::Value *py::AstCodegen::visit(AugAssign*)
 {
 }
 
-int py::AstCodegen::Visit(Compare*)
+llvm::Value *py::AstCodegen::visit(Compare*)
 {
 }
 
-int py::AstCodegen::Visit(Delete*)
+llvm::Value *py::AstCodegen::visit(Delete*)
 {
 }
 
-int py::AstCodegen::Visit(Return* ret)
+llvm::Value *py::AstCodegen::visit(Return* ret)
 {
-	Value *retval = Create(ret->value);
+	Value *retval = create(ret->value);
 
 	// TODO check retval
-	Return(getBuilder().CreateRet(retval));
+	return getBuilder().CreateRet(retval);
 }
 
-int py::AstCodegen::Visit(Pass*)
+llvm::Value *py::AstCodegen::visit(Pass*)
 {
 }
 
-int py::AstCodegen::Visit(Break*)
+llvm::Value *py::AstCodegen::visit(Break*)
 {
 }
 
-int py::AstCodegen::Visit(Continue*)
+llvm::Value *py::AstCodegen::visit(Continue*)
 {
 }
 
-int py::AstCodegen::Visit(While*)
+llvm::Value *py::AstCodegen::visit(While*)
 {
 }
 
-int py::AstCodegen::Visit(Raise*)
+llvm::Value *py::AstCodegen::visit(Raise*)
 {
 }
 
-int py::AstCodegen::Visit(Try*)
+llvm::Value *py::AstCodegen::visit(Try*)
 {
 }
 
-int py::AstCodegen::Visit(Assert*)
+llvm::Value *py::AstCodegen::visit(Assert*)
 {
 }
 
-int py::AstCodegen::Visit(Import*)
+llvm::Value *py::AstCodegen::visit(Import*)
 {
 }
 
-int py::AstCodegen::Visit(ImportFrom*)
+llvm::Value *py::AstCodegen::visit(ImportFrom*)
 {
 }
 
-int py::AstCodegen::Visit(Global*)
+llvm::Value *py::AstCodegen::visit(Global*)
 {
 }
 
-int py::AstCodegen::Visit(NonLocal*)
+llvm::Value *py::AstCodegen::visit(NonLocal*)
 {
 }
 
-int py::AstCodegen::Visit(ClassDef*)
+llvm::Value *py::AstCodegen::visit(ClassDef*)
 {
 }
 
-int py::AstCodegen::Visit(Lambda*)
+llvm::Value *py::AstCodegen::visit(Lambda*)
 {
 }
 
-int py::AstCodegen::Visit(Dict*)
+llvm::Value *py::AstCodegen::visit(Dict*)
 {
 }
 
-int py::AstCodegen::Visit(Set*)
+llvm::Value *py::AstCodegen::visit(Set*)
 {
 }
 
-int py::AstCodegen::Visit(ListComp*)
+llvm::Value *py::AstCodegen::visit(ListComp*)
 {
 }
 
-int py::AstCodegen::Visit(SetComp*)
+llvm::Value *py::AstCodegen::visit(SetComp*)
 {
 }
 
-int py::AstCodegen::Visit(DictComp*)
+llvm::Value *py::AstCodegen::visit(DictComp*)
 {
 }
 
-int py::AstCodegen::Visit(GeneratorExpr*)
+llvm::Value *py::AstCodegen::visit(GeneratorExpr*)
 {
 }
 
-int py::AstCodegen::Visit(Yield*)
+llvm::Value *py::AstCodegen::visit(Yield*)
 {
 }
 
-int py::AstCodegen::Visit(YieldFrom*)
+llvm::Value *py::AstCodegen::visit(YieldFrom*)
 {
 }
 
-int py::AstCodegen::Visit(Bytes*)
+llvm::Value *py::AstCodegen::visit(Bytes*)
 {
 }
 
-int py::AstCodegen::Visit(NameConstant*)
+llvm::Value *py::AstCodegen::visit(NameConstant*)
 {
 }
 
-int py::AstCodegen::Visit(Subscript*)
+llvm::Value *py::AstCodegen::visit(Subscript*)
 {
 }
 
@@ -246,7 +240,7 @@ py::AstCodegen::AstCodegen(JITContext& jctx) : IRGenContext(jctx)
 {
 }
 
-llvm::Function* py::AstCodegen::FunctionProto(const py::FunctionDef &func)
+llvm::Function* py::AstCodegen::emitFunctionProto(const py::FunctionDef &func)
 {
 	// Make the function type:  double(double,double) etc.
 	std::vector<Type*> Doubles(func.args.size(),
@@ -293,11 +287,11 @@ llvm::Function* py::AstCodegen::FunctionProto(const py::FunctionDef &func)
 	return f;
 }
 
-llvm::Function* py::AstCodegen::Function(const py::FunctionDef& func)
+llvm::Function* py::AstCodegen::emitFunction(const py::FunctionDef& func)
 {
 	namedValues.clear();
 
-    llvm::Function *TheFunction = FunctionProto(func);
+    llvm::Function *TheFunction = emitFunctionProto(func);
 	if (!TheFunction)
 		return nullptr;
 
@@ -334,7 +328,7 @@ llvm::Function* py::AstCodegen::Function(const py::FunctionDef& func)
 
 }
 
-int py::AstCodegen::Visit(List*)
+llvm::Value *py::AstCodegen::visit(List*)
 {
 }
 
@@ -373,7 +367,7 @@ llvm::Value* py::AstCodegen::CreateBody(const py::AstNodes& body)
 
 	for(AstNode* node : body)
 	{
-		result = Create(node);
+		result = create(node);
 
 		if(dyn_cast<ReturnInst>(result))
 		{
@@ -384,13 +378,7 @@ llvm::Value* py::AstCodegen::CreateBody(const py::AstNodes& body)
 	return getBuilder().CreateRetVoid();
 }
 
-llvm::Value* py::AstCodegen::Create(AstNode* node)
+llvm::Value* py::AstCodegen::create(AstNode* node)
 {
-	_result = nullptr;
-
-	if(node->Accept(this) != 0)
-	{
-		// TODO handle error conditions
-	}
-	return _result;
+	return dispatch(node);
 }
