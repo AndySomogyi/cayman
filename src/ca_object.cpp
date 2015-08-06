@@ -53,6 +53,16 @@ CaAPI_FUNC(uint32_t) Ca_DecRef(CaObject* o)
 	return o->decref();
 }
 
+
+
+CaObject* CaObject_Repr(CaObject* o)
+{
+	return o->repr();
 }
 
+CaObject* CaObject_Str(CaObject* o)
+{
+	return o->str();
+}
 
+}

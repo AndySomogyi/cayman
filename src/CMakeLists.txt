@@ -37,6 +37,7 @@ set(SRC
   CaFloat.cpp
   CaCallable.cpp
   CaFunction.cpp
+  CaString.cpp
   JITContext.cpp
   LiteralSupport.cpp
   CharInfo.cpp
@@ -74,8 +75,9 @@ set(HEADERS
   CaType.h
   CaCallable.h
   CaFunction.h
-  CaInt.cpp
-  CaFloat.cpp
+  CaInt.h
+  CaFloat.h
+  CaString.h
   JITContext.h
   AstVisitor.h
   AstPrinter.h

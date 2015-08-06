@@ -5,7 +5,7 @@
  *      Author: andy
  */
 
-#include "CaFloat.h"
+#include "cayman_private.h"
 #include "JITContext.h"
 
 CaFloat::CaFloat() : CaObject(CA_FLOAT), value(0.0f)
@@ -74,4 +74,16 @@ CaFloatType::CaFloatType(llvm::LLVMContext& c, unsigned numBits) : CaPrimitiveTy
 		case 64: llvmType = llvm::Type::getFloatTy(c); break;
 		default: assert(0 && "Invalid bits"); break;
 	}
+}
+
+CaObject* CaFloat::repr()
+{
+	llvm::SmallString<40> s;
+	value.toString(s);
+	return new CaString(s.c_str());
+}
+
+CaObject* CaFloat::str()
+{
+	return repr();
 }

@@ -26,6 +26,7 @@
 #include "CaModule.h"
 #include "CaInt.h"
 #include "CaFloat.h"
+#include "CaString.h"
 
 
 

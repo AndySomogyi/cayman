@@ -6,6 +6,7 @@
  */
 
 #include "CaInt.h"
+#include "CaString.h"
 #include "LiteralSupport.h"
 #include "JITContext.h"
 #include <llvm/ADT/APSInt.h>
@@ -128,4 +129,16 @@ CaIntType::CaIntType(llvm::LLVMContext& c, unsigned numBits) : CaPrimitiveType(C
 		case 128: llvmType = llvm::Type::getInt128Ty(c); break;
 		default: assert(0 && "invalid bits"); break;
 	}
+}
+
+CaObject* CaInt::repr()
+{
+	llvm::SmallString<40> s;
+	value.toString(s, 10, true);
+	return new CaString(s.c_str());
+}
+
+CaObject* CaInt::str()
+{
+    return repr();
 }

@@ -206,7 +206,7 @@ CaObject *CaNumber_FromString(const char* str)
 {
 	clang::NumericLiteralParser parser(str);
 
-	if(parser.isIntegerLiteral())
+	if(!parser.hadError && parser.isIntegerLiteral())
 	{
 		std::cout << "is integer literal" << std::endl;
 
@@ -234,7 +234,7 @@ CaObject *CaNumber_FromString(const char* str)
 		std::cout << "GetIntegerValue failed, overflow" << std::endl;
 	}
 
-	else if(parser.isFloatingLiteral())
+	else if(!parser.hadError && parser.isFloatingLiteral())
 	{
 		std::cout << "is float literal" << std::endl;
 

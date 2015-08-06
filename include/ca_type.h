@@ -66,7 +66,7 @@ CaAPI_DATA(CaObject*) CaType_GenericNew(CaType *type, CaObject *args,
 
 
 typedef enum {CA_VOID, CA_INT8, CA_INT16, CA_INT32, CA_INT64, CA_INT128, CA_FLOAT32,
-	CA_FLOAT64, CA_STRING} CaPrimitive;
+	CA_FLOAT64, CA_STR} CaPrimitive;
 
 typedef enum {CA_POINTER = 1, CA_ARRAY = 1 << 1} Ca_PrimitiveModifier;
 

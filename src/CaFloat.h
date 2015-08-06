@@ -64,6 +64,10 @@ public:
 	 */
 	double getMin();
 
+	CaObject *repr() override;
+
+	CaObject *str() override;
+
 	/**
 	 * The value in this object, this is an arbitrary precision float value.
 	 */

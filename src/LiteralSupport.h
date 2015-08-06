@@ -35,6 +35,37 @@ class TargetInfo;
 class SourceManager;
 class LangOptions;
 
+enum diag
+{
+	ok = 0,
+	ext_nonstandard_escape,
+	err_hex_escape_no_digits,
+	err_hex_escape_too_large,
+	err_octal_escape_too_large,
+	ext_unknown_escape,
+	err_ucn_escape_incomplete,
+	err_ucn_escape_invalid,
+	err_ucn_escape_basic_scs,
+	warn_cxx98_compat_literal_ucn_escape_basic_scs,
+	err_ucn_control_character,
+	warn_cxx98_compat_literal_ucn_control_character,
+	warn_ucn_not_valid_in_c89_literal,
+	err_invalid_decimal_digit,
+	err_exponent_has_no_digits,
+	err_invalid_suffix_float_constant,
+	err_invalid_suffix_integer_constant,
+	ext_imaginary_constant,
+	err_digit_separator_not_between_digits,
+	err_hexconstant_requires_digits,
+	ext_hexconstant_invalid,
+	err_hexconstant_requires_exponent,
+	warn_cxx11_compat_binary_literal,
+	ext_binary_literal_cxx14,
+	ext_binary_literal,
+	err_invalid_binary_digit,
+	err_invalid_octal_digit
+};
+
 /// Copy characters from Input to Buf, expanding any UCNs.
 void expandUCNs(SmallVectorImpl<char> &Buf, StringRef Input);
 
@@ -64,6 +95,8 @@ public:
   bool isFloat : 1;         // 1.0f
   bool isImaginary : 1;     // 1.0i
   uint8_t MicrosoftInteger; // Microsoft suffix extension i8, i16, i32, or i64.
+
+  diag errCode;
 
   bool isIntegerLiteral() const {
     return !saw_period && !saw_exponent;

@@ -104,6 +104,14 @@ int testNumber(const char* str) {
     
     if(val) {
         std::cout << "parsed OK" << std::endl;
+        
+        CaObject *str = CaObject_Str(val);
+        
+        if (str) {
+            std::cout << "parsed value: " << CaString_AsString(str) << std::endl;
+            Ca_DecRef(str);
+        }
+        
         Ca_DecRef(val);
     }
     else {

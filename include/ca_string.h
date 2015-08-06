@@ -34,6 +34,17 @@ CaAPI_FUNC(CaObject*) CaString_FromString(const char *v);
  */
 CaAPI_FUNC(CaObject*) CaString_FromStringAndSize(const char *v, Ca_ssize_t len);
 
+/**
+ * Return a NUL-terminated representation of the contents of string. The
+ * pointer refers to the internal buffer of string, not a copy. The data
+ * must not be modified in any way, unless the string was just created using
+ * PyString_FromStringAndSize(NULL, size). It must not be deallocated.
+ * If string is a Unicode object, this function computes the default
+ * encoding of string and operates on that. If string is not a string object
+ * at all, PyString_AsString() returns NULL and raises TypeError.
+ */
+CaAPI_FUNC(const char*) CaString_AsString(CaObject *string);
+
 
 #ifdef __cplusplus
 }

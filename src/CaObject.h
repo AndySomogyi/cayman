@@ -32,6 +32,7 @@ enum CaObjectType
 	CA_PRIMITIVE_TYPE,
 	CA_INT_TYPE,
 	CA_FLOAT_TYPE,
+	CA_STRING,
 	CA_STRING_TYPE,
 	CA_MODULE,
 	CA_CALLABLE,
@@ -76,6 +77,10 @@ struct CaObject : PyObject
 	{
 		return 0;
 	}
+
+	virtual CaObject *str() { return nullptr; };
+
+	virtual CaObject *repr() { return nullptr; };
 
 	/**
 	 * returns a borrowed reference to the CaType object.

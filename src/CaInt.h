@@ -81,6 +81,10 @@ public:
 	 */
 	long getMax();
 
+	CaObject *repr() override;
+
+	CaObject *str() override;
+
 	/**
 	 * The actual value, this is an arbitrary precision integer
 	 */
