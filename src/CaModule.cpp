@@ -25,7 +25,7 @@ CaModule::CaModule(const std::string& _name, const std::string& _fname,
 
 
 
-CaObject* CaModule::GetAttrString(const char* str)
+CaObject* CaModule::getAttrString(const char* str)
 {
 	for(auto i = ast->body.begin(), end = ast->body.end(); i != end; ++i) {
 		FunctionDef* func = dynamic_cast<FunctionDef*>(*i);

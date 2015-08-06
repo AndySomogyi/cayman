@@ -319,6 +319,12 @@ CaAPI_FUNC(CaObject *) CaNumber_ToBase(CaObject *n, int base);
  If n is not an int object, it is converted with CaNumber_Index first.
  */
 
+/**
+ * Parse a string and determine if it is a numeric type, if so
+ * return the appropriate type.
+ */
+CaAPI_FUNC(CaObject *) CaNumber_FromString(const char* str);
+
 #ifdef __cplusplus
 }
 #endif

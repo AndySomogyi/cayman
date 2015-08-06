@@ -11,7 +11,7 @@
 #include "cayman_private.h"
 #include "Ast.h"
 
-typedef std::vector<CaTypeObject*> CaTypeObjectVec;
+typedef std::vector<CaType*> CaTypeObjectVec;
 
 
 class CaCallable : public CaObject
@@ -24,13 +24,13 @@ public:
 
 	void *pfunc;
 
-	void *GetFuctionAddress(CaTypeObject* retType, const CaTypeObjectVec& args);
+	void *GetFuctionAddress(CaType* retType, const CaTypeObjectVec& args);
 
 
 
 	static bool classof(const CaObject *o)
 	{
-		return o->GetType() == CA_CALLABLE;
+		return o->type == CA_CALLABLE;
 	}
 };
 

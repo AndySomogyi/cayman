@@ -10,7 +10,7 @@
 #include "JITContext.h"
 
 
-void* CaCallable::GetFuctionAddress(CaTypeObject* retType,
+void* CaCallable::GetFuctionAddress(CaType* retType,
 		const CaTypeObjectVec& args)
 {
 	if (pfunc) return pfunc;

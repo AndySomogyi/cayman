@@ -19,58 +19,26 @@
 #ifndef _INCLUDED_CAYMAN_PRIVATE_H_
 #define _INCLUDED_CAYMAN_PRIVATE_H_
 
-// use LLVM style type casting
-#include "llvm/Support/Casting.h"
 
-using llvm::dyn_cast;
 
-#include <Python.h>
+#include "CaObject.h"
+#include "CaType.h"
+#include "CaModule.h"
+#include "CaInt.h"
+#include "CaFloat.h"
+
 
 
 /**
- * All Cayman types that can be cast via dyn_cast need to have an id
- * in this list
+ * Initialize the runtime eval modules (builtins, globals)
  */
-
-enum CaType
-{
-	CA_OBJECT,
-	CA_TYPEOBJECT,
-	CA_MODULE,
-	CA_CALLABLE,
+int initEval();
 
 
-
-};
-
-
-struct CaObject : _object
-{
-	const CaType type;
-
-	CaObject(CaType _type) : type(_type)
-	{
-		ob_refcnt = 0; ob_type = nullptr;
-	}
-
-	virtual ~CaObject() {};
-
-	CaType GetType() const {return type;}
-
-	/**
-	 * TODO remove these virtuals with static methods
-	 */
-	virtual CaObject *GetAttrString(const char* str)
-	{
-		return nullptr;
-	}
-
-};
-
-
-
-
-
+/**
+ * Shutdown the eval modules
+ */
+int finalizeEval();
 
 
 #endif /* _INCLUDED_CAYMAN_PRIVATE_H_ */

@@ -11,6 +11,10 @@
 #include <ca_port.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Return true if the object o is a string object or an instance of a subtype of the string type.
  */
@@ -31,6 +35,9 @@ CaAPI_FUNC(CaObject*) CaString_FromString(const char *v);
 CaAPI_FUNC(CaObject*) CaString_FromStringAndSize(const char *v, Ca_ssize_t len);
 
 
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* _INCLUDE_CA_STRING_H_ */

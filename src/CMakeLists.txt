@@ -5,12 +5,15 @@ set(API_SRC
     ca_runtime.cpp
     ca_tupleobject.cpp
     ca_floatobject.cpp 
-    ca_longobject.cpp
     ca_port.cpp
+    ca_number.cpp
     ca_string.cpp
     ca_type.cpp
     ca_callable.cpp
     ca_function.cpp
+    ca_eval.cpp
+    ca_int.cpp
+    ca_float.cpp
     )
 
 set(SRC
@@ -28,10 +31,15 @@ set(SRC
   AstPrinter.cpp
   AstToken.cpp
   CaModule.cpp
-  CaTypeObject.cpp
+  CaObject.cpp
+  CaType.cpp
+  CaInt.cpp
+  CaFloat.cpp
   CaCallable.cpp
   CaFunction.cpp
   JITContext.cpp
+  LiteralSupport.cpp
+  CharInfo.cpp
   llvm_test1.cpp
   llvm_orc_lazy_irgen.cpp
   llvm_orc_lazy_codegen.cpp
@@ -61,14 +69,19 @@ set(HEADERS
   py_tokenizer.h
   Expr.h
   Stmt.h
+  CaObject.h
   CaModule.h
-  CaTypeObject.h
+  CaType.h
   CaCallable.h
   CaFunction.h
+  CaInt.cpp
+  CaFloat.cpp
   JITContext.h
   AstVisitor.h
   AstPrinter.h
   AstToken.h
+  CharInfo.h
+  LiteralSupport.h
   llvm_test1.h
   )
 

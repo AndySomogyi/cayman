@@ -27,8 +27,8 @@ returned item's reference count.
 
 
 
-CaAPI_DATA(CaTypeObject) CaTuple_Type;
-CaAPI_DATA(CaTypeObject) CaTupleIter_Type;
+CaAPI_DATA(CaType) CaTuple_Type;
+CaAPI_DATA(CaType) CaTupleIter_Type;
 
 CaAPI_DATA(int) CaTuple_Check(CaObject*);
 CaAPI_DATA(int) CaTuple_CheckExact(CaObject*);

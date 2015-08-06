@@ -8,7 +8,9 @@
 #ifndef SRC_CAFUNCTION_H_
 #define SRC_CAFUNCTION_H_
 
-class CaFunction
+#include "CaCallable.h"
+
+class CaFunction : public CaCallable
 {
 };
 

@@ -21,7 +21,7 @@ extern "C"
 /**
  * This instance of CaTypeObject represents the Cayman module type. 
  */
-CaAPI_DATA(CaTypeObject*) CaModule_Type;
+CaAPI_DATA(CaType*) CaModule_Type;
 
 /**
  * Return true if p is a module object, or a subtype of a module object.

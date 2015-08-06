@@ -6,9 +6,9 @@
  */
 
 
+#include <CaType.h>
 #include "CaCallable.h"
 #include "cayman_private.h"
-#include "CaTypeObject.h"
 #include <stdarg.h>
 #include <iostream>
 
@@ -23,19 +23,19 @@ int CaCallable_Check(CaObject* obj)
 	return dyn_cast<CaCallable>(obj) != nullptr;
 }
 
-void* CaCallable_GetFuctionAddress(CaObject* callable, CaTypeObject* retType,
+void* CaCallable_GetFuctionAddress(CaObject* callable, CaType* retType,
 		CaObject* argTypes)
 {
 	return 0;
 }
 
 void* CaCallable_GetFuctionAddressObjArgs(CaObject* obj,
-		CaTypeObject* retType, ...)
+		CaType* retType, ...)
 {
 	va_list ap;
     
 
-	CaTypeObject *type;
+	CaType *type;
 
 	CaTypeObjectVec args;
 
@@ -48,7 +48,7 @@ void* CaCallable_GetFuctionAddressObjArgs(CaObject* obj,
     va_start(ap, retType);
     int arg = 0;
 
-	while ((type = va_arg(ap, CaTypeObject*)) != nullptr)
+	while ((type = va_arg(ap, CaType*)) != nullptr)
 	{
         std::cout << "arg:" << arg++ << ", type: " << type->type << std::endl;
 		args.push_back(type);

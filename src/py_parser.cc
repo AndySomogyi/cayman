@@ -2780,7 +2780,7 @@ namespace py {
         assert(s1);
         Str *s2 = dynamic_cast<Str*>((yystack_[0].value));
         assert(s2);
-        s1->s += s2->s;
+        s1->value += s2->value;
         (yylhs.value) = s1;
     }
 

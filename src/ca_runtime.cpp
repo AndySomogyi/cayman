@@ -36,10 +36,16 @@ void Ca_InitializeEx(int int1)
 	llvm::InitializeNativeTargetAsmParser();
 
 	JITContext::Initialize();
+
+
+	CaIntType::initialize();
+	CaFloatType::initialize();
 }
 
 void Ca_Finalize(void)
 {
+	CaFloatType::finalize();
+	CaIntType::finalize();
 	JITContext::Finalize();
 }
 

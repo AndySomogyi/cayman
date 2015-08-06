@@ -58,7 +58,7 @@ CaAPI_FUNC(int) CaCallable_Check(CaObject *);
  *           native code object.
  */
 CaAPI_FUNC(void*) CaCallable_GetFuctionAddress(CaObject *callable,
-		CaTypeObject *retType, CaObject *argTypes);
+		CaType *retType, CaObject *argTypes);
 
 /**
  * Same as CaCallable_GetFuctionAddress, except the arguments types are
@@ -66,7 +66,7 @@ CaAPI_FUNC(void*) CaCallable_GetFuctionAddress(CaObject *callable,
  * as CaTypeObject * values, terminated by a NULL.
  */
 CaAPI_FUNC(void*) CaCallable_GetFuctionAddressObjArgs(CaObject *callable,
-		CaTypeObject *retType, ...);
+		CaType *retType, ...);
 
 /**
  * Call a callable Cayman object, callable, with

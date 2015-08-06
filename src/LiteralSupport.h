@@ -25,7 +25,10 @@ using llvm::StringRef;
 using llvm::SmallString;
 
 class DiagnosticsEngine;
+
+
 class Preprocessor;
+
 class Token;
 class SourceLocation;
 class TargetInfo;
@@ -39,7 +42,7 @@ void expandUCNs(SmallVectorImpl<char> &Buf, StringRef Input);
 /// of a ppnumber, classifying it as either integer, floating, or erroneous,
 /// determines the radix of the value and can convert it to a useful value.
 class NumericLiteralParser {
-  Preprocessor &PP; // needed for diagnostics
+
 
   const char *const ThisTokBegin;
   const char *const ThisTokEnd;
@@ -53,9 +56,7 @@ class NumericLiteralParser {
   SmallString<32> UDSuffixBuf;
 
 public:
-  NumericLiteralParser(StringRef TokSpelling,
-                       SourceLocation TokLoc,
-                       Preprocessor &PP);
+  NumericLiteralParser(StringRef TokSpelling);
   bool hadError : 1;
   bool isUnsigned : 1;
   bool isLong : 1;          // This is *not* set for long long.

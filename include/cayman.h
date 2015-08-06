@@ -15,13 +15,15 @@
 
 
 #include <ca_object.h>
+#include <ca_module.h>
+#include <ca_number.h>
 #include <ca_runtime.h>
 #include <ca_string.h>
 #include <ca_import.h>
 #include <ca_tupleobject.h>
-#include <ca_longobject.h>
 #include <ca_abstract.h>
-#include <ca_floatobject.h>
+#include <ca_float.h>
+#include <ca_int.h>
 #include <ca_type.h>
 #include <ca_callable.h>
 #include <ca_function.h>

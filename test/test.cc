@@ -25,6 +25,7 @@ int main(int argc, const char** argv)
         {
             return ca_test1(argc, argv);
         }
+        
 
         
         if (argc >= 3)
@@ -61,6 +62,11 @@ int main(int argc, const char** argv)
                 return 0;
                 
             }
+            else if(string("num") == argv[1])
+            {
+                return testNumber(argv[2]);
+            }
+
         }
         
         return Ca_Main(argc, argv);

@@ -110,7 +110,7 @@ class Arg: public AstNode
 public:
 	Arg(class Ast* ast, const location& loc, const std::string& id,
 			AstNode *_def = NULL, AstNode *_type = NULL) :
-			AstNode(AST_ARG, ast, loc), id(id), def(_def), typeExpr(_type)
+			AstNode(AST_ARG, ast, loc), id(id), def(_def), annotation(_type)
 	{
 	}
 	;
@@ -123,8 +123,16 @@ public:
 
 
 	std::string id;
+
+	/**
+	 * Default value of argument
+	 */
 	AstNode *def;
-	AstNode *typeExpr;
+
+	/**
+	 * Type annotation expression.
+	 */
+	AstNode *annotation;
 
 	static bool classof(const AstNode *node) {
 		return node->type == AST_ARG;

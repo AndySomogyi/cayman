@@ -10,17 +10,18 @@ endfunction(prepend)
 set (_PUBLIC_HEADERS
   ca_abstract.h
   ca_import.h
-  ca_longobject.h
   ca_object.h
   ca_port.h
   ca_runtime.h
   ca_string.h
   ca_tupleobject.h
-  ca_floatobject.h
   ca_number.h
   ca_type.h
   ca_callable.h
   ca_callable.h
+  ca_eval.h
+  ca_int.h
+  ca_float.h
   cayman.h
   )
 

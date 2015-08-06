@@ -71,7 +71,7 @@ int ca_test1(int argc, const char** argv)
 
 	// lets say we want to call this for string, int and a double
 	// first need to make the type info.
-	CaTypeObject *dblType = CaType_FromPrimitive(CA_DOUBLE, 0);
+	CaType *dblType = CaType_FromPrimitive(CA_FLOAT32, 0);
 
 
 	// define the tupe of the function pointer
@@ -92,6 +92,28 @@ int ca_test1(int argc, const char** argv)
 	cout << "test_add(1.0, 2.0) -> " << result << std::endl;
 
 	return 0;
+}
+
+
+int testNumber(const char* str) {
+
+	Ca_Initialize();
+
+	CaObject *val = CaNumber_FromString(str);
+    
+    
+    if(val) {
+        std::cout << "parsed OK" << std::endl;
+        Ca_DecRef(val);
+    }
+    else {
+        std::cout << "failed to parse as number" << std::endl;
+    }
+
+
+	Ca_Finalize();
+    
+    return 0;
 }
 
 

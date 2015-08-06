@@ -128,13 +128,13 @@ int AstPrinter::visit(Name* nm)
 
 int AstPrinter::visit(Num* num)
 {
-	os << "Num(" << num->doubleValue << ")";
+	os << "Num(" << num->value << ")";
 	return 0;
 }
 
 int AstPrinter::visit(Str* s)
 {
-	os << "Str(s=\"" << s->s << "\")";
+	os << "Str(s=\"" << s->value << "\")";
 	return 0;
 }
 
@@ -333,8 +333,8 @@ int AstPrinter::visit(Arg* arg)
     }
     
     os << ", type=";
-    if (arg->typeExpr) {
-        dispatch(arg->typeExpr);
+    if (arg->annotation) {
+        dispatch(arg->annotation);
     } else {
         os << "Null";
     }

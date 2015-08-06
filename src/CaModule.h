@@ -51,7 +51,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->GetType() == CA_MODULE;
+		return o->type == CA_MODULE;
 	}
 
 	// name of module
@@ -63,7 +63,7 @@ public:
 	/**
 	 * TODO remove these virtuals with static methods
 	 */
-	virtual CaObject *GetAttrString(const char* str);
+	virtual CaObject *getAttrString(const char* str);
 
 	/**
 	 * A prototype only defines a function signature and symbol name.

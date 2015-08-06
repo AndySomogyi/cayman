@@ -240,19 +240,12 @@ public:
 	 */
 	Num(class Ast *ast, const location &loc, const char* begin, const char* end);
 
-	enum {Int32, UInt32, Float, Double} type;
-
-
-	union
-	{
-		int32_t int32Value;
-		uint32_t uint32Value;
-		float floatValue;
-		double doubleValue;
-	};
+	/**
+	 * the textual value of the numeric literal
+	 */
+	std::string value;
 
 	virtual ~Num() {};
-
 };
 
 
@@ -264,7 +257,7 @@ public:
 
 	virtual void Print(std::ostream&) const;
 
-	std::string s;
+	std::string value;
 };
 
 

@@ -7,6 +7,7 @@
 
 #include <AstInterpreter.h>
 
+
 namespace py {
 
 CaObject* AstInterpreter::eval(AstNode* node)
@@ -21,6 +22,7 @@ CaObject* AstInterpreter::visit(Name*)
 
 CaObject* AstInterpreter::visit(Num*)
 {
+
 	return nullptr;
 }
 

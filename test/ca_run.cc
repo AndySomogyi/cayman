@@ -35,7 +35,7 @@ int ca_run(int argc, char *argv[])
         if (pFunc && CaCallable_Check(pFunc)) {
             pArgs = CaTuple_New(argc - 3);
             for (i = 0; i < argc - 3; ++i) {
-                pValue = CaLong_FromLong(atoi(argv[i + 3]));
+                pValue = CaInt_FromLong(atoi(argv[i + 3]));
                 if (!pValue) {
                     Ca_DECREF(pArgs);
                     Ca_DECREF(pModule);
@@ -48,7 +48,7 @@ int ca_run(int argc, char *argv[])
             pValue = CaCallable_CallObject(pFunc, pArgs);
             Ca_DECREF(pArgs);
             if (pValue != NULL) {
-                printf("Result of call: %ld\n", CaLong_AsLong(pValue));
+                printf("Result of call: %ld\n", CaInt_AsLong(pValue));
                 Ca_DECREF(pValue);
             }
             else {

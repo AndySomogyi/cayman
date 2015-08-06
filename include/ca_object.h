@@ -24,7 +24,7 @@ typedef struct CaObject CaObject;
 /**
  * Basic opaque Cayman type type.
  */
-typedef struct CaTypeObject CaTypeObject;
+typedef struct CaType CaTypeObject;
 
 #define Ca_REFCNT(ob)           (((CaObject*)(ob))->ob_refcnt)
 #define Ca_TYPE(ob)             (((CaObject*)(ob))->ob_type)

@@ -47,10 +47,7 @@ Num::Num(class Ast* ast, const location& loc, const char* begin,
          const char* end) :
     AstNode(AST_NUM, ast, loc, ATOMIC)
 {
-	type = Double;
-
-	// TODO, horribly inefficient
-	doubleValue = ::atof(std::string(begin, end).c_str());
+	value = std::string(begin, end);
 }
 
     
@@ -58,7 +55,7 @@ Num::Num(class Ast* ast, const location& loc, const char* begin,
     
 Str::Str(class Ast* ast, const location& loc, const char* begin,
          const char* end) :
-    AstNode(AST_STR, ast, loc, ATOMIC), s(begin, end)
+    AstNode(AST_STR, ast, loc, ATOMIC), value(begin, end)
 {
 }
 

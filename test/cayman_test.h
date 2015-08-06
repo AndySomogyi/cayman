@@ -11,5 +11,7 @@
 
 int ca_test1(int argc, const char** argv);
 
+int testNumber(const char* str);
+
 
 #endif /* TEST_CAYMAN_TEST_H_ */
