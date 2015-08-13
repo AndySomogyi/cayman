@@ -329,6 +329,12 @@ ImportFrom* Ast::CreateImportFrom(const location& loc, AstNode* prevLevel,
 	return impf;
 }
 
+FunctionDef* Ast::CreateExternFunctionDef(const location& loc, AstNode* nm,
+		AstNode* args, AstNode* returns, AstNode* suite)
+{
+	return new FunctionDef(this, loc, nm, args, returns, suite, true);
+}
+
 TmpArguments* Ast::CreateTmpArguments(const location& loc)
 {
 	return new TmpArguments(this, loc);

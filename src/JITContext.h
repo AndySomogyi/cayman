@@ -77,6 +77,66 @@ public:
 
 	static int Finalize();
 
+public:
+  typedef llvm::StringMap<uint64_t> GlobalAddressMapTy;
+
+private:
+
+  /// GlobalAddressMap - A mapping between LLVM global symbol names values and
+  /// their actualized version...
+  GlobalAddressMapTy GlobalAddressMap;
+
+  /// GlobalAddressReverseMap - This is the reverse mapping of GlobalAddressMap,
+  /// used to convert raw addresses into the LLVM global value that is emitted
+  /// at the address.  This map is not computed unless getGlobalValueAtAddress
+  /// is called at some point.
+  std::map<uint64_t, std::string> GlobalAddressReverseMap;
+
+public:
+
+  GlobalAddressMapTy &getGlobalAddressMap() {
+    return GlobalAddressMap;
+  }
+
+  std::map<uint64_t, std::string> &getGlobalAddressReverseMap() {
+    return GlobalAddressReverseMap;
+  }
+
+  /// \brief Erase an entry from the mapping table.
+  ///
+  /// \returns The address that \p ToUnmap was happed to.
+  uint64_t RemoveMapping(llvm::StringRef Name);
+
+  /// addGlobalMapping - Tell the execution engine that the specified global is
+  /// at the specified location.  This is used internally as functions are JIT'd
+  /// and as global variables are laid out in memory.  It can and should also be
+  /// used by clients of the EE that want to have an LLVM global overlay
+  /// existing data in memory.  Mappings are automatically removed when their
+  /// GlobalValue is destroyed.
+  void addGlobalMapping(const llvm::GlobalValue *GV, void *Addr);
+  void addGlobalMapping(llvm::StringRef Name, uint64_t Addr);
+
+  /// clearAllGlobalMappings - Clear all global mappings and start over again,
+  /// for use in dynamic compilation scenarios to move globals.
+  void clearAllGlobalMappings();
+
+
+
+  /// updateGlobalMapping - Replace an existing mapping for GV with a new
+  /// address.  This updates both maps as required.  If "Addr" is null, the
+  /// entry for the global is removed from the mappings.  This returns the old
+  /// value of the pointer, or null if it was not in the map.
+  uint64_t updateGlobalMapping(const llvm::GlobalValue *GV, void *Addr);
+  uint64_t updateGlobalMapping(llvm::StringRef Name, uint64_t Addr);
+
+
+  /// getPointerToGlobalIfAvailable - This returns the address of the specified
+  /// global value if it is has already been codegen'd, otherwise it returns
+  /// null.
+  uint64_t getPointerToGlobalMapping(llvm::StringRef S);
+  uint64_t getPointerToGlobalMapping(const llvm::GlobalValue *GV);
+
+
 
 public:
 
@@ -126,6 +186,8 @@ public:
 
 
 	std::string mangle(const std::string &name);
+
+	std::string mangle(const llvm::GlobalValue *GV);
 
 	void AddCaModule(const CaModule* m);
 

@@ -12,9 +12,10 @@
 #include "ParserContext.h"
 #include "AstToken.h"
 
-
 #include "cayman_llvm.h"
 #include "AstCodegen.h"
+
+using llvm::dyn_cast;
 
 namespace py
 {
@@ -23,12 +24,17 @@ Assign::Assign(class Ast* _ast, const location& _loc, AstNode* target,
 		AstNode* _value) :
 		Stmt(AST_ASSIGN, _ast, _loc), value(_value)
 {
+	value->setContext(ExprContext::Load);
+	target->setContext(ExprContext::Store);
 	targets.push_back(target);
-
 }
 
-void Assign::AddValue(AstNode* _value)
+void Assign::addValue(AstNode* _value)
 {
+	// old value, was a Load
+	value->setContext(ExprContext::Store);
+	// new rhs
+	_value->setContext(ExprContext::Load);
 	targets.push_back(value);
 	value = _value;
 }
@@ -58,8 +64,8 @@ void TmpArguments::SetKwArg(AstNode* node)
 
 
 FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
-		AstNode *r, AstNode* s) :
-		Stmt(AST_FUNCTIONDEF, ast, loc)
+		AstNode *r, AstNode* s, bool _ext) :
+		Stmt(AST_FUNCTIONDEF, ast, loc), ext(_ext)
 {
 	Tuple *suite = dynamic_cast<Tuple*>(s);
 
@@ -67,6 +73,19 @@ FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
 	{
 		throw syntax_error(loc,
 				"function def suite must be a list of statements in a tuple");
+	}
+
+	if (ext && suite)
+	{
+		for(auto i : suite->items)
+		{
+			if(dyn_cast<Pass>(i))
+			{
+				throw syntax_error(loc,
+					"error, an external function can not have a function body definition");
+
+			}
+		}
 	}
 
 	TmpArguments *targs = dynamic_cast<TmpArguments*>(a);
@@ -237,11 +256,13 @@ void AugAssign::SetOp(OperatorType _op)
 
 void AugAssign::SetTarget(AstNode* _target)
 {
+	_target->setContext(ExprContext::AugStore);
 	target = _target;
 }
 
 void AugAssign::SetValue(AstNode* _value)
 {
+	_value->setContext(ExprContext::AugLoad);
 	value = _value;
 }
 

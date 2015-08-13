@@ -15,6 +15,59 @@
 CaInt::CaInt() : CaObject(CA_INT_TYPE)
 {
 	setTypeObject(CaIntType::fromBitWidth(value.getBitWidth()));
+
+
+	typedef void (*TestType)(PyObject *);
+
+	auto lambda = [] (PyObject* p) {
+	        std::cout << "foo";
+	    };
+
+	TestType func = lambda;
+
+	func(this);
+
+
+	typedef int (*UnaryType1)(PyObject *);
+
+	auto l1 = [] (PyObject* p) -> int {
+		        std::cout << "foo";
+		        return 5;
+		    };
+
+	UnaryType1 u1 = l1;
+
+	u1(this);
+
+
+	typedef PyObject * (*UnaryType2)(PyObject *);
+
+	auto l2 = [] (PyObject* p) -> PyObject* {
+			        std::cout << "foo";
+			        return p;
+			    };
+
+	UnaryType2 u2 = l2;
+
+	u2(this);
+
+
+	unaryfunc u3 = l2;
+
+	u3(this);
+
+
+	PyNumberMethods num = {0};
+
+	num.nb_absolute = l2;
+
+
+
+
+
+
+
+
 }
 
 CaInt::CaInt(const llvm::APInt& val) : CaObject(CA_INT_TYPE), value(val)

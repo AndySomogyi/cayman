@@ -123,21 +123,40 @@ std::unique_ptr<llvm::Module> JITContext::CreateModuleWithFunction(const Functio
 
 JITContext::ModuleHandleT JITContext::addModule(std::unique_ptr<llvm::Module> M)
 {
-    // We need a memory manager to allocate memory and resolve symbols for this
-    // new module. Create one that resolves symbols by looking back into the
-    // JIT.
-    auto Resolver = createLambdaResolver(
-                      [&](const std::string &Name) {
-                        if (auto sym = findMangledSymbol(Name))
-                          return RuntimeDyld::SymbolInfo(sym.getAddress(),
-                                                         sym.getFlags());
-                        return RuntimeDyld::SymbolInfo(nullptr);
-                      },
-                      [](const std::string &S) { return nullptr; }
-                    );
-    return CompileLayer.addModuleSet(singletonSet(std::move(M)),
-                                     make_unique<SectionMemoryManager>(),
-                                     std::move(Resolver));
+	// We need a memory manager to allocate memory and resolve symbols for this
+	// new module. Create one that resolves symbols by looking back into the
+	// JIT.
+	auto Resolver = createLambdaResolver(
+			[&](const std::string &name) {
+
+		// look up first in JIT'ed code
+		if (auto sym = findMangledSymbol(name)) {
+			return RuntimeDyld::SymbolInfo(sym.getAddress(),
+					sym.getFlags());
+			return RuntimeDyld::SymbolInfo(nullptr);
+		}
+
+		// look up in added globals
+		if (auto addr = getPointerToGlobalMapping(name)) {
+			return RuntimeDyld::SymbolInfo(addr, JITSymbolFlags::Exported);
+		}
+
+		// finally try to look up existing process symbols, note
+		// this works for symbols loaded in shared libraries, but
+		// does NOT seem to find symbols declared in the executable.
+		if (auto Addr =
+				RTDyldMemoryManager::getSymbolAddressInProcess(name)) {
+			return RuntimeDyld::SymbolInfo(Addr, JITSymbolFlags::Exported);
+		}
+	},
+	[](const std::string &S) { return nullptr; }
+	);
+
+
+
+	return CompileLayer.addModuleSet(singletonSet(std::move(M)),
+			make_unique<SectionMemoryManager>(),
+			std::move(Resolver));
 }
 
 void JITContext::AddCaModule(const CaModule* m)
@@ -171,4 +190,108 @@ std::string JITContext::mangle(const std::string &name)
     return MangledName;
 }
 
+uint64_t JITContext::RemoveMapping(llvm::StringRef Name)
+{
+	  GlobalAddressMapTy::iterator I = GlobalAddressMap.find(Name);
+	  uint64_t OldVal;
 
+	  // FIXME: This is silly, we shouldn't end up with a mapping -> 0 in the
+	  // GlobalAddressMap.
+	  if (I == GlobalAddressMap.end())
+	    OldVal = 0;
+	  else {
+	    GlobalAddressReverseMap.erase(I->second);
+	    OldVal = I->second;
+	    GlobalAddressMap.erase(I);
+	  }
+
+	  return OldVal;
+}
+
+
+std::string JITContext::mangle(const GlobalValue *GV) {
+
+  Mangler Mang;
+  SmallString<128> FullName;
+  Mang.getNameWithPrefix(FullName, GV, false);
+  return FullName.str();
+}
+
+void JITContext::addGlobalMapping(const GlobalValue *GV, void *Addr) {
+
+  addGlobalMapping(mangle(GV), (uint64_t) Addr);
+}
+
+void JITContext::addGlobalMapping(StringRef Name, uint64_t Addr) {
+
+
+  assert(!Name.empty() && "Empty GlobalMapping symbol name!");
+
+  //DEBUG(dbgs() << "JIT: Map \'" << Name  << "\' to [" << Addr << "]\n";);
+  uint64_t &CurVal = getGlobalAddressMap()[Name];
+  assert((!CurVal || !Addr) && "GlobalMapping already established!");
+  CurVal = Addr;
+
+  // If we are using the reverse mapping, add it too.
+  if (!getGlobalAddressReverseMap().empty()) {
+    std::string &V = getGlobalAddressReverseMap()[CurVal];
+    assert((!V.empty() || !Name.empty()) &&
+           "GlobalMapping already established!");
+    V = Name;
+  }
+}
+
+void JITContext::clearAllGlobalMappings() {
+
+
+  getGlobalAddressMap().clear();
+  getGlobalAddressReverseMap().clear();
+}
+
+uint64_t JITContext::updateGlobalMapping(const llvm::GlobalValue* GV,
+		void* Addr)
+{
+	updateGlobalMapping(mangle(GV), (uint64_t) Addr);
+}
+
+uint64_t JITContext::updateGlobalMapping(llvm::StringRef Name, uint64_t Addr)
+{
+	GlobalAddressMapTy &Map =
+			getGlobalAddressMap();
+
+	// Deleting from the mapping?
+	if (!Addr)
+		return RemoveMapping(Name);
+
+	uint64_t &CurVal = Map[Name];
+	uint64_t OldVal = CurVal;
+
+	if (CurVal && !getGlobalAddressReverseMap().empty())
+		getGlobalAddressReverseMap().erase(CurVal);
+	CurVal = Addr;
+
+	// If we are using the reverse mapping, add it too.
+	if (!getGlobalAddressReverseMap().empty()) {
+		std::string &V = getGlobalAddressReverseMap()[CurVal];
+		assert((!V.empty() || !Name.empty()) &&
+				"GlobalMapping already established!");
+		V = Name;
+	}
+	return OldVal;
+}
+
+uint64_t JITContext::getPointerToGlobalMapping(llvm::StringRef S)
+{
+	uint64_t Address = 0;
+	GlobalAddressMapTy::iterator I =
+			getGlobalAddressMap().find(S);
+	if (I != getGlobalAddressMap().end())
+		Address = I->second;
+	return Address;
+
+}
+
+uint64_t JITContext::getPointerToGlobalMapping(const llvm::GlobalValue* GV)
+{
+	return getPointerToGlobalMapping(mangle(GV));
+}

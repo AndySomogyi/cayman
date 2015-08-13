@@ -27,6 +27,7 @@
 #include <ca_type.h>
 #include <ca_callable.h>
 #include <ca_function.h>
+#include <ca_eval.h>
 
 
 

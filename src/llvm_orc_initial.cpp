@@ -1184,19 +1184,72 @@ public:
     return MangledName;
   }
 
+public:
+  typedef llvm::StringMap<uint64_t> GlobalAddressMapTy;
+
+private:
+
+  /// GlobalAddressMap - A mapping between LLVM global symbol names values and
+  /// their actualized version...
+  GlobalAddressMapTy GlobalAddressMap;
+
+public:
+
+  GlobalAddressMapTy &getGlobalAddressMap() {
+    return GlobalAddressMap;
+  }
+
+  uint64_t getPointerToGlobalMapping(llvm::StringRef S)
+  {
+  	uint64_t Address = 0;
+  	GlobalAddressMapTy::iterator I =
+  			getGlobalAddressMap().find(S);
+  	if (I != getGlobalAddressMap().end())
+  		Address = I->second;
+  	return Address;
+
+  }
+
+  void addGlobalMapping(StringRef Name, void* Addr) {
+
+	std::string mangledName = mangle(Name);
+
+    assert(!mangledName.empty() && "Empty GlobalMapping symbol name!");
+
+    //DEBUG(dbgs() << "JIT: Map \'" << Name  << "\' to [" << Addr << "]\n";);
+    uint64_t &CurVal = getGlobalAddressMap()[mangledName];
+    assert((!CurVal || !Addr) && "GlobalMapping already established!");
+    CurVal = (uint64_t)Addr;
+  }
+
   ModuleHandleT addModule(std::unique_ptr<Module> M) {
-    // We need a memory manager to allocate memory and resolve symbols for this
-    // new module. Create one that resolves symbols by looking back into the
-    // JIT.
-    auto Resolver = createLambdaResolver(
-                      [&](const std::string &Name) {
-                        if (auto Sym = findSymbol(Name))
-                          return RuntimeDyld::SymbolInfo(Sym.getAddress(),
-                                                         Sym.getFlags());
-                        return RuntimeDyld::SymbolInfo(nullptr);
-                      },
-                      [](const std::string &S) { return nullptr; }
-                    );
+	  // We need a memory manager to allocate memory and resolve symbols for this
+	  // new module. Create one that resolves symbols by looking back into the
+	  // JIT.
+	  auto Resolver = createLambdaResolver(
+			  [&](const std::string &Name) {
+		  if (auto Sym = findSymbol(Name)) {
+			  return RuntimeDyld::SymbolInfo(Sym.getAddress(),
+					  Sym.getFlags());
+		  }
+
+		  // look up in added globals
+		  if (auto addr = getPointerToGlobalMapping(Name)) {
+			  return RuntimeDyld::SymbolInfo(addr, JITSymbolFlags::Exported);
+		  }
+
+		  // finally try to look up existing process symbols, note
+		  // this works for symbols loaded in shared libraries, but
+		  // does NOT seem to find symbols declared in the executable.
+		  if (auto Addr =
+				  RTDyldMemoryManager::getSymbolAddressInProcess(Name)) {
+			  return RuntimeDyld::SymbolInfo(Addr, JITSymbolFlags::Exported);
+		  }
+
+		  return RuntimeDyld::SymbolInfo(nullptr);
+	  },
+	  [](const std::string &S) { return nullptr; }
+	  );
     return CompileLayer.addModuleSet(singletonSet(std::move(M)),
                                      make_unique<SectionMemoryManager>(),
                                      std::move(Resolver));
@@ -1273,10 +1326,41 @@ static void HandleTopLevelExpression(SessionContext &S, KaleidoscopeJIT &J) {
   }
 }
 
+//===----------------------------------------------------------------------===//
+// "Library" functions that can be "extern'd" from user code.
+//===----------------------------------------------------------------------===//
+
+/// putchard - putchar that takes a double and returns 0.
+extern "C" 
+double putchard(double X) {
+  putchar((char)X);
+  return 0;
+}
+
+/// printd - printf that takes a double prints it as "%f\n", returning 0.
+extern "C" 
+double printd(double X) {
+    
+
+  std::cerr << "printd(" << X << ")" << std::endl;
+  return 2 * X;
+}
+
+extern "C" 
+double printlf() {
+  printf("\n");
+  return 0;
+}
+
+
 /// top ::= definition | external | expression | ';'
 static void MainLoop() {
   SessionContext S(getGlobalContext());
   KaleidoscopeJIT J(S);
+
+  J.addGlobalMapping("putchard", (void*)putchard);
+  J.addGlobalMapping("printd", (void*)printd);
+  J.addGlobalMapping("printlf", (void*)printlf);
 
   while (1) {
     switch (CurTok) {
@@ -1292,33 +1376,15 @@ static void MainLoop() {
   }
 }
 
-//===----------------------------------------------------------------------===//
-// "Library" functions that can be "extern'd" from user code.
-//===----------------------------------------------------------------------===//
-
-/// putchard - putchar that takes a double and returns 0.
-extern "C" 
-double putchard(double X) {
-  putchar((char)X);
-  return 0;
-}
-
-/// printd - printf that takes a double prints it as "%f\n", returning 0.
-extern "C" 
-double printd(double X) {
-  printf("%f", X);
-  return 0;
-}
-
-extern "C" 
-double printlf() {
-  printf("\n");
-  return 0;
-}
 
 //===----------------------------------------------------------------------===//
 // Main driver code.
 //===----------------------------------------------------------------------===//
+
+#include <dlfcn.h>
+
+
+
 
 int llvm_orc_initial(int argc, const char** argv) {
 
@@ -1328,11 +1394,18 @@ int llvm_orc_initial(int argc, const char** argv) {
 	std::cout << argv[i];
   }
   std::cout << ")" << std::endl;
+    
+  void * p = dlsym(NULL, "printlf");
+  p=dlsym(NULL, "_printlf");
 
 
   InitializeNativeTarget();
   InitializeNativeTargetAsmPrinter();
   InitializeNativeTargetAsmParser();
+
+  size_t a = RTDyldMemoryManager::getSymbolAddressInProcess("printlf");
+
+  a = RTDyldMemoryManager::getSymbolAddressInProcess("_printlf");
 
   // Install standard binary operators.
   // 1 is lowest precedence.

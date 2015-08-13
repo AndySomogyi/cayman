@@ -80,7 +80,7 @@ T* ErrorP(const std::string &Str) {
 
 namespace py {
 
-class AstCodegen: public IRGenContext, private AstVisitor<AstCodegen, llvm::Value*>
+class AstCodegen: public IRGenContext, private AstVisitor<AstCodegen, llvm::Value*, py::ExprContext>
 {
 public:
 	AstCodegen(JITContext &jctx);
@@ -103,53 +103,53 @@ private:
 
 
 
-	llvm::Value* visit(Name*);
-	llvm::Value* visit(Num*);
-	llvm::Value* visit(Str*);
-	llvm::Value* visit(Module*);
-	llvm::Value* visit(Assign*);
-	llvm::Value* visit(BinOp*);
-	llvm::Value* visit(Tuple*);
-	llvm::Value* visit(Ast*);
-	llvm::Value* visit(Arg*);
-	llvm::Value* visit(FunctionDef*);
-	llvm::Value* visit(KeywordArg*);
-	llvm::Value* visit(Call*);
-	llvm::Value* visit(Starred*);
-	llvm::Value* visit(For*);
-	llvm::Value* visit(If*);
-	llvm::Value* visit(Attribute*);
-	llvm::Value* visit(IfExpr*);
-	llvm::Value* visit(UnaryOp*);
-	llvm::Value* visit(AugAssign*);
-	llvm::Value* visit(Compare*);
-	llvm::Value* visit(Delete*);
-    llvm::Value* visit(Return*);
-    llvm::Value* visit(Pass*);
-    llvm::Value* visit(Break*);
-    llvm::Value* visit(Continue*);
-    llvm::Value* visit(While*);
-    llvm::Value* visit(Raise*);
-    llvm::Value* visit(Try*);
-    llvm::Value* visit(Assert*);
-    llvm::Value* visit(Import*);
-    llvm::Value* visit(ImportFrom*);
-    llvm::Value* visit(Global*);
-    llvm::Value* visit(NonLocal*);
-    llvm::Value* visit(ClassDef*);
-    llvm::Value* visit(Lambda*);
-    llvm::Value* visit(Dict*);
-    llvm::Value* visit(Set*);
-    llvm::Value* visit(ListComp*);
-    llvm::Value* visit(SetComp*);
-    llvm::Value* visit(DictComp*);
-    llvm::Value* visit(GeneratorExpr*);
-    llvm::Value* visit(Yield*);
-    llvm::Value* visit(YieldFrom*);
-    llvm::Value* visit(Bytes*);
-    llvm::Value* visit(NameConstant*);
-    llvm::Value* visit(Subscript*);
-    llvm::Value* visit(List*);
+	llvm::Value* visit(Name*, py::ExprContext);
+	llvm::Value* visit(Num*, py::ExprContext);
+	llvm::Value* visit(Str*, py::ExprContext);
+	llvm::Value* visit(Module*, py::ExprContext);
+	llvm::Value* visit(Assign*, py::ExprContext);
+	llvm::Value* visit(BinOp*, py::ExprContext);
+	llvm::Value* visit(Tuple*, py::ExprContext);
+	llvm::Value* visit(Ast*, py::ExprContext);
+	llvm::Value* visit(Arg*, py::ExprContext);
+	llvm::Value* visit(FunctionDef*, py::ExprContext);
+	llvm::Value* visit(KeywordArg*, py::ExprContext);
+	llvm::Value* visit(Call*, py::ExprContext);
+	llvm::Value* visit(Starred*, py::ExprContext);
+	llvm::Value* visit(For*, py::ExprContext);
+	llvm::Value* visit(If*, py::ExprContext);
+	llvm::Value* visit(Attribute*, py::ExprContext);
+	llvm::Value* visit(IfExpr*, py::ExprContext);
+	llvm::Value* visit(UnaryOp*, py::ExprContext);
+	llvm::Value* visit(AugAssign*, py::ExprContext);
+	llvm::Value* visit(Compare*, py::ExprContext);
+	llvm::Value* visit(Delete*, py::ExprContext);
+    llvm::Value* visit(Return*, py::ExprContext);
+    llvm::Value* visit(Pass*, py::ExprContext);
+    llvm::Value* visit(Break*, py::ExprContext);
+    llvm::Value* visit(Continue*, py::ExprContext);
+    llvm::Value* visit(While*, py::ExprContext);
+    llvm::Value* visit(Raise*, py::ExprContext);
+    llvm::Value* visit(Try*, py::ExprContext);
+    llvm::Value* visit(Assert*, py::ExprContext);
+    llvm::Value* visit(Import*, py::ExprContext);
+    llvm::Value* visit(ImportFrom*, py::ExprContext);
+    llvm::Value* visit(Global*, py::ExprContext);
+    llvm::Value* visit(NonLocal*, py::ExprContext);
+    llvm::Value* visit(ClassDef*, py::ExprContext);
+    llvm::Value* visit(Lambda*, py::ExprContext);
+    llvm::Value* visit(Dict*, py::ExprContext);
+    llvm::Value* visit(Set*, py::ExprContext);
+    llvm::Value* visit(ListComp*, py::ExprContext);
+    llvm::Value* visit(SetComp*, py::ExprContext);
+    llvm::Value* visit(DictComp*, py::ExprContext);
+    llvm::Value* visit(GeneratorExpr*, py::ExprContext);
+    llvm::Value* visit(Yield*, py::ExprContext);
+    llvm::Value* visit(YieldFrom*, py::ExprContext);
+    llvm::Value* visit(Bytes*, py::ExprContext);
+    llvm::Value* visit(NameConstant*, py::ExprContext);
+    llvm::Value* visit(Subscript*, py::ExprContext);
+    llvm::Value* visit(List*, py::ExprContext);
 
 
     /// CreateArgumentAllocas - Create an alloca for each argument and register the
@@ -173,7 +173,7 @@ private:
 
 	// mark the template class as friend so it can call the
 	// private visitor methods.
-	friend AstVisitor<AstCodegen, llvm::Value*>;
+	friend AstVisitor<AstCodegen, llvm::Value*, py::ExprContext>;
 };
 
 }

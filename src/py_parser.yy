@@ -62,6 +62,7 @@ IN "in"
 IS "is"
 FOR "for"
 DEL "del"
+EXTERN "extern"
 ENDMARKER
 NEWLINE
 INDENT
@@ -371,7 +372,7 @@ small_stmt_seq:
     | small_stmt_seq ";" small_stmt
     {
         // // small_stmt_seq: small_stmt_seq ";" small_stmt
-        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3); 
+        $$ = ctx.ast->CreateTuple(@$, ExprContext::Load, $1, $3);
     }
     ;
 
@@ -448,7 +449,7 @@ assign_expr_seq:
     {
         Assign *a = dynamic_cast<Assign*>($1);
         assert(a);
-        a->AddValue($3);
+        a->addValue($3);
         $$ = a;
         std::cout << "assign_expr_seq = testlist_star_expr" << std::endl;
     }
@@ -526,7 +527,7 @@ test_star_expr_seq:
     {
         // test_star_expr_seq: test_star_expr_seq "," test_star_expr
         // don't know at this point what context, 
-        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3);
+        $$ = ctx.ast->CreateTuple(@$, ExprContext::Load, $1, $3);
     }
     ;
 
@@ -791,7 +792,7 @@ trailer:
         // trailer: "." NAME
         // base type is not known at this point, filled in 
         // in trailer_seq
-        $$ = ctx.ast->CreateAttribute(@$, UnknownCtx, NULL, $2);
+        $$ = ctx.ast->CreateAttribute(@$, ExprContext::Load, NULL, $2);
     }
     | "(" ")"
     {
@@ -1063,7 +1064,7 @@ str:
         assert(s1);
         Str *s2 = dynamic_cast<Str*>($2);
         assert(s2);
-        s1->s += s2->s;
+        s1->value += s2->value;
         $$ = s1;
     }
     ;
@@ -1334,6 +1335,25 @@ funcdef:
         // CreateFunctionDef(loc, nm, args, returns, suite)
         $$ = ctx.ast->CreateFunctionDef(@$, $2, $3, $5, $7);
     }
+    "extern" "def" NAME parameters
+    {
+        // CreateFunctionDef(loc, nm, args, returns, suite)
+        $$ = ctx.ast->CreateExternFunctionDef(@$, $3, $4, NULL, NULL);
+    }
+    // There needs to be a token that terminates the expr correctly, this
+    // can be either a NEWLINE, or it may be a ":" suite, in the case of a
+    // suite, it must be a pass statement, but the verification of pass is
+    // handled in the AST builder
+    "extern" "def" NAME parameters "->" expr NEWLINE
+    {
+        // CreateFunctionDef(loc, nm, args, returns, suite)
+        $$ = ctx.ast->CreateExternFunctionDef(@$, $3, $4, $6, NULL);
+    }
+    "extern" "def" NAME parameters "->" expr ":" suite
+    {
+        // CreateFunctionDef(loc, nm, args, returns, suite)
+        $$ = ctx.ast->CreateExternFunctionDef(@$, $3, $4, $6, $8);
+    }
     ;
 
 
@@ -1454,7 +1474,7 @@ tfp_arglist_trailer:
     }
     | tfp_arglist_trailer "," tfpdef_test
     {
-        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3);
+        $$ = ctx.ast->CreateTuple(@$, ExprContext::Load, $1, $3);
     }
 
     ;
@@ -1631,7 +1651,7 @@ vfp_argslist_trailer:
     }
     | vfp_argslist_trailer "," vfpdef_test
     {
-        $$ = ctx.ast->CreateTuple(@$, UnknownCtx, $1, $3);
+        $$ = ctx.ast->CreateTuple(@$, ExprContext::Load, $1, $3);
     }
 
     ;

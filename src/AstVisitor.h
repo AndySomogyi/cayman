@@ -18,116 +18,116 @@ namespace py
 class Ast;
 
 
-template<typename Derived, typename RType>
+template<typename Derived, typename RetType, typename StackType>
 class AstVisitor
 {
 protected:
 
-	RType visit(Name*) { return RType(); };
-	RType visit(Num*) { return RType(); };
-	RType visit(Str*) { return RType(); };
-	RType visit(Module*) { return RType(); };
-	RType visit(Assign*) { return RType(); };
-	RType visit(BinOp*) { return RType(); };
-	RType visit(Tuple*) { return RType(); };
-	RType visit(Ast*) { return RType(); };
-	RType visit(Arg*) { return RType(); };
-	RType visit(FunctionDef*) { return RType(); };
-	RType visit(KeywordArg*) { return RType(); };
-	RType visit(Call*) { return RType(); };
-	RType visit(Starred*) { return RType(); };
-	RType visit(For*) { return RType(); };
-	RType visit(If*) { return RType(); };
-	RType visit(Attribute*) { return RType(); };
-	RType visit(IfExpr*) { return RType(); };
-	RType visit(UnaryOp*) { return RType(); };
-	RType visit(AugAssign*) { return RType(); };
-	RType visit(Compare*) { return RType(); };
-	RType visit(Delete*) { return RType(); };
-    RType visit(Return*) { return RType(); };
-    RType visit(Pass*) { return RType(); };
-    RType visit(Break*) { return RType(); };
-    RType visit(Continue*) { return RType(); };
-    RType visit(While*) { return RType(); };
-    RType visit(Raise*) { return RType(); };
-    RType visit(Try*) { return RType(); };
-    RType visit(Assert*) { return RType(); };
-    RType visit(Import*) { return RType(); };
-    RType visit(ImportFrom*) { return RType(); };
-    RType visit(Global*) { return RType(); };
-    RType visit(NonLocal*) { return RType(); };
-    RType visit(ClassDef*) { return RType(); };
-    RType visit(Lambda*) { return RType(); };
-    RType visit(Dict*) { return RType(); };
-    RType visit(Set*) { return RType(); };
-    RType visit(ListComp*) { return RType(); };
-    RType visit(SetComp*) { return RType(); };
-    RType visit(DictComp*) { return RType(); };
-    RType visit(GeneratorExpr*) { return RType(); };
-    RType visit(Yield*) { return RType(); };
-    RType visit(YieldFrom*) { return RType(); };
-    RType visit(Bytes*) { return RType(); };
-    RType visit(NameConstant*) { return RType(); };
-    RType visit(Subscript*) { return RType(); };
-    RType visit(List*) { return RType(); };
+	RetType visit(Name*, StackType) { return RetType(); };
+	RetType visit(Num*, StackType) { return RetType(); };
+	RetType visit(Str*, StackType) { return RetType(); };
+	RetType visit(Module*, StackType) { return RetType(); };
+	RetType visit(Assign*, StackType) { return RetType(); };
+	RetType visit(BinOp*, StackType) { return RetType(); };
+	RetType visit(Tuple*, StackType) { return RetType(); };
+	RetType visit(Ast*, StackType) { return RetType(); };
+	RetType visit(Arg*, StackType) { return RetType(); };
+	RetType visit(FunctionDef*, StackType) { return RetType(); };
+	RetType visit(KeywordArg*, StackType) { return RetType(); };
+	RetType visit(Call*, StackType) { return RetType(); };
+	RetType visit(Starred*, StackType) { return RetType(); };
+	RetType visit(For*, StackType) { return RetType(); };
+	RetType visit(If*, StackType) { return RetType(); };
+	RetType visit(Attribute*, StackType) { return RetType(); };
+	RetType visit(IfExpr*, StackType) { return RetType(); };
+	RetType visit(UnaryOp*, StackType) { return RetType(); };
+	RetType visit(AugAssign*, StackType) { return RetType(); };
+	RetType visit(Compare*, StackType) { return RetType(); };
+	RetType visit(Delete*, StackType) { return RetType(); };
+    RetType visit(Return*, StackType) { return RetType(); };
+    RetType visit(Pass*, StackType) { return RetType(); };
+    RetType visit(Break*, StackType) { return RetType(); };
+    RetType visit(Continue*, StackType) { return RetType(); };
+    RetType visit(While*, StackType) { return RetType(); };
+    RetType visit(Raise*, StackType) { return RetType(); };
+    RetType visit(Try*, StackType) { return RetType(); };
+    RetType visit(Assert*, StackType) { return RetType(); };
+    RetType visit(Import*, StackType) { return RetType(); };
+    RetType visit(ImportFrom*, StackType) { return RetType(); };
+    RetType visit(Global*, StackType) { return RetType(); };
+    RetType visit(NonLocal*, StackType) { return RetType(); };
+    RetType visit(ClassDef*, StackType) { return RetType(); };
+    RetType visit(Lambda*, StackType) { return RetType(); };
+    RetType visit(Dict*, StackType) { return RetType(); };
+    RetType visit(Set*, StackType) { return RetType(); };
+    RetType visit(ListComp*, StackType) { return RetType(); };
+    RetType visit(SetComp*, StackType) { return RetType(); };
+    RetType visit(DictComp*, StackType) { return RetType(); };
+    RetType visit(GeneratorExpr*, StackType) { return RetType(); };
+    RetType visit(Yield*, StackType) { return RetType(); };
+    RetType visit(YieldFrom*, StackType) { return RetType(); };
+    RetType visit(Bytes*, StackType) { return RetType(); };
+    RetType visit(NameConstant*, StackType) { return RetType(); };
+    RetType visit(Subscript*, StackType) { return RetType(); };
+    RetType visit(List*, StackType) { return RetType(); };
 
 
-	RType dispatch(AstNode *node)
+	RetType dispatch(AstNode *node, StackType stk)
 	{
 		Derived *p = static_cast<Derived*>(this);
 
 		switch(node->type)
 		{
-        case AST_NAME: return p->visit(static_cast<Name*>(node));
-        case AST_NUM: return p->visit(static_cast<Num*>(node));
-        case AST_STR: return p->visit(static_cast<Str*>(node));
-        case AST_MODULE: return p->visit(static_cast<Module*>(node));
-        case AST_ASSIGN: return p->visit(static_cast<Assign*>(node));
-        case AST_BINOP: return p->visit(static_cast<BinOp*>(node));
-        case AST_TUPLE: return p->visit(static_cast<Tuple*>(node));
-        case AST_AST: return p->visit(static_cast<Ast*>(node));
-        case AST_ARG: return p->visit(static_cast<Arg*>(node));
-        case AST_FUNCTIONDEF: return p->visit(static_cast<FunctionDef*>(node));
-        case AST_KEYWORDARG: return p->visit(static_cast<KeywordArg*>(node));
-        case AST_CALL: return p->visit(static_cast<Call*>(node));
-        case AST_STARRED: return p->visit(static_cast<Starred*>(node));
-        case AST_FOR: return p->visit(static_cast<For*>(node));
-        case AST_IF: return p->visit(static_cast<If*>(node));
-        case AST_ATTRIBUTE: return p->visit(static_cast<Attribute*>(node));
-        case AST_IFEXPR: return p->visit(static_cast<IfExpr*>(node));
-        case AST_UNARYOP: return p->visit(static_cast<UnaryOp*>(node));
-        case AST_AUGASSIGN: return p->visit(static_cast<AugAssign*>(node));
-        case AST_COMPARE: return p->visit(static_cast<Compare*>(node));
-        case AST_DELETE: return p->visit(static_cast<Delete*>(node));
-        case AST_RETURN: return p->visit(static_cast<Return*>(node));
-        case AST_PASS: return p->visit(static_cast<Pass*>(node));
-        case AST_BREAK: return p->visit(static_cast<Break*>(node));
-        case AST_CONTINUE: return p->visit(static_cast<Continue*>(node));
-        case AST_WHILE: return p->visit(static_cast<While*>(node));
-        case AST_RAISE: return p->visit(static_cast<Raise*>(node));
-        case AST_TRY: return p->visit(static_cast<Try*>(node));
-        case AST_ASSERT: return p->visit(static_cast<Assert*>(node));
-        case AST_IMPORT: return p->visit(static_cast<Import*>(node));
-        case AST_IMPORTFROM: return p->visit(static_cast<ImportFrom*>(node));
-        case AST_GLOBAL: return p->visit(static_cast<Global*>(node));
-        case AST_NONLOCAL: return p->visit(static_cast<NonLocal*>(node));
-        case AST_CLASSDEF: return p->visit(static_cast<ClassDef*>(node));
-        case AST_LAMBDA: return p->visit(static_cast<Lambda*>(node));
-        case AST_DICT: return p->visit(static_cast<Dict*>(node));
-        case AST_SET: return p->visit(static_cast<Set*>(node));
-        case AST_LISTCOMP: return p->visit(static_cast<ListComp*>(node));
-        case AST_SETCOMP: return p->visit(static_cast<SetComp*>(node));
-        case AST_DICTCOMP: return p->visit(static_cast<DictComp*>(node));
-        case AST_GENERATOREXPR: return p->visit(static_cast<GeneratorExpr*>(node));
-        case AST_YIELD: return p->visit(static_cast<Yield*>(node));
-        case AST_YIELDFROM: return p->visit(static_cast<YieldFrom*>(node));
-        case AST_BYTES: return p->visit(static_cast<Bytes*>(node));
-        case AST_NAMECONSTANT: return p->visit(static_cast<NameConstant*>(node));
-        case AST_SUBSCRIPT: return p->visit(static_cast<Subscript*>(node));
-        case AST_LIST: return p->visit(static_cast<List*>(node));
+        case AST_NAME: return p->visit(static_cast<Name*>(node), stk);
+        case AST_NUM: return p->visit(static_cast<Num*>(node), stk);
+        case AST_STR: return p->visit(static_cast<Str*>(node), stk);
+        case AST_MODULE: return p->visit(static_cast<Module*>(node), stk);
+        case AST_ASSIGN: return p->visit(static_cast<Assign*>(node), stk);
+        case AST_BINOP: return p->visit(static_cast<BinOp*>(node), stk);
+        case AST_TUPLE: return p->visit(static_cast<Tuple*>(node), stk);
+        case AST_AST: return p->visit(static_cast<Ast*>(node), stk);
+        case AST_ARG: return p->visit(static_cast<Arg*>(node), stk);
+        case AST_FUNCTIONDEF: return p->visit(static_cast<FunctionDef*>(node), stk);
+        case AST_KEYWORDARG: return p->visit(static_cast<KeywordArg*>(node), stk);
+        case AST_CALL: return p->visit(static_cast<Call*>(node), stk);
+        case AST_STARRED: return p->visit(static_cast<Starred*>(node), stk);
+        case AST_FOR: return p->visit(static_cast<For*>(node), stk);
+        case AST_IF: return p->visit(static_cast<If*>(node), stk);
+        case AST_ATTRIBUTE: return p->visit(static_cast<Attribute*>(node), stk);
+        case AST_IFEXPR: return p->visit(static_cast<IfExpr*>(node), stk);
+        case AST_UNARYOP: return p->visit(static_cast<UnaryOp*>(node), stk);
+        case AST_AUGASSIGN: return p->visit(static_cast<AugAssign*>(node), stk);
+        case AST_COMPARE: return p->visit(static_cast<Compare*>(node), stk);
+        case AST_DELETE: return p->visit(static_cast<Delete*>(node), stk);
+        case AST_RETURN: return p->visit(static_cast<Return*>(node), stk);
+        case AST_PASS: return p->visit(static_cast<Pass*>(node), stk);
+        case AST_BREAK: return p->visit(static_cast<Break*>(node), stk);
+        case AST_CONTINUE: return p->visit(static_cast<Continue*>(node), stk);
+        case AST_WHILE: return p->visit(static_cast<While*>(node), stk);
+        case AST_RAISE: return p->visit(static_cast<Raise*>(node), stk);
+        case AST_TRY: return p->visit(static_cast<Try*>(node), stk);
+        case AST_ASSERT: return p->visit(static_cast<Assert*>(node), stk);
+        case AST_IMPORT: return p->visit(static_cast<Import*>(node), stk);
+        case AST_IMPORTFROM: return p->visit(static_cast<ImportFrom*>(node), stk);
+        case AST_GLOBAL: return p->visit(static_cast<Global*>(node), stk);
+        case AST_NONLOCAL: return p->visit(static_cast<NonLocal*>(node), stk);
+        case AST_CLASSDEF: return p->visit(static_cast<ClassDef*>(node), stk);
+        case AST_LAMBDA: return p->visit(static_cast<Lambda*>(node), stk);
+        case AST_DICT: return p->visit(static_cast<Dict*>(node), stk);
+        case AST_SET: return p->visit(static_cast<Set*>(node), stk);
+        case AST_LISTCOMP: return p->visit(static_cast<ListComp*>(node), stk);
+        case AST_SETCOMP: return p->visit(static_cast<SetComp*>(node), stk);
+        case AST_DICTCOMP: return p->visit(static_cast<DictComp*>(node), stk);
+        case AST_GENERATOREXPR: return p->visit(static_cast<GeneratorExpr*>(node), stk);
+        case AST_YIELD: return p->visit(static_cast<Yield*>(node), stk);
+        case AST_YIELDFROM: return p->visit(static_cast<YieldFrom*>(node), stk);
+        case AST_BYTES: return p->visit(static_cast<Bytes*>(node), stk);
+        case AST_NAMECONSTANT: return p->visit(static_cast<NameConstant*>(node), stk);
+        case AST_SUBSCRIPT: return p->visit(static_cast<Subscript*>(node), stk);
+        case AST_LIST: return p->visit(static_cast<List*>(node), stk);
         default:
         	assert(0 && "Invalid Node Type");
-        	return RType();
+        	return RetType();
 		}
 
 	}

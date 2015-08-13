@@ -15,7 +15,7 @@ py::AstCodegen::~AstCodegen()
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Name* name)
+llvm::Value *py::AstCodegen::visit(Name* name, py::ExprContext ctx)
 {
 	// Look this variable up in the function.
 	Value *V = namedValues[name->id];
@@ -30,23 +30,23 @@ llvm::Value *py::AstCodegen::visit(Name* name)
 	return getBuilder().CreateLoad(V, name->id.c_str());
 }
 
-llvm::Value *py::AstCodegen::visit(Num*)
+llvm::Value *py::AstCodegen::visit(Num*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Str*)
+llvm::Value *py::AstCodegen::visit(Str*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Module*)
+llvm::Value *py::AstCodegen::visit(Module*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Assign*)
+llvm::Value *py::AstCodegen::visit(Assign*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(BinOp* op)
+llvm::Value *py::AstCodegen::visit(BinOp* op, py::ExprContext ctx)
 {
 	Value *L = create(op->left);
 	Value *R = create(op->right);
@@ -72,67 +72,70 @@ llvm::Value *py::AstCodegen::visit(BinOp* op)
 	return nullptr;
 }
 
-llvm::Value *py::AstCodegen::visit(Tuple*)
+llvm::Value *py::AstCodegen::visit(Tuple*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Ast*)
+llvm::Value *py::AstCodegen::visit(Ast*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Arg*)
+llvm::Value *py::AstCodegen::visit(Arg*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(FunctionDef*)
+llvm::Value *py::AstCodegen::visit(FunctionDef*, py::ExprContext ctx)
+{
+	llvm::Function* f;
+
+	//f->setCallingConv();
+}
+
+llvm::Value *py::AstCodegen::visit(KeywordArg*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(KeywordArg*)
+llvm::Value *py::AstCodegen::visit(Call*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Call*)
+llvm::Value *py::AstCodegen::visit(Starred*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Starred*)
+llvm::Value *py::AstCodegen::visit(For*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(For*)
+llvm::Value *py::AstCodegen::visit(If*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(If*)
+llvm::Value *py::AstCodegen::visit(Attribute*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Attribute*)
+llvm::Value *py::AstCodegen::visit(IfExpr*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(IfExpr*)
+llvm::Value *py::AstCodegen::visit(UnaryOp*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(UnaryOp*)
+llvm::Value *py::AstCodegen::visit(AugAssign*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(AugAssign*)
+llvm::Value *py::AstCodegen::visit(Compare*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Compare*)
+llvm::Value *py::AstCodegen::visit(Delete*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Delete*)
-{
-}
-
-llvm::Value *py::AstCodegen::visit(Return* ret)
+llvm::Value *py::AstCodegen::visit(Return* ret, py::ExprContext ctx)
 {
 	Value *retval = create(ret->value);
 
@@ -140,99 +143,99 @@ llvm::Value *py::AstCodegen::visit(Return* ret)
 	return getBuilder().CreateRet(retval);
 }
 
-llvm::Value *py::AstCodegen::visit(Pass*)
+llvm::Value *py::AstCodegen::visit(Pass*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Break*)
+llvm::Value *py::AstCodegen::visit(Break*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Continue*)
+llvm::Value *py::AstCodegen::visit(Continue*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(While*)
+llvm::Value *py::AstCodegen::visit(While*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Raise*)
+llvm::Value *py::AstCodegen::visit(Raise*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Try*)
+llvm::Value *py::AstCodegen::visit(Try*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Assert*)
+llvm::Value *py::AstCodegen::visit(Assert*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Import*)
+llvm::Value *py::AstCodegen::visit(Import*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(ImportFrom*)
+llvm::Value *py::AstCodegen::visit(ImportFrom*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Global*)
+llvm::Value *py::AstCodegen::visit(Global*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(NonLocal*)
+llvm::Value *py::AstCodegen::visit(NonLocal*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(ClassDef*)
+llvm::Value *py::AstCodegen::visit(ClassDef*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Lambda*)
+llvm::Value *py::AstCodegen::visit(Lambda*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Dict*)
+llvm::Value *py::AstCodegen::visit(Dict*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Set*)
+llvm::Value *py::AstCodegen::visit(Set*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(ListComp*)
+llvm::Value *py::AstCodegen::visit(ListComp*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(SetComp*)
+llvm::Value *py::AstCodegen::visit(SetComp*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(DictComp*)
+llvm::Value *py::AstCodegen::visit(DictComp*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(GeneratorExpr*)
+llvm::Value *py::AstCodegen::visit(GeneratorExpr*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Yield*)
+llvm::Value *py::AstCodegen::visit(Yield*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(YieldFrom*)
+llvm::Value *py::AstCodegen::visit(YieldFrom*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Bytes*)
+llvm::Value *py::AstCodegen::visit(Bytes*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(NameConstant*)
+llvm::Value *py::AstCodegen::visit(NameConstant*, py::ExprContext ctx)
 {
 }
 
-llvm::Value *py::AstCodegen::visit(Subscript*)
+llvm::Value *py::AstCodegen::visit(Subscript*, py::ExprContext ctx)
 {
 }
 
@@ -328,7 +331,7 @@ llvm::Function* py::AstCodegen::emitFunction(const py::FunctionDef& func)
 
 }
 
-llvm::Value *py::AstCodegen::visit(List*)
+llvm::Value *py::AstCodegen::visit(List*, py::ExprContext ctx)
 {
 }
 
@@ -380,5 +383,6 @@ llvm::Value* py::AstCodegen::CreateBody(const py::AstNodes& body)
 
 llvm::Value* py::AstCodegen::create(AstNode* node)
 {
-	return dispatch(node);
+	ExprContext ctx;
+	return dispatch(node, ctx);
 }

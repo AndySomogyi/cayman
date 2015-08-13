@@ -90,6 +90,11 @@ enum AstNodeType {
     AST_YIELDFROM
 };
 
+
+enum ExprContext { Load=1, Store=2, Del=3, AugLoad=4, AugStore=5,
+                   Param=6, UnknownCtx=7};
+
+
 class AstNode
 {
 public:
@@ -126,7 +131,10 @@ public:
         }
     }
 
-
+	virtual void setContext(ExprContext)
+	{
+		assert(0 && "Can not set expression context for node type");
+	}
     
     protected:
 
@@ -172,9 +180,6 @@ public:
 
 };
 
-enum ExprContext { Load=1, Store=2, Del=3, AugLoad=4, AugStore=5,
-                   Param=6, UnknownCtx=7};
-
 class Tuple : public AstNode
 {
 public:
@@ -185,6 +190,10 @@ public:
 		AstNode(AST_TUPLE, ast, loc), ctx(ctx) {};
 
 	virtual ~Tuple() {};
+
+	void setContext(ExprContext _ctx) override {
+		ctx = _ctx;
+	}
 
 	AstNodes items;
 
@@ -212,6 +221,10 @@ public:
 	std::string id;
 
 	ExprContext ctx;
+
+	void setContext(ExprContext _ctx) override {
+		ctx = _ctx;
+	}
     
     void AppendName(AstNode *name);
     
@@ -285,6 +298,10 @@ public:
 	AstNode *value;
 
 	ExprContext ctx;
+
+	void setContext(ExprContext _ctx) override {
+		ctx = _ctx;
+	}
 };
 
 /**

@@ -179,6 +179,10 @@ public:
 	 */
 	ExprContext ctx;
 
+	void setContext(ExprContext _ctx) override {
+		ctx = _ctx;
+	}
+
 	/**
 	 * The object from which the attribute is requested
 	 */
@@ -522,6 +526,10 @@ public:
 	AstNodes items;
 
 	ExprContext ctx;
+
+	void setContext(ExprContext _ctx) override {
+		ctx = _ctx;
+	}
 
 	static bool classof(const AstNode *node) {
 		return node->type == AST_LIST;

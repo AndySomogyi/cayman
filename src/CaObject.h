@@ -40,6 +40,10 @@ enum CaObjectType
 
 class CaType;
 
+
+
+
+
 /**
  * The CaObject type is designed to be binary compatible with the PyObject
  * struct. As such, a direct inheritance from PyObject result in the correct
@@ -99,7 +103,17 @@ struct CaObject : PyObject
 	 * decrease the refernce count.
 	 */
 	uint32_t decref();
+
+
+	typedef void (CaObject::*ca_any_method)();
+
+	ca_any_method method;
+
+	void test() {};
 };
+
+
+
 
 
 

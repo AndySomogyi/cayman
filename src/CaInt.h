@@ -85,6 +85,9 @@ public:
 
 	CaObject *str() override;
 
+
+	void test() { int a = 1; };
+
 	/**
 	 * The actual value, this is an arbitrary precision integer
 	 */

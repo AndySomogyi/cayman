@@ -40,6 +40,8 @@ public:
 	/**
 	 * create a basic assignment statement with only a single value (what is being assigned), 
 	 * and a single target (what is being assigned to)
+	 *
+	 * The lhs ctx is set to store, and the rhs is set to load
 	 */
 	Assign(class Ast *_ast, const location &_loc, AstNode *target,
 			AstNode *value);
@@ -56,14 +58,24 @@ public:
 	}
 	;
 
+	/**
+	 * the lhs(s) of the expression.
+	 */
 	AstNodes targets;
+
+	/**
+	 * the rhs of the expressions
+	 */
 	AstNode *value;
 
 	/**
 	 * Adds a new value to this node, and shifts the previous value 
 	 * to a target.
+	 *
+	 * New values have thier ctx set to load, and the targets get set
+	 * to store
 	 */
-	void AddValue(AstNode *_value);
+	void addValue(AstNode *_value);
 
 	static bool classof(const AstNode *node) {
 		return node->type == AST_ASSIGN;
@@ -213,10 +225,8 @@ public:
 class FunctionDef: public Arguments, public Stmt
 {
 public:
-
-
 	FunctionDef(Ast *ast, const location& loc, AstNode *name, AstNode *args,
-			AstNode *returns, AstNode *suite);
+			AstNode *returns, AstNode *suite, bool _ext = false);
 
 	virtual ~FunctionDef() {};
     
@@ -230,6 +240,11 @@ public:
     AstNodes decorators;
 
 	AstNodes body;
+
+	/**
+	 * Is this an external function definition
+	 */
+	bool ext;
     
     /**
      * The type of the return value
