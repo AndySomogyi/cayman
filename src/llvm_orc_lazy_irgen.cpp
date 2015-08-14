@@ -776,7 +776,7 @@ public:
   M(new Module(GenerateUniqueName("jit_module_"),
 		  Session.getLLVMContext())),
 		  Builder(Session.getLLVMContext()) {
-		M->setDataLayout(*Session.getTarget().getDataLayout());
+		M->setDataLayout(Session.getTarget().createDataLayout());
 	}
 
 	SessionContext& getSession() { return Session; }
@@ -1245,7 +1245,7 @@ public:
 		{
 			raw_string_ostream MangledNameStream(MangledName);
 			Mangler::getNameWithPrefix(MangledNameStream, Name,
-					*Session.getTarget().getDataLayout());
+					Session.getTarget().createDataLayout());
 		}
 		return MangledName;
 	}
@@ -1460,7 +1460,7 @@ static void MainLoop() {
 
 using namespace lazy_irgen;
 
-int llvm_orc_lazy_irgen(int argv, const char** argc) {
+extern "C" int llvm_orc_lazy_irgen(int argv, const char** argc) {
 
 
 	std::cout << " llvm_orc_lazy_irgen(" << argv;

@@ -38,10 +38,12 @@ CaObject* CaModule::getAttrString(const char* str)
 
 const PrototypeAST* CaModule::GetPrototypeAST(const std::string& name) const
 {
+    CA_NOTIMPLEMENTED;
 }
 
 const FunctionAST* CaModule::GetFunctionAST(const std::string& name) const
 {
+    CA_NOTIMPLEMENTED;
 }
 
 void CaModule::AddDefinitionsToContext()

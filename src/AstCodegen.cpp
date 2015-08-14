@@ -5,8 +5,8 @@
  *      Author: andy
  */
 
-#include <AstCodegen.h>
-
+#include "AstCodegen.h"
+#include "cayman_private.h"
 
 using namespace llvm;
 
@@ -32,18 +32,22 @@ llvm::Value *py::AstCodegen::visit(Name* name, py::ExprContext ctx)
 
 llvm::Value *py::AstCodegen::visit(Num*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Str*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Module*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Assign*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(BinOp* op, py::ExprContext ctx)
@@ -74,14 +78,17 @@ llvm::Value *py::AstCodegen::visit(BinOp* op, py::ExprContext ctx)
 
 llvm::Value *py::AstCodegen::visit(Tuple*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Ast*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Arg*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(FunctionDef*, py::ExprContext ctx)
@@ -89,50 +96,62 @@ llvm::Value *py::AstCodegen::visit(FunctionDef*, py::ExprContext ctx)
 	llvm::Function* f;
 
 	//f->setCallingConv();
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(KeywordArg*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Call*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Starred*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(For*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(If*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Attribute*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(IfExpr*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(UnaryOp*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(AugAssign*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Compare*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Delete*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Return* ret, py::ExprContext ctx)
@@ -145,98 +164,122 @@ llvm::Value *py::AstCodegen::visit(Return* ret, py::ExprContext ctx)
 
 llvm::Value *py::AstCodegen::visit(Pass*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Break*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Continue*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(While*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Raise*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Try*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Assert*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Import*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(ImportFrom*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Global*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(NonLocal*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(ClassDef*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Lambda*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Dict*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Set*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(ListComp*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(SetComp*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(DictComp*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(GeneratorExpr*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Yield*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(YieldFrom*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Bytes*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(NameConstant*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 llvm::Value *py::AstCodegen::visit(Subscript*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 py::AstCodegen::AstCodegen(JITContext& jctx) : IRGenContext(jctx)
@@ -333,6 +376,7 @@ llvm::Function* py::AstCodegen::emitFunction(const py::FunctionDef& func)
 
 llvm::Value *py::AstCodegen::visit(List*, py::ExprContext ctx)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 /// CreateEntryBlockAlloca - Create an alloca instruction in the entry block of

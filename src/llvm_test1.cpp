@@ -1213,7 +1213,7 @@ int llvm_test1_main(int argc, const char** argv) {
     // target lays out data structures.
     TheModule->setDataLayout(TheExecutionEngine->getDataLayout());
     // Provide basic AliasAnalysis support for GVN.
-    OurFPM.add(createBasicAliasAnalysisPass());
+    OurFPM.add(createCFLAliasAnalysisPass());
     // Promote allocas to registers.
     OurFPM.add(createPromoteMemoryToRegisterPass());
     // Do simple "peephole" optimizations and bit-twiddling optzns.

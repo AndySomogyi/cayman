@@ -728,7 +728,7 @@ public:
       M(new Module(GenerateUniqueName("jit_module_"),
                    Session.getLLVMContext())),
       Builder(Session.getLLVMContext()) {
-    M->setDataLayout(*Session.getTarget().getDataLayout());
+    M->setDataLayout(Session.getTarget().createDataLayout());
   }
 
   SessionContext& getSession() { return Session; }
@@ -1172,7 +1172,7 @@ public:
   typedef CompileLayerT::ModuleSetHandleT ModuleHandleT;
 
   KaleidoscopeJIT(SessionContext &Session)
-      : DL(*Session.getTarget().getDataLayout()),
+      : DL(Session.getTarget().createDataLayout()),
         CompileLayer(ObjectLayer, SimpleCompiler(Session.getTarget())) {}
 
   std::string mangle(const std::string &Name) {
@@ -1266,7 +1266,7 @@ public:
   }
 
 private:
-  const DataLayout &DL;
+  const DataLayout DL;
   ObjLayerT ObjectLayer;
   CompileLayerT CompileLayer;
 };
@@ -1386,7 +1386,7 @@ static void MainLoop() {
 
 
 
-int llvm_orc_initial(int argc, const char** argv) {
+extern "C" int llvm_orc_initial(int argc, const char** argv) {
 
   std::cout << " llvm_orc_initial(" << argc;
   for(int i = 0; i < argc; ++i) {
@@ -1397,6 +1397,8 @@ int llvm_orc_initial(int argc, const char** argv) {
     
   void * p = dlsym(NULL, "printlf");
   p=dlsym(NULL, "_printlf");
+    
+  p=dlsym(NULL, "llvm_orc_initial");
 
 
   InitializeNativeTarget();
@@ -1404,8 +1406,16 @@ int llvm_orc_initial(int argc, const char** argv) {
   InitializeNativeTargetAsmParser();
 
   size_t a = RTDyldMemoryManager::getSymbolAddressInProcess("printlf");
+    
+  size_t b = (size_t)(printlf);
+    
+    std::cout << "a: " << a << ", b: " << b << std::endl;
 
   a = RTDyldMemoryManager::getSymbolAddressInProcess("_printlf");
+    
+  a = RTDyldMemoryManager::getSymbolAddressInProcess("llvm_orc_initial");
+    
+  a = RTDyldMemoryManager::getSymbolAddressInProcess("printf");
 
   // Install standard binary operators.
   // 1 is lowest precedence.

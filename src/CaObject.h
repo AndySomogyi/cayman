@@ -38,7 +38,7 @@ enum CaObjectType
 	CA_CALLABLE,
 };
 
-class CaType;
+struct CaType;
 
 
 

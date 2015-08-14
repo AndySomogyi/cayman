@@ -7,6 +7,7 @@
 
 #include "cayman.h"
 #include "CaInt.h"
+#include "cayman_private.h"
 
 extern "C" {
 
@@ -37,20 +38,22 @@ CaObject* CaInt_FromSize_t(size_t ival)
 
 long CaInt_AsLong(CaObject* io)
 {
+    CA_NOTIMPLEMENTED;
 }
-
-
 
 unsigned long long CaInt_AsUnsignedLongLongMask(CaObject* io)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 size_t CaInt_AsSize_t(CaObject* io)
 {
+    CA_NOTIMPLEMENTED;
 }
 
 long CaInt_GetMax()
 {
+    CA_NOTIMPLEMENTED;
 }
 
 }

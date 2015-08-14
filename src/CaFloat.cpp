@@ -22,22 +22,27 @@ CaFloat::CaFloat(double val) : CaObject(CA_FLOAT), value(val)
 
 CaFloat* CaFloat::fromString(const char* str)
 {
+	CA_NOTIMPLEMENTED;
 }
 
 double CaFloat::asDouble()
 {
+	CA_NOTIMPLEMENTED;
 }
 
 CaObject* CaFloat::getInfo(void)
 {
+	CA_NOTIMPLEMENTED;
 }
 
 double CaFloat::getMax()
 {
+	CA_NOTIMPLEMENTED;
 }
 
 double CaFloat::getMin()
 {
+	CA_NOTIMPLEMENTED;
 }
 
 static CaFloatType* floatType32 = nullptr;

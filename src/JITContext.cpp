@@ -47,7 +47,8 @@ PrototypeAST* JITContext::getPrototypeAST(const std::string& nm)
 JITContext::JITContext() :
     ctx(llvm::getGlobalContext()),
 	tm(llvm::EngineBuilder().selectTarget()),
-	CompileLayer(ObjectLayer, llvm::orc::SimpleCompiler(this->getTarget()))
+	CompileLayer(ObjectLayer, llvm::orc::SimpleCompiler(this->getTarget())),
+    dataLayout(getTarget().createDataLayout())
 {
 
 }
@@ -148,6 +149,10 @@ JITContext::ModuleHandleT JITContext::addModule(std::unique_ptr<llvm::Module> M)
 				RTDyldMemoryManager::getSymbolAddressInProcess(name)) {
 			return RuntimeDyld::SymbolInfo(Addr, JITSymbolFlags::Exported);
 		}
+                
+                
+        // TODO report error
+        return RuntimeDyld::SymbolInfo(0, JITSymbolFlags::Exported);
 	},
 	[](const std::string &S) { return nullptr; }
 	);
@@ -184,8 +189,7 @@ std::string JITContext::mangle(const std::string &name)
     std::string MangledName;
     {
       llvm::raw_string_ostream MangledNameStream(MangledName);
-      llvm::Mangler::getNameWithPrefix(MangledNameStream, name,
-    		  *getTarget().getDataLayout());
+        llvm::Mangler::getNameWithPrefix(MangledNameStream, name, dataLayout);
     }
     return MangledName;
 }
@@ -251,7 +255,7 @@ void JITContext::clearAllGlobalMappings() {
 uint64_t JITContext::updateGlobalMapping(const llvm::GlobalValue* GV,
 		void* Addr)
 {
-	updateGlobalMapping(mangle(GV), (uint64_t) Addr);
+	return updateGlobalMapping(mangle(GV), (uint64_t) Addr);
 }
 
 uint64_t JITContext::updateGlobalMapping(llvm::StringRef Name, uint64_t Addr)

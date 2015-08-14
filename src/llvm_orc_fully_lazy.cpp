@@ -739,7 +739,7 @@ public:
       M(new Module(GenerateUniqueName("jit_module_"),
                    Session.getLLVMContext())),
       Builder(Session.getLLVMContext()) {
-    M->setDataLayout(*Session.getTarget().getDataLayout());
+    M->setDataLayout(Session.getTarget().createDataLayout());
   }
 
   SessionContext& getSession() { return Session; }
@@ -1201,7 +1201,7 @@ public:
     {
       raw_string_ostream MangledNameStream(MangledName);
       Mangler::getNameWithPrefix(MangledNameStream, Name,
-                                 *Session.getTarget().getDataLayout());
+                                 Session.getTarget().createDataLayout());
     }
     return MangledName;
   }
@@ -1419,7 +1419,7 @@ using namespace fully_lazy;
 // Main driver code.
 //===----------------------------------------------------------------------===//
 
-int llvm_orc_fully_lazy(int argc, const char** argv) {
+extern "C" int llvm_orc_fully_lazy(int argc, const char** argv) {
   InitializeNativeTarget();
   InitializeNativeTargetAsmPrinter();
   InitializeNativeTargetAsmParser();

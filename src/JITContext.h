@@ -247,6 +247,9 @@ private:
 
 
 	std::map<std::string, FunctionInfo> functions;
+    
+    // cache data layout, prevent excess copying.
+    const llvm::DataLayout dataLayout;
 
 
 	static JITContext* jitCtx;

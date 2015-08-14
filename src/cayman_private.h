@@ -42,4 +42,9 @@ int initEval();
 int finalizeEval();
 
 
+#define CA_NOTIMPLEMENTED \
+	assert("Not Implemented" && 0);\
+    return 0;
+
+
 #endif /* _INCLUDED_CAYMAN_PRIVATE_H_ */

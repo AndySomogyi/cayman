@@ -11,7 +11,7 @@
 #include "CaObject.h"
 #include "cayman_llvm.h"
 
-class CaType: public CaObject
+struct CaType: public CaObject
 {
 public:
 
@@ -28,7 +28,7 @@ protected:
 
 	PyTypeObject pyType = {0};
 
-	friend class CaObject;
+	friend struct CaObject;
 
 	llvm::Type *llvmType;
 };

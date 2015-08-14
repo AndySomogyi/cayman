@@ -5,12 +5,41 @@
 #include "llvm_test1.h"
 #include <cayman.h>
 #include "cayman_test.h"
+#include "cayman_llvm.h"
+#include <llvm/Support/DynamicLibrary.h>
 
 using namespace py;
 using namespace std;
 
+void printAddress(const char* name) {
+    size_t a = llvm::RTDyldMemoryManager::getSymbolAddressInProcess(name);
+    cout << "address of " << name << ": " << a << std::endl;
+}
+
+extern "C" double foo(double x) {
+    return x + 1;
+}
+
+
+
 int main(int argc, const char** argv)
 {
+
+    llvm::sys::DynamicLibrary::LoadLibraryPermanently(nullptr);
+    printAddress("printlf");
+    printAddress("_printlf");
+    printAddress("llvm_orc_initial");
+    printAddress("_llvm_orc_initial");
+    printAddress("printf");
+    printAddress("_printf");
+    
+    printAddress("Ca_Initialize");
+    printAddress("_Ca_Initialize");
+    
+    printAddress("foo");
+    
+
+    
     if (argc > 1)
     {
         if (string("k") == argv[1])

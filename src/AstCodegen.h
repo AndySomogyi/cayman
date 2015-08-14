@@ -29,7 +29,7 @@ public:
 				jctx.getLLVMContext())), builder(jctx.getLLVMContext()),
 				llvmCtx(jctx.getLLVMContext())
 	{
-		module->setDataLayout(*jctx.getTarget().getDataLayout());
+		module->setDataLayout(jctx.getTarget().createDataLayout());
 	}
 
 	//SessionContext& getSession() { return Session; }
