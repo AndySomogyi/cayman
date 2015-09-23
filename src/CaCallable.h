@@ -11,14 +11,13 @@
 #include "cayman_private.h"
 #include "Ast.h"
 
-typedef std::vector<CaType*> CaTypeObjectVec;
 
-
-class CaCallable : public CaObject
+struct CaCallable : public CaObject
 {
 public:
 	CaCallable(py::FunctionDef* _func) :
 		CaObject(CA_CALLABLE), func(_func), pfunc(nullptr) {};
+
 
 	py::FunctionDef *func;
 
@@ -26,11 +25,9 @@ public:
 
 	void *GetFuctionAddress(CaType* retType, const CaTypeObjectVec& args);
 
-
-
 	static bool classof(const CaObject *o)
 	{
-		return o->type == CA_CALLABLE;
+		return o->typeId == CA_CALLABLE;
 	}
 };
 

@@ -14,12 +14,12 @@
 
 CaInt::CaInt() : CaObject(CA_INT_TYPE)
 {
-	setTypeObject(CaIntType::fromBitWidth(value.getBitWidth()));
+	//setTypeObject(CaIntType::fromBitWidth(value.getBitWidth()));
 
 
-	typedef void (*TestType)(PyObject *);
+	typedef void (*TestType)(CaObject *);
 
-	auto lambda = [] (PyObject* p) {
+	auto lambda = [] (CaObject* p) {
 	        std::cout << "foo";
 	    };
 
@@ -28,9 +28,9 @@ CaInt::CaInt() : CaObject(CA_INT_TYPE)
 	func(this);
 
 
-	typedef int (*UnaryType1)(PyObject *);
+	typedef int (*UnaryType1)(CaObject *);
 
-	auto l1 = [] (PyObject* p) -> int {
+	auto l1 = [] (CaObject* p) -> int {
 		        std::cout << "foo";
 		        return 5;
 		    };
@@ -40,9 +40,9 @@ CaInt::CaInt() : CaObject(CA_INT_TYPE)
 	u1(this);
 
 
-	typedef PyObject * (*UnaryType2)(PyObject *);
+	typedef CaObject * (*UnaryType2)(CaObject *);
 
-	auto l2 = [] (PyObject* p) -> PyObject* {
+	auto l2 = [] (CaObject* p) -> CaObject* {
 			        std::cout << "foo";
 			        return p;
 			    };
@@ -52,12 +52,12 @@ CaInt::CaInt() : CaObject(CA_INT_TYPE)
 	u2(this);
 
 
-	unaryfunc u3 = l2;
+	CaUnaryFn u3 = l2;
 
 	u3(this);
 
 
-	PyNumberMethods num = {0};
+	CaNumberMethods num = {0};
 
 	num.nb_absolute = l2;
 
@@ -72,12 +72,12 @@ CaInt::CaInt() : CaObject(CA_INT_TYPE)
 
 CaInt::CaInt(const llvm::APInt& val) : CaObject(CA_INT_TYPE), value(val)
 {
-	setTypeObject(CaIntType::fromBitWidth(value.getBitWidth()));
+	//setTypeObject(CaIntType::fromBitWidth(value.getBitWidth()));
 }
 
 CaInt::CaInt(long val) : CaObject(CA_INT_TYPE)
 {
-	setTypeObject(CaIntType::fromBitWidth(value.getBitWidth()));
+	//setTypeObject(CaIntType::fromBitWidth(value.getBitWidth()));
 }
 
 CaInt* CaInt::fromString(const char* str, char** pend, int base)
@@ -164,11 +164,13 @@ int CaIntType::initialize()
 
 int CaIntType::finalize()
 {
-	intType8->decref();
-	intType16->decref();
+    /*
+    intType8;
+    intType16;
 	intType32->decref();
 	intType64->decref();
 	intType128->decref();
+     */
 	return 0;
 }
 

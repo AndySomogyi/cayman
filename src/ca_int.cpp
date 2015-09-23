@@ -18,7 +18,7 @@ int CaInt_Check(CaObject* o)
 
 int CaInt_CheckExact(CaObject* o)
 {
-	return o->type == CA_INT;
+	return o->typeId == CA_INT;
 }
 
 CaObject* CaInt_FromString(const char* str, char** pend, int base)

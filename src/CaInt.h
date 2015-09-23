@@ -81,9 +81,9 @@ public:
 	 */
 	long getMax();
 
-	CaObject *repr() override;
+	CaObject *repr();
 
-	CaObject *str() override;
+	CaObject *str();
 
 
 	void test() { int a = 1; };
@@ -95,7 +95,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->type == CA_INT_TYPE;
+		return o->typeId == CA_INT_TYPE;
 	}
 };
 
@@ -105,7 +105,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->type == CA_INT_TYPE;
+		return o->typeId == CA_INT_TYPE;
 	}
 
 	/**

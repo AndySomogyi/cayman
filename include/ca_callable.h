@@ -18,6 +18,13 @@ extern "C"
 {
 #endif
 
+#ifdef CA_STRICT
+struct CaCallable;
+#else
+typedef CaObject CaCallable;
+#endif
+
+
 
 
 /**
@@ -57,7 +64,7 @@ CaAPI_FUNC(int) CaCallable_Check(CaObject *);
  * @returns: the raw function pointer address of the underlying
  *           native code object.
  */
-CaAPI_FUNC(void*) CaCallable_GetFuctionAddress(CaObject *callable,
+CaAPI_FUNC(void*) CaCallable_GetFuctionAddress(CaCallable *callable,
 		CaType *retType, CaObject *argTypes);
 
 /**
@@ -65,7 +72,7 @@ CaAPI_FUNC(void*) CaCallable_GetFuctionAddress(CaObject *callable,
  * given as variable number of C arguments.  The C arguments are provided
  * as CaTypeObject * values, terminated by a NULL.
  */
-CaAPI_FUNC(void*) CaCallable_GetFuctionAddressObjArgs(CaObject *callable,
+CaAPI_FUNC(void*) CaCallable_GetFuctionAddressObjArgs(CaCallable *callable,
 		CaType *retType, ...);
 
 /**
@@ -73,7 +80,7 @@ CaAPI_FUNC(void*) CaCallable_GetFuctionAddressObjArgs(CaObject *callable,
  * arguments and keywords arguments.  The 'args' argument can not be
  * NULL, but the 'kw' argument can be NULL.
  */
-CaAPI_FUNC(CaObject *) CaCallable_Call(CaObject *callable,
+CaAPI_FUNC(CaObject *) CaCallable_Call(CaCallable *callable,
 		CaObject *args, CaObject *kw);
 
 /**
@@ -88,7 +95,7 @@ CaAPI_FUNC(CaObject *) CaCallable_Call(CaObject *callable,
  * call on success, or NULL on failure.  This is the equivalent
  * of the Cayman expression: o(*args).
  */
-CaAPI_FUNC(CaObject *) CaCallable_CallObject(CaObject *callable_object,
+CaAPI_FUNC(CaObject *) CaCallable_CallObject(CaCallable *callable,
 		CaObject *args);
 
 #define CaObject_CallObject CaCallable_CallObject
@@ -101,7 +108,7 @@ CaAPI_FUNC(CaObject *) CaCallable_CallObject(CaObject *callable_object,
  * result of the call on success, or NULL on failure.  This is
  * the equivalent of the Cayman expression: o(*args).
  */
-CaAPI_FUNC(CaObject *) CaCallable_CallFunction(CaObject *callable,
+CaAPI_FUNC(CaObject *) CaCallable_CallFunction(CaCallable *callable,
 		const char *format, ...);
 
 #define CaObject_CallFunction CaCallable_CallFunction
@@ -114,7 +121,7 @@ CaAPI_FUNC(CaObject *) CaCallable_CallFunction(CaObject *callable,
  * result of the call on success, or NULL on failure.  This is
  * the equivalent of the Cayman expression: o(*args).
  */
-CaAPI_FUNC(CaObject *) CaCallable_CallFunctionObjArgs(CaObject *callable,
+CaAPI_FUNC(CaObject *) CaCallable_CallFunctionObjArgs(CaCallable *callable,
 		...);
 
 /**

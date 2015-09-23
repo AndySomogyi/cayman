@@ -1,3 +1,6 @@
+// build with
+// bison3 -v -l -o py_parser.cc py_parser.yy
+
 %skeleton "lalr1.cc" /* -*- C++ -*- */
 %require "3.0.4"
 %defines
@@ -1335,7 +1338,7 @@ funcdef:
         // CreateFunctionDef(loc, nm, args, returns, suite)
         $$ = ctx.ast->CreateFunctionDef(@$, $2, $3, $5, $7);
     }
-    "extern" "def" NAME parameters
+    | "extern" "def" NAME parameters
     {
         // CreateFunctionDef(loc, nm, args, returns, suite)
         $$ = ctx.ast->CreateExternFunctionDef(@$, $3, $4, NULL, NULL);
@@ -1344,12 +1347,12 @@ funcdef:
     // can be either a NEWLINE, or it may be a ":" suite, in the case of a
     // suite, it must be a pass statement, but the verification of pass is
     // handled in the AST builder
-    "extern" "def" NAME parameters "->" expr NEWLINE
+    | "extern" "def" NAME parameters "->" expr NEWLINE
     {
         // CreateFunctionDef(loc, nm, args, returns, suite)
         $$ = ctx.ast->CreateExternFunctionDef(@$, $3, $4, $6, NULL);
     }
-    "extern" "def" NAME parameters "->" expr ":" suite
+    | "extern" "def" NAME parameters "->" expr ":" suite
     {
         // CreateFunctionDef(loc, nm, args, returns, suite)
         $$ = ctx.ast->CreateExternFunctionDef(@$, $3, $4, $6, $8);

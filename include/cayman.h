@@ -5,9 +5,9 @@
  *      Author: andy
  */
 
-#ifdef _INCLUDED_CAYMAN_PRIVATE_H_
-#error "Can not incude internal private header file in or before a public header"
-#endif
+//#ifdef _INCLUDED_CAYMAN_PRIVATE_H_
+//#error "Can not incude internal private header file in or before a public header"
+//#endif
 
 #ifndef _INCLUDED_CAYMAN_H_
 #define _INCLUDED_CAYMAN_H_

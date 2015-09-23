@@ -19,12 +19,16 @@
 /**
  * Basic opaque Cayman object type.
  */
-typedef struct CaObject CaObject;
+struct CaObject;
 
 /**
  * Basic opaque Cayman type type.
  */
-typedef struct CaType CaTypeObject;
+//typedef struct CaType CaTypeObject;
+
+struct CaTypeObject;
+
+struct CaType;
 
 #define Ca_REFCNT(ob)           (((CaObject*)(ob))->ob_refcnt)
 #define Ca_TYPE(ob)             (((CaObject*)(ob))->ob_type)

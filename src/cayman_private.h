@@ -12,6 +12,10 @@
  * on the internal details.
  */
 
+#ifndef CA_STRICT
+#define CA_STRICT
+#endif
+
 #ifndef _INCLUDED_CAYMAN_H_
 #include "cayman.h"
 #endif

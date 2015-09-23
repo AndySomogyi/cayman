@@ -16,7 +16,7 @@
 
 using llvm::orc::JITSymbol;
 
-class CaModule;
+struct CaModule;
 
 template <typename T>
 static std::vector<T> singletonSet(T t) {
@@ -133,8 +133,8 @@ public:
   /// getPointerToGlobalIfAvailable - This returns the address of the specified
   /// global value if it is has already been codegen'd, otherwise it returns
   /// null.
-  uint64_t getPointerToGlobalMapping(llvm::StringRef S);
-  uint64_t getPointerToGlobalMapping(const llvm::GlobalValue *GV);
+  uint64_t getGlobalMappingAddress(llvm::StringRef S);
+  uint64_t getGlobalMappingAddress(const llvm::GlobalValue *GV);
 
 
 
@@ -187,7 +187,11 @@ public:
 
 	std::string mangle(const std::string &name);
 
-	std::string mangle(const llvm::GlobalValue *GV);
+	/**
+	 * Generate a mangled name for a function or variable name in the global
+	 * namespace.
+	 */
+	std::string mangle(const llvm::GlobalValue *gv);
 
 	void AddCaModule(const CaModule* m);
 

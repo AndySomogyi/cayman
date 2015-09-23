@@ -64,9 +64,9 @@ public:
 	 */
 	double getMin();
 
-	CaObject *repr() override;
+	CaObject *repr();
 
-	CaObject *str() override;
+	CaObject *str();
 
 	/**
 	 * The value in this object, this is an arbitrary precision float value.
@@ -75,7 +75,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->type == CA_FLOAT;
+		return o->typeId == CA_FLOAT;
 	}
 };
 
@@ -85,7 +85,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->type == CA_FLOAT_TYPE;
+		return o->typeId == CA_FLOAT_TYPE;
 	}
 
 	/**

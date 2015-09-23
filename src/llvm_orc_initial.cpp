@@ -16,6 +16,7 @@ top-level expressions).
 #include "llvm/ExecutionEngine/Orc/LambdaResolver.h"
 #include "llvm/ExecutionEngine/Orc/LazyEmittingLayer.h"
 #include "llvm/ExecutionEngine/Orc/ObjectLinkingLayer.h"
+#include "llvm/ExecutionEngine/Orc/GlobalMappingLayer.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/IRBuilder.h"
@@ -1168,12 +1169,14 @@ static std::vector<T> singletonSet(T t) {
 class KaleidoscopeJIT {
 public:
   typedef ObjectLinkingLayer<> ObjLayerT;
-  typedef IRCompileLayer<ObjLayerT> CompileLayerT;
+  typedef GlobalMappingLayer<ObjLayerT> GlobalMappingLayerT;
+  typedef IRCompileLayer<GlobalMappingLayerT> CompileLayerT;
   typedef CompileLayerT::ModuleSetHandleT ModuleHandleT;
 
   KaleidoscopeJIT(SessionContext &Session)
       : DL(Session.getTarget().createDataLayout()),
-        CompileLayer(ObjectLayer, SimpleCompiler(Session.getTarget())) {}
+        MappingLayer(ObjectLayer),
+        CompileLayer(MappingLayer, SimpleCompiler(Session.getTarget())) {}
 
   std::string mangle(const std::string &Name) {
     std::string MangledName;
@@ -1184,43 +1187,18 @@ public:
     return MangledName;
   }
 
-public:
-  typedef llvm::StringMap<uint64_t> GlobalAddressMapTy;
 
-private:
-
-  /// GlobalAddressMap - A mapping between LLVM global symbol names values and
-  /// their actualized version...
-  GlobalAddressMapTy GlobalAddressMap;
 
 public:
 
-  GlobalAddressMapTy &getGlobalAddressMap() {
-    return GlobalAddressMap;
-  }
+	/// add an existing object (function or pointer) via its
+	/// mangled name. This function is best used for unmangled
+	/// c style names.
+	void addGlobalMapping(StringRef Name, void* Addr)
+	{
+		MappingLayer.addGlobalMapping(Name, Addr);
+	}
 
-  uint64_t getPointerToGlobalMapping(llvm::StringRef S)
-  {
-  	uint64_t Address = 0;
-  	GlobalAddressMapTy::iterator I =
-  			getGlobalAddressMap().find(S);
-  	if (I != getGlobalAddressMap().end())
-  		Address = I->second;
-  	return Address;
-
-  }
-
-  void addGlobalMapping(StringRef Name, void* Addr) {
-
-	std::string mangledName = mangle(Name);
-
-    assert(!mangledName.empty() && "Empty GlobalMapping symbol name!");
-
-    //DEBUG(dbgs() << "JIT: Map \'" << Name  << "\' to [" << Addr << "]\n";);
-    uint64_t &CurVal = getGlobalAddressMap()[mangledName];
-    assert((!CurVal || !Addr) && "GlobalMapping already established!");
-    CurVal = (uint64_t)Addr;
-  }
 
   ModuleHandleT addModule(std::unique_ptr<Module> M) {
 	  // We need a memory manager to allocate memory and resolve symbols for this
@@ -1231,11 +1209,6 @@ public:
 		  if (auto Sym = findSymbol(Name)) {
 			  return RuntimeDyld::SymbolInfo(Sym.getAddress(),
 					  Sym.getFlags());
-		  }
-
-		  // look up in added globals
-		  if (auto addr = getPointerToGlobalMapping(Name)) {
-			  return RuntimeDyld::SymbolInfo(addr, JITSymbolFlags::Exported);
 		  }
 
 		  // finally try to look up existing process symbols, note
@@ -1268,6 +1241,7 @@ public:
 private:
   const DataLayout DL;
   ObjLayerT ObjectLayer;
+  GlobalMappingLayerT MappingLayer;
   CompileLayerT CompileLayer;
 };
 
@@ -1358,9 +1332,9 @@ static void MainLoop() {
   SessionContext S(getGlobalContext());
   KaleidoscopeJIT J(S);
 
-  J.addGlobalMapping("putchard", (void*)putchard);
-  J.addGlobalMapping("printd", (void*)printd);
-  J.addGlobalMapping("printlf", (void*)printlf);
+  J.addGlobalMapping(J.mangle("putchard"), (void*)putchard);
+  J.addGlobalMapping(J.mangle("printd"), (void*)printd);
+  J.addGlobalMapping(J.mangle("printlf"), (void*)printlf);
 
   while (1) {
     switch (CurTok) {

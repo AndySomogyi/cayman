@@ -1,3 +1,5 @@
+add_compile_options(-DCA_STRICT)
+
 set(API_SRC
     ca_abstract.cpp  
     ca_import.cpp

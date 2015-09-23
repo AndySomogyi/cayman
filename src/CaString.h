@@ -32,7 +32,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->type == CA_STRING;
+		return o->typeId == CA_STRING;
 	}
 
 private:
@@ -46,7 +46,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->type == CA_STRING_TYPE;
+		return o->typeId == CA_STRING_TYPE;
 	}
 
 

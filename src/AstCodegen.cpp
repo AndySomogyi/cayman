@@ -425,6 +425,101 @@ llvm::Value* py::AstCodegen::CreateBody(const py::AstNodes& body)
 	return getBuilder().CreateRetVoid();
 }
 
+llvm::Function* py::AstCodegen::emitFunctionProto(const py::FunctionDef& func,
+		const CaTypeObjectVec& args, CaType* retType)
+{
+	assert(args.size() == func.args.size() && "given args different length then defined args");
+
+	// Make the function type:  double(double,double) etc.
+	std::vector<Type*> llvmArgs(args.size());
+
+	for (int i = 0; i < args.size(); ++i) {
+		llvmArgs[i] = args[i]->getLLVMType();
+		assert(llvmArgs[i] && "type must not be null");
+	}
+
+	llvm::FunctionType *FT = llvm::FunctionType::get(retType->getLLVMType(),
+			llvmArgs, false);
+
+	// function names are by definition legal names, parser takes care of this.
+	llvm::Function *f = Function::Create(FT, Function::ExternalLinkage, func.name,
+			&getModule());
+
+
+	// If F conflicted, there was already something named 'FnName'.  If it has a
+	// body, don't allow redefinition or reextern.
+	if (f->getName() != func.name)
+	{
+		// Delete the one we just made and get the existing one.
+		f->eraseFromParent();
+		f = getModule().getFunction(func.name);
+
+		// If F already has a body, reject this.
+		if (!f->empty()) {
+
+			// TODO report error
+			// ErrorP<	Function>("redefinition of function");
+			return nullptr;
+		}
+
+		// If F took a different number of args, reject.
+		if (f->arg_size() != func.args.size()) {
+			// TODO: report error
+			//ErrorP<Function>("redefinition of function with different # args");
+			return nullptr;
+		}
+	}
+
+	// Set names for all arguments.
+	unsigned Idx = 0;
+	for (Function::arg_iterator AI = f->arg_begin(); Idx != func.args.size();
+			++AI, ++Idx)
+		AI->setName(func.args[Idx]->id);
+
+	return f;
+}
+
+llvm::Function* py::AstCodegen::emitFunction(const py::FunctionDef& func,
+		const CaTypeObjectVec& args, CaType* retType)
+{
+	namedValues.clear();
+
+    llvm::Function *TheFunction = emitFunctionProto(func, args, retType);
+
+	if (!TheFunction)
+		return nullptr;
+
+	// If this is an operator, install it.
+	//if (Proto->isBinaryOp())
+	//	BinopPrecedence[Proto->getOperatorName()] = Proto->Precedence;
+
+	// Create a new basic block to start insertion into.
+	BasicBlock *BB = BasicBlock::Create(llvmCtx, "entry", TheFunction);
+	getBuilder().SetInsertPoint(BB);
+
+
+
+	// Add all arguments to the symbol table and create their allocas.
+	CreateArgumentAllocas(func, TheFunction);
+
+
+	if (CreateBody(func.body))
+	{
+        TheFunction->dump();
+
+		// Validate the generated code, checking for consistency.
+		verifyFunction(*TheFunction);
+
+		return TheFunction;
+	}
+
+	// Error reading body, remove function.
+	TheFunction->eraseFromParent();
+
+
+	return nullptr;
+}
+
 llvm::Value* py::AstCodegen::create(AstNode* node)
 {
 	ExprContext ctx;

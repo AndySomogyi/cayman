@@ -67,8 +67,8 @@ int CaFloatType::initialize()
 
 int CaFloatType::finalize()
 {
-	floatType32->decref();
-	floatType64->decref();
+	//floatType32->decref();
+	//floatType64->decref();
 	return 0;
 }
 

@@ -550,8 +550,8 @@ namespace py {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 1339,     ///< Last index in yytable_.
-      yynnts_ = 116,  ///< Number of nonterminal symbols.
+      yylast_ = 1424,     ///< Last index in yytable_.
+      yynnts_ = 113,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,

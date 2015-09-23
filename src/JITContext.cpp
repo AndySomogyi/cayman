@@ -138,7 +138,7 @@ JITContext::ModuleHandleT JITContext::addModule(std::unique_ptr<llvm::Module> M)
 		}
 
 		// look up in added globals
-		if (auto addr = getPointerToGlobalMapping(name)) {
+		if (auto addr = getGlobalMappingAddress(name)) {
 			return RuntimeDyld::SymbolInfo(addr, JITSymbolFlags::Exported);
 		}
 
@@ -284,7 +284,7 @@ uint64_t JITContext::updateGlobalMapping(llvm::StringRef Name, uint64_t Addr)
 	return OldVal;
 }
 
-uint64_t JITContext::getPointerToGlobalMapping(llvm::StringRef S)
+uint64_t JITContext::getGlobalMappingAddress(llvm::StringRef S)
 {
 	uint64_t Address = 0;
 	GlobalAddressMapTy::iterator I =
@@ -295,7 +295,7 @@ uint64_t JITContext::getPointerToGlobalMapping(llvm::StringRef S)
 
 }
 
-uint64_t JITContext::getPointerToGlobalMapping(const llvm::GlobalValue* GV)
+uint64_t JITContext::getGlobalMappingAddress(const llvm::GlobalValue* GV)
 {
-	return getPointerToGlobalMapping(mangle(GV));
+	return getGlobalMappingAddress(mangle(GV));
 }

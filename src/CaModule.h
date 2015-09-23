@@ -31,18 +31,28 @@
  * are accessable by the JITContext.
  * At that point, these definitions are available, and when requested,
  * full function definitions may be JITed as requested.
+ *
+ *
+ * NOTES:
+ *
+ * A CaModule object is read from a module definiton file.
+ *
+ *
+ * A module may be read from a module def file, or created dynamically.
+ * A module is not 'loaded' until it is told to do so, e.g. an unloaded
+ * module definitions are not available to other modules until the module
+ * is loaded.
  */
-class CaModule: public CaObject
+struct CaModule: public CaObject
 {
 public:
 
-	CaModule(const std::string& _name, const std::string& _fname = "") :
-		CaObject(CA_MODULE), name(_name), fname(_fname) {};
+	CaModule(const std::string& _name, const std::string& _fname = "");
 
 	CaModule(const std::string& _name, const std::string& _fname,
 		std::unique_ptr<py::Module> _ast);
 
-	virtual ~CaModule() {};
+    ~CaModule() {};
 
 	/**
 	 * The parsed module ast.
@@ -51,7 +61,7 @@ public:
 
 	static bool classof(const CaObject *o)
 	{
-		return o->type == CA_MODULE;
+		return o->typeId == CA_MODULE;
 	}
 
 	// name of module
@@ -59,11 +69,6 @@ public:
 
 	// filename of module
 	std::string fname;
-
-	/**
-	 * TODO remove these virtuals with static methods
-	 */
-	virtual CaObject *getAttrString(const char* str);
 
 	/**
 	 * A prototype only defines a function signature and symbol name.
@@ -82,6 +87,10 @@ public:
 	 */
 	const FunctionAST* GetFunctionAST(const std::string &name) const;
 
+
+	int addNativeFunction(const std::string &name, void *address,
+			CaType* retType, const CaTypeObjectVec& args);
+
 private:
 
 	/**
@@ -89,6 +98,17 @@ private:
 	 * JIT context.
 	 */
 	void AddDefinitionsToContext();
+
+
+	/**
+	 * Type definitions are added via SetAttrString
+	 */
+	llvm::StringMap<CaObject*> types;
 };
+
+
+CaObject * CaModule_GetAttrString(CaModule* o, const char* str);
+
+
 
 #endif /* _INCLUDED_CAMODULE_H_ */

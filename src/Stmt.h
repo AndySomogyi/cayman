@@ -222,6 +222,17 @@ public:
 
 };
 
+
+/**
+ * A Funciton definition may be fully specialized if all of the
+ * argument annotation expressions evaluate to a valid type. They
+ * may be partially specialized of only a subset of annotations
+ * evaluate to a type, and fully generalized if there are no annotations
+ * or none of them evaluate to a type.
+ *
+ *
+ *
+ */
 class FunctionDef: public Arguments, public Stmt
 {
 public:
@@ -229,6 +240,11 @@ public:
 			AstNode *returns, AstNode *suite, bool _ext = false);
 
 	virtual ~FunctionDef() {};
+
+	/**
+	 * copy ctor
+	 */
+	FunctionDef(const FunctionDef*);
     
     /**
      * Adds a list of decorators from a tuple

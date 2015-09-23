@@ -23,13 +23,13 @@ int CaCallable_Check(CaObject* obj)
 	return dyn_cast<CaCallable>(obj) != nullptr;
 }
 
-void* CaCallable_GetFuctionAddress(CaObject* callable, CaType* retType,
+void* CaCallable_GetFuctionAddress(CaCallable* callable, CaType* retType,
 		CaObject* argTypes)
 {
 	return 0;
 }
 
-void* CaCallable_GetFuctionAddressObjArgs(CaObject* obj,
+void* CaCallable_GetFuctionAddressObjArgs(CaCallable* obj,
 		CaType* retType, ...)
 {
 	va_list ap;
@@ -50,7 +50,7 @@ void* CaCallable_GetFuctionAddressObjArgs(CaObject* obj,
 
 	while ((type = va_arg(ap, CaType*)) != nullptr)
 	{
-        std::cout << "arg:" << arg++ << ", type: " << type->type << std::endl;
+        std::cout << "arg:" << arg++ << ", type: " << type->typeId << std::endl;
 		args.push_back(type);
 	}
     
@@ -60,22 +60,22 @@ void* CaCallable_GetFuctionAddressObjArgs(CaObject* obj,
 }
 
 
-CaObject * CaCallable_Call(CaObject* callable_object, CaObject* args, CaObject* kw)
+CaObject * CaCallable_Call(CaCallable* callable_object, CaObject* args, CaObject* kw)
 {
 	return NULL;
 }
 
-CaObject * CaCallable_CallObject(CaObject* callable_object, CaObject* args)
+CaObject * CaCallable_CallObject(CaCallable* callable_object, CaObject* args)
 {
 	return NULL;
 }
 
-CaObject * CaCallable_CallFunction(CaObject* callable_object, const char* format, ...)
+CaObject * CaCallable_CallFunction(CaCallable* callable_object, const char* format, ...)
 {
 	return NULL;
 }
 
-CaObject * CaCallable_CallFunctionObjArgs(CaObject* callable, ...)
+CaObject * CaCallable_CallFunctionObjArgs(CaCallable* callable, ...)
 {
 	return NULL;
 }

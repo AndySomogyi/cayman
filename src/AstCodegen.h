@@ -8,6 +8,7 @@
 #ifndef _INCLUDED_ASTCODEGEN_H_
 #define _INCLUDED_ASTCODEGEN_H_
 
+#include "cayman_private.h"
 #include "cayman_llvm.h"
 #include "JITContext.h"
 #include "Ast.h"
@@ -93,11 +94,19 @@ public:
 	 */
 	llvm::Function *emitFunctionProto(const py::FunctionDef &func);
 
+	/**
+	 * Emit a type specialized function prototype.
+	 */
+	llvm::Function *emitFunctionProto(const py::FunctionDef &func,
+			const CaTypeObjectVec& args, CaType* retType);
 
 	/**
 	 * Emit the full IR for a function definition, including func body.
 	 */
 	llvm::Function *emitFunction(const py::FunctionDef &func);
+
+	llvm::Function *emitFunction(const py::FunctionDef &func,
+				const CaTypeObjectVec& args, CaType* retType);
 
 private:
 

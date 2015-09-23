@@ -102,6 +102,7 @@ public:
 		map["lambda"] = tok::LAMBDA;
 		map["try"] = tok::TRY;
 		map["with"] = tok::WITH;
+        map["extern"] = tok::EXTERN;
 	}
 
 	Map map;
