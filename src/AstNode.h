@@ -203,10 +203,10 @@ public:
 /**
  * A name or identifier. 
  *
- * Names can be dotted, i.e. haveing multiple hierarchcal names, a.b.c.
+ * Names can be dotted, i.e. having multiple hierarchical names, a.b.c.
  *
- * TODO: this storage scheme is horribly inneficient, come up with better
- * system of globally stroring unique ids. 
+ * TODO: this storage scheme is horribly inefficient, come up with better
+ * system of globally storing unique ids.
  */
 class Name : public AstNode
 {

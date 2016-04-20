@@ -9,7 +9,10 @@ cmake_minimum_required(VERSION 2.5)
 
 #unset(LLVMCONFIG_PATH CACHE)
 
-set(LLVM_DIR NOTFOUND CACHE PATH "Directory where LLVM is installed")
+option(CAYMAN_USE_LLVM "Enable LLVM JIT compilation" OFF)
+option(CAYMAN_USE_PYTHON "Build Cayman for Python binary compatability" ON)
+
+
 
 #if(NOT LLVM_DIR)
 #  # search for the llvm dir, guess some places
@@ -44,50 +47,53 @@ set(LLVM_DIR NOTFOUND CACHE PATH "Directory where LLVM is installed")
 #  endif()
 #endif()
 
-if (LLVM_DIR)
 
-  list(APPEND CMAKE_MODULE_PATH "${LLVM_DIR}/share/llvm/cmake")
-  list(APPEND CMAKE_PREFIX_PATH "${LLVM_DIR}/share/llvm/cmake")
+if(CAYMAN_USE_LLVM)
+    set(LLVM_DIR NOTFOUND CACHE PATH "Directory where LLVM is installed")
+    if (LLVM_DIR)
 
-  message("CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-  message("CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-  
-  find_package(LLVM CONFIG)
-
-
-
-  message("Found LLVM ${LLVM_PACKAGE_VERSION}")
-  message("Using LLVMConfig.cmake in: ${LLVM_DIR}")
-  
-  # Set your project compile flags.
-
-  include_directories(${LLVM_INCLUDE_DIRS})
-  link_directories(${LLVM_LIBRARY_DIRS})
-  add_definitions(${LLVM_DEFINITIONS})
-  add_definitions(${LLVM_COMPILE_FLAGS})
-
-
-  # Find the libraries that correspond to the LLVM components
-  # that we wish to use
-  llvm_map_components_to_libnames(LLVM_LIBS  core mcjit native orcjit)
-  
-  
-  message("LLVM_CMAKE_DIR: ${LLVM_CMAKE_DIR}")
-  message("LLVM_DEFINITIONS: ${LLVM_DEFINITIONS}")
-  message("LLVM_COMPILE_FLAGS: ${LLVM_COMPILE_FLAGS}")
-  message("LLVM_ENABLE_ASSERTIONS: ${LLVM_ENABLE_ASSERTIONS}")
-  message("LLVM_ENABLE_EH: ${LLVM_ENABLE_EH}")
-  message("LLVM_ENABLE_RTTI: ${LLVM_ENABLE_RTTI}")
-  message("LLVM_INCLUDE_DIRS: ${LLVM_INCLUDE_DIRS}")
-  message("LLVM_PACKAGE_VERSION: ${LLVM_PACKAGE_VERSION}")
-  message("LLVM_TOOLS_BINARY_DIR: ${LLVM_TOOLS_BINARY_DIR}")
-  message("LLVM_LIBRARY_DIRS: ${LLVM_LIBRARY_DIRS}")
-  message("LLVM_LIBS: ${LLVM_LIBS}")
-
-else()
-  message(SEND_ERROR "Need to specify a LLVM_DIR location")
+        list(APPEND CMAKE_MODULE_PATH "${LLVM_DIR}/share/llvm/cmake")
+        list(APPEND CMAKE_PREFIX_PATH "${LLVM_DIR}/share/llvm/cmake")
+        
+        message("CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+        message("CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+        
+        find_package(LLVM CONFIG)
+        
+        
+        
+        message("Found LLVM ${LLVM_PACKAGE_VERSION}")
+        message("Using LLVMConfig.cmake in: ${LLVM_DIR}")
+        
+        # Set your project compile flags.
+        
+        include_directories(${LLVM_INCLUDE_DIRS})
+        link_directories(${LLVM_LIBRARY_DIRS})
+        add_definitions(${LLVM_DEFINITIONS})
+        add_definitions(${LLVM_COMPILE_FLAGS})
+        
+        
+        # Find the libraries that correspond to the LLVM components
+        # that we wish to use
+        llvm_map_components_to_libnames(LLVM_LIBS  core mcjit native orcjit)
+        
+        
+        message("LLVM_CMAKE_DIR: ${LLVM_CMAKE_DIR}")
+        message("LLVM_DEFINITIONS: ${LLVM_DEFINITIONS}")
+        message("LLVM_COMPILE_FLAGS: ${LLVM_COMPILE_FLAGS}")
+        message("LLVM_ENABLE_ASSERTIONS: ${LLVM_ENABLE_ASSERTIONS}")
+        message("LLVM_ENABLE_EH: ${LLVM_ENABLE_EH}")
+        message("LLVM_ENABLE_RTTI: ${LLVM_ENABLE_RTTI}")
+        message("LLVM_INCLUDE_DIRS: ${LLVM_INCLUDE_DIRS}")
+        message("LLVM_PACKAGE_VERSION: ${LLVM_PACKAGE_VERSION}")
+        message("LLVM_TOOLS_BINARY_DIR: ${LLVM_TOOLS_BINARY_DIR}")
+        message("LLVM_LIBRARY_DIRS: ${LLVM_LIBRARY_DIRS}")
+        message("LLVM_LIBS: ${LLVM_LIBS}")
+        
+    else()
+        message(SEND_ERROR "Need to specify a LLVM_DIR location")
+    endif()
 endif()
-
 # need a python library
 find_package(PythonLibs 2.6 REQUIRED)
 
