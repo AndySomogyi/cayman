@@ -16,10 +16,12 @@
 #include <stdio.h>
 #endif
 
+#include <Python.h>
+
 /**
  * Basic opaque Cayman object type.
  */
-struct CaObject;
+typedef PyObject CaObject;
 
 /**
  * Basic opaque Cayman type type.

@@ -8,7 +8,6 @@
 #include "cayman_private.h"
 #include "CaModule.h"
 #include "Parser.h"
-#include "JITContext.h"
 #include <string>
 
 using std::string;
@@ -33,11 +32,7 @@ CaObject* CaImport_ImportModule(const char* name)
 
 		 if(ast->module != nullptr)
 		 {
-		     CaModule *mod = new CaModule(name, fname, std::unique_ptr<py::Module>(ast->module));
-
-		     JITContext::Get().AddCaModule(mod);
-
-		     return mod;
+		     return NULL;
 		 }
 
 	} catch (...)

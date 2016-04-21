@@ -5,7 +5,6 @@
  *      Author: andy
  */
 #include "cayman.h"
-#include "CaFloat.h"
 #include "cayman_private.h"
 
 

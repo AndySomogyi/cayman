@@ -12,8 +12,6 @@
 #include "ParserContext.h"
 #include "AstToken.h"
 
-#include "cayman_llvm.h"
-#include "AstCodegen.h"
 
 using llvm::dyn_cast;
 

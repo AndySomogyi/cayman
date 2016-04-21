@@ -8,8 +8,6 @@
 #include "cayman.h"
 #include "cayman_private.h"
 #include "LiteralSupport.h"
-#include "cayman_llvm.h"
-#include <llvm/ADT/APSInt.h>
 #include <iostream>
 
 
@@ -204,78 +202,7 @@ CaObject *CaNumber_ToBase(CaObject* n, int base)
 
 CaObject *CaNumber_FromString(const char* str)
 {
-	clang::NumericLiteralParser parser(str);
 
-	if(!parser.hadError && parser.isIntegerLiteral())
-	{
-		std::cout << "is integer literal" << std::endl;
-
-        if (parser.hasUDSuffix())
-        {
-            std::cout << "suffix: " << parser.getUDSuffix().str() << std::endl;
-        } else
-        {
-            std::cout << "suffix: " << "" << std::endl;
-        }
-
-        std::cout << "signed: " << std::boolalpha << !parser.isUnsigned << std::endl;
-
-		unsigned bits = parser.isLong ? 64 : (parser.isLongLong ? 128 : 32);
-
-        std::cout << "bits: " << bits << std::endl;
-
-		llvm::APSInt val(bits, 0);
-
-        // checks for overflow
-		if (!parser.GetIntegerValue(val))
-		{
-			return new CaInt(val);
-		}
-		std::cout << "GetIntegerValue failed, overflow" << std::endl;
-	}
-
-	else if(!parser.hadError && parser.isFloatingLiteral())
-	{
-		std::cout << "is float literal" << std::endl;
-
-        if (parser.hasUDSuffix())
-        {
-            std::cout << "suffix: " << parser.getUDSuffix().str() << std::endl;
-        } else
-        {
-            std::cout << "suffix: " << "" << std::endl;
-        }
-
-		llvm::APFloat val(0.0f);
-        
-
-
-        llvm::APFloat::opStatus stat = parser.GetFloatValue(val);
-        
-        switch (stat) {
-            case llvm::APFloat::opOK:
-                std::cout << "opOK" << std::endl;
-            case llvm::APFloat::opInvalidOp:
-                std::cout << "opInvalidOp" << std::endl;
-                break;
-            case llvm::APFloat::opDivByZero:
-                std::cout << "opDivByZero" << std::endl;
-                break;
-            case llvm::APFloat::opOverflow:
-                std::cout << "opOverflow" << std::endl;
-                break;
-            case llvm::APFloat::opUnderflow:
-                std::cout << "opUnderflow" << std::endl;
-                break;
-            case llvm::APFloat::opInexact:
-                std::cout << "opInexact" << std::endl;
-                break;
-        }
-        
-        return new CaFloat(val);
-	}
-
-	return nullptr;
 }
 
 }

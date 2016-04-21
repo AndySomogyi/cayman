@@ -217,7 +217,7 @@ public:
     /**
      * The full name, may be dotted
      */
-	// TODO, ineffecient, need to share names
+	// TODO, inefficient, need to share names
 	std::string id;
 
 	ExprContext ctx;

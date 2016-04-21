@@ -19,37 +19,35 @@ set(API_SRC
     )
 
 set(SRC
-  py_tokenizer.cc
-  py_parser.cc
-  Parser.cpp
-  ParserContext.cpp
-  Ast.cpp
-  AstNode.cpp
-  AstNodeFactory.cpp
-  AstCodegen.cpp
-  AstInterpreter.cpp
-  Expr.cpp
-  Stmt.cpp
-  AstPrinter.cpp
-  AstToken.cpp
-  CaModule.cpp
-  CaObject.cpp
-  CaType.cpp
-  CaInt.cpp
-  CaFloat.cpp
-  CaCallable.cpp
-  CaFunction.cpp
-  CaString.cpp
-  JITContext.cpp
-  LiteralSupport.cpp
-  CharInfo.cpp
-  llvm_test1.cpp
-  llvm_orc_lazy_irgen.cpp
-  llvm_orc_lazy_codegen.cpp
-  llvm_orc_initial.cpp
-  llvm_orc_fully_lazy.cpp
-  ${API_SRC}
-  )
+    ${API_SRC}
+    py_tokenizer.cc
+    py_parser.cc
+    Parser.cpp
+    ParserContext.cpp
+    Ast.cpp
+    AstNode.cpp
+    AstNodeFactory.cpp
+    AstInterpreter.cpp
+    Expr.cpp
+    Stmt.cpp
+    AstPrinter.cpp
+    AstToken.cpp
+    )
+
+if(CAYMAN_USE_LLVM)
+    set(SRC
+        ${SRC}
+        AstCodegen.cpp
+        JITContext.cpp
+        LiteralSupport.cpp
+        CharInfo.cpp
+        llvm_test1.cpp
+        llvm_orc_lazy_irgen.cpp
+        llvm_orc_lazy_codegen.cpp
+        llvm_orc_initial.cpp
+        llvm_orc_fully_lazy.cpp
+        )
+endif()
 
 
 set(HEADERS
@@ -72,15 +70,6 @@ set(HEADERS
   py_tokenizer.h
   Expr.h
   Stmt.h
-  CaObject.h
-  CaModule.h
-  CaType.h
-  CaCallable.h
-  CaFunction.h
-  CaInt.h
-  CaFloat.h
-  CaString.h
-  JITContext.h
   AstVisitor.h
   AstPrinter.h
   AstToken.h
@@ -96,7 +85,7 @@ source_group("Public Header Files" FILES ${CAYMAN_PUBLIC_HEADERS})
 
 message("CAYMAN_PUBLIC_HEADERS: ${CAYMAN_PUBLIC_HEADERS}")
 
-
+message("CAYMAN_SRC: ${SRC}")
 
 # Make sure the compiler can find include files for our Hello library
 # when other libraries or executables link to Hello

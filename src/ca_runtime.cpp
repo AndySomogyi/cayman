@@ -10,10 +10,7 @@
 #include <Python.h>
 
 #include "cayman_private.h"
-#include "cayman_llvm.h"
 #include "py_errcode.h"
-
-#include "JITContext.h"
 
 int Ca_InteractiveFlag = 0;
 
@@ -30,23 +27,12 @@ void Ca_Initialize(void)
 
 void Ca_InitializeEx(int int1)
 {
-	// initialize LLVM runtime
-	llvm::InitializeNativeTarget();
-	llvm::InitializeNativeTargetAsmPrinter();
-	llvm::InitializeNativeTargetAsmParser();
 
-	JITContext::Initialize();
-
-
-	CaIntType::initialize();
-	CaFloatType::initialize();
 }
 
 void Ca_Finalize(void)
 {
-	CaFloatType::finalize();
-	CaIntType::finalize();
-	JITContext::Finalize();
+
 }
 
 int Ca_IsInitialized(void)
@@ -65,17 +51,7 @@ void CaErr_PrintEx(int int1)
 int CaRun_AnyFileExFlags(FILE* fp, const char* filename, int closeit,
 		CaCompilerFlags* flags)
 {
-    if (filename == NULL)
-        filename = "???";
-    if (Ca_FdIsInteractive(fp, filename))
-    {
-        int err = CaRun_InteractiveLoopFlags(fp, filename, flags);
-        if (closeit)
-            fclose(fp);
-        return err;
-    }
-    else
-        return CaRun_SimpleFileExFlags(fp, filename, closeit, flags);
+
 }
 
 
@@ -87,18 +63,12 @@ int CaRun_AnyFileExFlags(FILE* fp, const char* filename, int closeit,
  */
 int Ca_FdIsInteractive(FILE* fp, const char* filename)
 {
-    if (isatty((int)fileno(fp)))
-        return 1;
-    if (!Ca_InteractiveFlag)
-        return 0;
-    return (filename == NULL) ||
-           (strcmp(filename, "<stdin>") == 0) ||
-           (strcmp(filename, "???") == 0);
+
 }
 
 int CaRun_InteractiveOne(FILE* fp, const char* filename)
 {
-	return CaRun_InteractiveOneFlags(fp, filename, NULL);
+
 }
 
 int CaRun_InteractiveOneFlags(FILE *fp, const char *filename, CaCompilerFlags *flags)

@@ -9,7 +9,6 @@
 #define _INCLUDED_STATEMENT_H_
 
 #include "AstNode.h"
-#include "cayman_llvm.h"
 #include <vector>
 
 class IRGenContext;
