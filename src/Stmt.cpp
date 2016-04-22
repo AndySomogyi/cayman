@@ -13,8 +13,6 @@
 #include "AstToken.h"
 
 
-using llvm::dyn_cast;
-
 namespace py
 {
 
@@ -77,12 +75,12 @@ FunctionDef::FunctionDef(Ast* ast, const location& loc, AstNode* n, AstNode* a,
 	{
 		for(auto i : suite->items)
 		{
-			if(dyn_cast<Pass>(i))
-			{
-				throw syntax_error(loc,
-					"error, an external function can not have a function body definition");
-
-			}
+//			if(dyn_cast<Pass>(i))
+//			{
+//				throw syntax_error(loc,
+//					"error, an external function can not have a function body definition");
+//
+//			}
 		}
 	}
 

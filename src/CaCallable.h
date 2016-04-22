@@ -14,21 +14,7 @@
 
 struct CaCallable : public CaObject
 {
-public:
-	CaCallable(py::FunctionDef* _func) :
-		CaObject(CA_CALLABLE), func(_func), pfunc(nullptr) {};
 
-
-	py::FunctionDef *func;
-
-	void *pfunc;
-
-	void *GetFuctionAddress(CaType* retType, const CaTypeObjectVec& args);
-
-	static bool classof(const CaObject *o)
-	{
-		return o->typeId == CA_CALLABLE;
-	}
 };
 
 #endif /* _INCLUDED_CACALLABLE_H_ */

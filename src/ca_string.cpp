@@ -26,10 +26,7 @@ CaObject* CaString_FromStringAndSize(const char* v, Ca_ssize_t len)
 
 const char* CaString_AsString(CaObject* p)
 {
-	CaString *str = dyn_cast<CaString>(p);
-	if(str) {
-		return str->asString();
-	}
+
 	return nullptr;
 }
 

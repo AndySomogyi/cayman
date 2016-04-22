@@ -7,8 +7,8 @@
 
 #include "cayman_private.h"
 
-static CaModule *builtins = nullptr;
-static CaModule *globals = nullptr;
+//static CaModule *builtins = nullptr;
+//static CaModule *globals = nullptr;
 
 
 /**
@@ -16,9 +16,9 @@ static CaModule *globals = nullptr;
  */
 int initEval()
 {
-	assert(builtins == nullptr);
+	//assert(builtins == nullptr);
 
-	builtins = new CaModule("__builtins__");
+	//builtins = new CaModule("__builtins__");
 
 
 
@@ -45,22 +45,22 @@ extern "C" {
 
 CaObject* CaEval_GetBuiltins()
 {
-	return builtins;
+	//return builtins;
 }
 
 CaObject* CaEval_GetLocals()
 {
-	return nullptr;
+	//return nullptr;
 }
 
 CaObject* CaEval_GetGlobals()
 {
-	return globals;
+	//return globals;
 }
 
 const char* CaEval_GetFuncName(CaObject* func)
 {
-	return nullptr;
+	//return nullptr;
 }
 
 const char* CaEval_GetFuncDesc(CaObject* func)

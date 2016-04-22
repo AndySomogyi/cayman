@@ -17,6 +17,12 @@ void Ca_Dealloc(CaObject*)
 {
 }
 
+CaObject* CaObject_GetAttrString(CaObject *o,
+		const char *attr_name)
+{
+	return NULL;
+}
+
 
 
 CaObject * CaObject_CallMethod(CaObject* o, const char* method, const char* format, ...)

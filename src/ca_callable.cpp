@@ -18,6 +18,10 @@
 extern "C" {
 
 
+int CaCallable_Check(CaObject *)
+{
+	return 0;
+}
 
 CaObject * CaCallable_Call(CaCallable* callable_object, CaObject* args, CaObject* kw)
 {

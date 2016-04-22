@@ -127,6 +127,7 @@ CaAPI_FUNC(int) CaObject_HasAttrString(CaObject *o, const char *attr_name);
 CaAPI_FUNC(CaObject)* CaObject_GetAttrString(CaObject *o,
 		const char *attr_name);
 
+
 /**
  * Returns 1 if o has the attribute attr_name, and 0 otherwise.
  * This is equivalent to the Cayman expression:
@@ -296,7 +297,7 @@ CaAPI_FUNC(uint32_t) Ca_IncRef(CaObject *o);
 
 CaAPI_FUNC(uint32_t) Ca_DecRef(CaObject *o);
 
-CaAPI_FUNC(CaObject *) CaObject_GetAttrString(CaObject *, const char *);
+
 
 
 #ifdef __cplusplus

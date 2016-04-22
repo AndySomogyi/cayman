@@ -39,7 +39,6 @@ if(CAYMAN_USE_LLVM)
         ${SRC}
         AstCodegen.cpp
         JITContext.cpp
-        LiteralSupport.cpp
         CharInfo.cpp
         llvm_test1.cpp
         llvm_orc_lazy_irgen.cpp
@@ -74,7 +73,6 @@ set(HEADERS
   AstPrinter.h
   AstToken.h
   CharInfo.h
-  LiteralSupport.h
   llvm_test1.h
   )
 

@@ -10,6 +10,10 @@
 
 extern "C" {
 
+CaObject* CaInt_FromLong(long ival)
+{
+	return NULL;
+}
 
 long CaInt_AsLong(CaObject* io)
 {
