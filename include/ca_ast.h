@@ -10,7 +10,15 @@
 #ifndef _INCLUDE_CA_AST_H_
 #define _INCLUDE_CA_AST_H_
 
-#include <ca_port.h>
+#include <ca_object.h>
+
+#ifdef __cplusplus
+
+struct CaAst : CaObject {
+
+};
+
+#endif
 
 
 #ifdef __cplusplus

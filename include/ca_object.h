@@ -28,7 +28,7 @@ typedef PyObject CaObject;
  */
 //typedef struct CaType CaTypeObject;
 
-struct CaTypeObject;
+typedef PyTypeObject CaTypeObject;
 
 struct CaType;
 

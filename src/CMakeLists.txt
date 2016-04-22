@@ -16,6 +16,7 @@ set(API_SRC
     ca_eval.cpp
     ca_int.cpp
     ca_float.cpp
+    ca_list.cpp
     )
 
 set(SRC
