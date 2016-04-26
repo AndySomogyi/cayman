@@ -22,6 +22,7 @@ set (_PUBLIC_HEADERS
   ca_eval.h
   ca_int.h
   ca_float.h
+  ca_ast.h
   cayman.h
   )
 

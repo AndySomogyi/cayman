@@ -1,0 +1,128 @@
+\documentclass[12pt]{article}
+\usepackage{fullpage}
+\usepackage{times}
+
+\usepackage{syntax}
+
+
+
+\usepackage[version=3]{mhchem}
+\usepackage{hyperref}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{10} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{10}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self, proc, when, @, energy},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=none,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+
+\begin{document}
+\textbf{Conditional Processes} have operational semantics and are applied when certain conditions are met. Conditional processes are triggered in response to a discrete event, and the runtime continuously monitors for changes in the triggering clause.
+%
+%
+\begin{python}
+proc my_apoptosis(x:SomeType) when x.health < 10: 
+    x.die();
+\end{python}
+
+
+\textbf{Chemical Reactions} are one of the fundamental phenomena in biology. A chemical reaction is a process which consumes a set of reactants and produces a set of products at a specified rate. Here, the reaction 
+
+\begin{equation}
+\ce{2 E + S <-->[$k_1 E^2 \cdot S$][$k_2 ES$] ES ->[$k_3 ES$] E + P } 
+\end{equation}
+can be specified as two processes:
+\begin{python}
+proc p1(2 E, S) <-> ES @: k1 * E**2 * S - k2 * ES; 
+proc p2(ES) -> E, P @: k3 * ES;
+\end{python}
+These processes are automatically applied everywhere these chemical compounds exist. Here, the cell type defintion has these reactants, hence they are treated as a sub-cellular reaction network. 
+
+Processes act on reactants, products and modifiers. Reactants are consumed, products are produced, and modifiers are constant parameters who's values are only read. Reactants and products also require stoichiometric coefficients, this is the relative quantity of how much of that substance to produce or consume per reaction event. 
+
+Thus, a process definition clearly requires 1: list of products, 2: list of reactants, 3: list of modifiers. The products and reactants each require an optional stoichiometric coefficient. So, how to represent this syntactically? We would also like a chemically natural syntax, something as closely following established chemical notation as possible. Note, in chemical notation, the reactants and products are not comma separated, and the stoichiometric coefficients are written directly in front of each product and reactant, with an implied multiplication. 
+
+Questions, how should we represent this?
+\begin{itemize}
+	\item should the stoichiometric coefficients be a constant expression, number, non-contant expression yielding a number?
+	\item should the products and reactants be comma separated lists? 
+	\item should we allow implicit multiply of the stoichiometric coefficients
+\end{itemize}
+
+\begin{grammar}
+	<funcdef> : `def' <name> <parameters> [`->' <test>] `:' <suite>
+	
+
+
+%<statement> ::= <ident> `=' <expr> 
+%\alt `for' <ident> `=' <expr> `to' <expr> `do' <statement> 
+%\alt `{' <stat-list> `}' 
+%\alt <empty> 
+
+%<stat-list> ::= <statement> `;' <stat-list> | <statement> 
+
+\end{grammar}
+
+
+\textbf{Membrane Transport} is critical for cellular function. Here, the external surface concentration is passively transported across the membrane to become an internal volume concentration. Spatial regions such as cells are typically treated as well-stirred compartments, so the internal concentration is specified as a scalar.  
+%
+\begin{python}
+proc my_trans(src:MyCellType.surface.glucose) -> \
+    dst:MyCellType.glucose @:
+    return 0.01 * (sum(src) / area(src) - \
+	    dst/volume(dst))
+\end{python}
+The compiler generates code that instructs the runtime to consume a quantity of glucose at every cell surface location, and produce the proportional quantity of glucose in the scalar cell glucose value. The above implementation can be easily extended to active transport processes. 
+
+
+\textbf{Differential Adhesion and Cell Sorting} is one of the fundamental features of multicellular organisms. Cells display differential adhesion that contributes to tissue structure and the creation of more complex assemblies (e.g., organs). Cells may adhere directly to other cells or indirectly adhere through the ECM. Below is an overview of the different types of processes that are representable. Note that these are presented for demonstration purposes only and are not entirely biologically realistic in their form though they represent the well-established biological process of differential adhesion. Cell-cell adhesion is mediated primarily through cadherin proteins, which are a type of trans-membrane protein that selectively and preferentially attach to other cadherin-like proteins. Cadherins are generally produced inside cells, and then migrate to the cell membrane. This intra-cellular cadherin production can be modeled as a creation process where the cell surface cadherins are produced at a rate proportional to, for example, how healthy the cell is:
+%
+\begin{python}
+proc produce_cad(x: const MyLightCellType) -> \
+    x.surface.cadherin @:
+    return 0.123 * x.volume if x.health > 5 else 0
+\end{python}
+%
+Cells will preferentially adhere to other similarly typed cells proportional to their surface cadherin concentration. This can be represented as an energy function between a pair of like typed cells as:
+\begin{python}
+energy my_adhesion_potential(a:MyCellType.surface, \
+    b:MyCellType.surface):
+    return 0.234 * a.cadherin * b.cadherin
+\end{python}
+%
+
+Here, the solver is instructed to apply the given potential between every pair of surface vertices. This potential is then converted to a force which causes the cell surfaces to either move towards or away from each other.
+For demonstration purposes, the form of these energy expressions is rather simple. As stated in \S~\ref{sec:timeevo}, the concept of a potential energy function is general and capable of describing virtually every known physical process. As the CCOPM is based on a general purpose language, energy functions of arbitrary complexity may be specified.
+
+\end{document}
+
+
+		

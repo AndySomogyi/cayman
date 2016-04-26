@@ -9,6 +9,9 @@
 #define _INCLUDE_CA_STRING_H_
 
 #include <ca_port.h>
+#include <Python.h>
+
+typedef PyStringObject CaString;
 
 
 #ifdef __cplusplus
