@@ -39,6 +39,12 @@ int initEval();
 int finalizeEval();
 
 
+/**
+ * Initialize the AST module
+ */
+int _CaAstInit();
+
+
 #define CA_NOTIMPLEMENTED \
 	assert("Not Implemented" && 0);\
     return 0;

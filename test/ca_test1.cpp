@@ -96,7 +96,7 @@ int ca_test1(int argc, const char** argv)
 
 int testNumber(const char* str) {
 
-	Ca_Initialize();
+	//Ca_Initialize();
 
 	CaObject *val = CaNumber_FromString(str);
     

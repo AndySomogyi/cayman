@@ -21,7 +21,7 @@ int ca_run(int argc, char *argv[])
     }
 
 
-    Ca_Initialize();
+    //Ca_Initialize();
     pName = CaString_FromString(argv[1]);
     /* Error checking of pName left out */
 

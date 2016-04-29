@@ -10,6 +10,7 @@
 
 #include <ca_port.h>
 #include <ca_object.h>
+#include <ca_module.h>
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -17,15 +18,24 @@ extern "C"
 {
 #endif
 
+CaAPI_DATA(CaModule*) module;
+
 CaAPI_FUNC(wchar_t *) Ca_GetProgramName(void);
 
 CaAPI_FUNC(void) Ca_SetCaymanHome(wchar_t *);
 CaAPI_FUNC(wchar_t *) Ca_GetCaymanHome(void);
 
-CaAPI_FUNC(void) Ca_Initialize(void);
-CaAPI_FUNC(void) Ca_InitializeEx(int);
+/**
+ * Initialize the entire runtime.
+ */
+CaAPI_FUNC(int) Ca_Initialize(int);
+
 
 CaAPI_FUNC(void) Ca_Finalize(void);
+
+/**
+ * Is the runtime initialized?
+ */
 CaAPI_FUNC(int) Ca_IsInitialized(void);
 
 /* Ca_CaAtExit is for the atexit module, Ca_AtExit is for low-level

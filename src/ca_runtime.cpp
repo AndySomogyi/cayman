@@ -20,15 +20,7 @@ CaObject* CaErr_Occurred(void)
 	return NULL;
 }
 
-void Ca_Initialize(void)
-{
-    Ca_InitializeEx(0);
-}
 
-void Ca_InitializeEx(int int1)
-{
-
-}
 
 void Ca_Finalize(void)
 {
@@ -375,6 +367,14 @@ int Ca_Main(int argc, const char **argv)
 
 	int sts = CaRun_AnyFileFlags(stdin, "<stdin>", &cf) != 0;
     return sts;
+}
+
+
+/**
+ * Called by python when cayman is run as an extionsion module
+ */
+PyMODINIT_FUNC initcayman(void) {
+
 }
 
 
