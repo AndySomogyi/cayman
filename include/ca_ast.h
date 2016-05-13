@@ -75,7 +75,8 @@ struct CaProcessArgument : CaAst {
 	CaExpr *annotation;
 };
 
-struct CaProcessDef : CaAst {
+struct CaRateProcessDef : CaAst {
+	CaSymbol *name;
 	CaList *reactants;
 	CaList *products;
 	CaList *modifiers;
@@ -86,7 +87,7 @@ struct CaProcessDef : CaAst {
 	 * as a rate expression in the case of a rate process, or a sequence of
 	 * operations in the case of a conditional process.
 	 */
-	CaList *body;
+	CaObject *rate;
 };
 
 struct CaFunctionDef : CaAst {
@@ -94,8 +95,21 @@ struct CaFunctionDef : CaAst {
     CaList *arguments;
     CaObject *body;
     CaList *decorators;
+
+    /**
+     * return type expression
+     */
     CaObject *returns;
 } ;
+
+
+struct CaClassDef : CaAst {
+    CaSymbol *name;
+    CaList *bases;
+    CaList *keywords;
+    CaList *body;
+    CaList *decorators;
+};
 
 
 #endif
@@ -104,8 +118,8 @@ struct CaFunctionDef : CaAst {
  * create new function def.
  */
 CaAPI_FUNC(CaFunctionDef*) CaFunctionDef_New(CaSymbol *name, CaList *args, CaList *body,
-                        CaList *decorators, CaObject *returns, int lineno,
-                        int col_offset);
+                        CaList *decorators, CaObject *returns, int line,
+                        int column);
 
 
 
