@@ -69,18 +69,30 @@ struct CaExpr : CaStmt {
 
 };
 
+struct CaModuleDef : CaAst {
+	CaList *body;
+};
+
 struct CaProcessArgument : CaAst {
 	CaSymbol *name;
 	CaExpr *stoichiometry;
 	CaExpr *annotation;
 };
 
-struct CaRateProcessDef : CaAst {
+
+struct CaDefinition: CaAst {
 	CaSymbol *name;
+	CaSymbol *identifier;
+	CaList *decorators;
+
+};
+
+struct CaRateProcessDef : CaDefinition  {
+
 	CaList *reactants;
 	CaList *products;
 	CaList *modifiers;
-	CaList *decorators;
+
 
 	/**
 	 * The body of the process definition, this can either be interpreted
@@ -90,11 +102,22 @@ struct CaRateProcessDef : CaAst {
 	CaObject *rate;
 };
 
-struct CaFunctionDef : CaAst {
-    CaSymbol *name;
+
+struct CaCall : CaAst {
+
+	/**
+	 * Name of function being called
+	 */
+	CaSymbol *name;
+	CaList *arguments;
+	CaList *keywords;
+};
+
+struct CaFunctionDef : CaDefinition {
+
     CaList *arguments;
     CaObject *body;
-    CaList *decorators;
+
 
     /**
      * return type expression
@@ -103,12 +126,11 @@ struct CaFunctionDef : CaAst {
 } ;
 
 
-struct CaClassDef : CaAst {
-    CaSymbol *name;
+struct CaClassDef : CaDefinition {
+
     CaList *bases;
     CaList *keywords;
     CaList *body;
-    CaList *decorators;
 };
 
 

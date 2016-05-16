@@ -151,6 +151,15 @@ endif()
 include_directories(include)
 
 add_subdirectory(include)
+
+# build the main library
 add_subdirectory(src)
+
+# build the layout component
+add_subdirectory(layout)
+
+# build the layout testing
+add_subdirectory(layout-test)
+
 add_subdirectory(test)
 
